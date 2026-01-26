@@ -113,6 +113,8 @@ function updateTotals() {
   for (let s in states) {
     if (states[s].owner === "B") b += states[s].votes;
     if (states[s].owner === "M") m += states[s].votes;
+    document.getElementById("barB").style.width = (b / 538 * 100) + "%";
+document.getElementById("barM").style.width = (m / 538 * 100) + "%";
   }
   document.getElementById("brixtonVotes").innerText = b;
   document.getElementById("mckinleyVotes").innerText = m;
