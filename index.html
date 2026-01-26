@@ -13,13 +13,13 @@
     <div>
       <img src="https://via.placeholder.com/200" />
       <h2>BRIXTON</h2>
-      <h1>0</h1>
+      <h1 id="brixtonVotes">0</h1>
     </div>
 
     <div>
       <img src="https://via.placeholder.com/200" />
       <h2>MCKINLEY</h2>
-      <h1>0</h1>
+      <h1 id="mckinleyVotes">0</h1>
     </div>
 
   </div>
@@ -29,9 +29,53 @@
     <p>538 TOTAL — 270 TO WIN</p>
   </div>
 
-  <div style="margin-top:50px; width:90%; margin:auto;">
-  <img src="us.svg" style="width:100%;" />
+  <div style="margin-top:40px; width:90%; margin:auto;">
+    <object id="map" data="us.svg" type="image/svg+xml" style="width:100%;"></object>
   </div>
 
+<script>
+const states = {
+  CA: { votes: 54, owner: null },
+  TX: { votes: 40, owner: null },
+  NY: { votes: 28, owner: null }
+};
+
+function updateTotals() {
+  let b = 0, m = 0;
+  for (let s in states) {
+    if (states[s].owner === "B") b += states[s].votes;
+    if (states[s].owner === "M") m += states[s].votes;
+  }
+  document.getElementById("brixtonVotes").innerText = b;
+  document.getElementById("mckinleyVotes").innerText = m;
+}
+
+document.getElementById("map").addEventListener("load", () => {
+  const svg = document.getElementById("map").contentDocument;
+
+  for (let id in states) {
+    const state = svg.getElementById(id);
+    if (!state) continue;
+
+    state.style.fill = "#555";
+    state.style.cursor = "pointer";
+
+    state.onclick = () => {
+      if (states[id].owner === null) {
+        states[id].owner = "B";
+        state.style.fill = "blue";
+      } else if (states[id].owner === "B") {
+        states[id].owner = "M";
+        state.style.fill = "red";
+      } else {
+        states[id].owner = null;
+        state.style.fill = "#555";
+      }
+      updateTotals();
+    };
+  }
+});
+</script>
+
 </body>
-</html>
+</html></html>
