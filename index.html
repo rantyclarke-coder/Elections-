@@ -183,19 +183,7 @@ document.getElementById("map").addEventListener("load", () => {
     state.style.fill = "#555";
     state.style.cursor = "pointer";
 
-    state.onclick = () => {
-      if (states[id].owner === null) {
-        states[id].owner = "B";
-        state.style.fill = "blue";
-      } else if (states[id].owner === "B") {
-        states[id].owner = "M";
-        state.style.fill = "red";
-      } else {
-        states[id].owner = null;
-        state.style.fill = "#555";
-      }
-      updateTotals();
-    };
+    
   }
 });
   document.addEventListener("DOMContentLoaded", () => {
