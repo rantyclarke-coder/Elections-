@@ -56,6 +56,29 @@
 <script>
   // ===== LIVE DATA SOURCE =====
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsbbXqdgfMGosYWjOVNR-2UUw6bZzjGNtnfuuWpbBuTutk6Jm1lffgHUis8GNjfQLFZLkaSpJNlck2/pub?gid=0&single=true&output=csv";
+  // ===== FETCH & PARSE CSV =====
+async function fetchPresidentialCSV() {
+  const response = await fetch(CSV_URL);
+  const text = await response.text();
+
+  const rows = text.trim().split("\n");
+  const data = [];
+
+  for (let i = 2; i < rows.length; i++) { // A3 onwards
+    const cols = rows[i].split(",");
+
+    const state = cols[0]?.trim();
+    if (!state) continue;
+
+    const c1 = Number(cols[11] || 0); // Column L
+    const c2 = Number(cols[12] || 0); // Column M
+    const c3 = Number(cols[13] || 0); // Column N
+
+    data.push({ state, c1, c2, c3 });
+  }
+
+  console.log("PRESIDENTIAL DATA:", data);
+}
 const states = {
   AL: { votes: 9, owner: null },
   AK: { votes: 3, owner: null },
@@ -146,6 +169,9 @@ document.getElementById("map").addEventListener("load", () => {
       updateTotals();
     };
   }
+});
+  document.addEventListener("DOMContentLoaded", () => {
+  fetchPresidentialCSV();
 });
 </script>
 
