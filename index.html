@@ -220,6 +220,10 @@ function applyPresidentialResults() {
   document.getElementById("mckinleyVotes").innerText =
     window.evTotals.C2 || 0;
 }
+  document.getElementById("map").addEventListener("load", () => {
+  fetchPresidentialCSV();               // initial load
+  setInterval(fetchPresidentialCSV, 5000); // refresh every 5s
+});
 </script>
 
 </body>
