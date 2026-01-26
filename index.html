@@ -56,6 +56,31 @@
 <script>
   // ===== LIVE DATA SOURCE =====
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsbbXqdgfMGosYWjOVNR-2UUw6bZzjGNtnfuuWpbBuTutk6Jm1lffgHUis8GNjfQLFZLkaSpJNlck2/pub?gid=0&single=true&output=csv";
+  // ===== ELECTION LOGIC =====
+function computePresidentialResults(data) {
+  const evTotals = { C1: 0, C2: 0, C3: 0 };
+  const stateWinners = {};
+
+  data.forEach(row => {
+    const total = row.c1 + row.c2 + row.c3;
+    if (total === 0) return;
+
+    const p1 = row.c1 / total;
+    const p2 = row.c2 / total;
+    const p3 = row.c3 / total;
+
+    let winner = "C1";
+    let max = p1;
+
+    if (p2 > max) { winner = "C2"; max = p2; }
+    if (p3 > max) { winner = "C3"; }
+
+    stateWinners[row.state] = winner;
+    evTotals[winner] += electoralVotes[row.state] || 0;
+  });
+
+  return { stateWinners, evTotals };
+}
   // ===== FETCH & PARSE CSV =====
 async function fetchPresidentialCSV() {
   const response = await fetch(CSV_URL);
@@ -75,6 +100,9 @@ async function fetchPresidentialCSV() {
     const c3 = Number(cols[13] || 0); // Column N
 
     data.push({ state, c1, c2, c3 });
+    const results = computePresidentialResults(data);
+window.stateWinners = results.stateWinners;
+window.evTotals = results.evTotals;
   }
 
   console.log("PRESIDENTIAL DATA:", data);
