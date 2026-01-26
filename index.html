@@ -103,6 +103,7 @@ async function fetchPresidentialCSV() {
     const results = computePresidentialResults(data);
 window.stateWinners = results.stateWinners;
 window.evTotals = results.evTotals;
+    applyPresidentialResults();
   }
 
   console.log("PRESIDENTIAL DATA:", data);
@@ -189,6 +190,36 @@ document.getElementById("map").addEventListener("load", () => {
   document.addEventListener("DOMContentLoaded", () => {
   fetchPresidentialCSV();
 });
+  // ===== DISPLAY RESULTS (MAP + NUMBERS) =====
+function applyPresidentialResults() {
+
+  // Safety check
+  if (!window.stateWinners || !window.evTotals) return;
+
+  // Get SVG document
+  const mapObject = document.getElementById("map");
+  if (!mapObject || !mapObject.contentDocument) return;
+
+  const svg = mapObject.contentDocument;
+
+  // Color each state
+  Object.keys(window.stateWinners).forEach(state => {
+    const winner = window.stateWinners[state];
+    const stateEl = svg.getElementById(state);
+    if (!stateEl) return;
+
+    if (winner === "C1") stateEl.style.fill = "blue";
+    if (winner === "C2") stateEl.style.fill = "red";
+    if (winner === "C3") stateEl.style.fill = "gray";
+  });
+
+  // Update EV numbers on page
+  document.getElementById("brixtonVotes").innerText =
+    window.evTotals.C1 || 0;
+
+  document.getElementById("mckinleyVotes").innerText =
+    window.evTotals.C2 || 0;
+}
 </script>
 
 </body>
