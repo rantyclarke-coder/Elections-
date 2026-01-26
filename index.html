@@ -109,6 +109,22 @@
       font-size: 10px;
       color: #ccc;
     }
+    .bar-fill {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  border-radius: 7px;
+}
+
+.bar-fill.left {
+  left: 0;
+  background: #1e90ff;
+}
+
+.bar-fill.right {
+  right: 0;
+  background: #dc143c;
+}
 
     /* ===== MAP ===== */
     .map-container {
@@ -144,8 +160,10 @@
 
       <!-- ELECTORAL BAR -->
       <div class="bar-container">
-        <div class="bar-marker"></div>
-        <div class="bar-label">270 TO WIN</div>
+  <div class="bar-fill left"></div>
+  <div class="bar-fill right"></div>
+  <div class="bar-marker"></div>
+  <div class="bar-label">270 To Win</div>
       </div>
 
       <!-- RIGHT CANDIDATE -->
@@ -164,5 +182,33 @@
     <div class="map-container"></div>
 
   </div>
+  <script>
+  const TOTAL_EV = 538;
+  const WIN_EV = 270;
+
+  let leftEV = 214;
+  let rightEV = 195;
+
+  function updateElection() {
+    document.querySelectorAll('.ev')[0].textContent = leftEV;
+    document.querySelectorAll('.ev')[1].textContent = rightEV;
+
+    document.querySelector('.bar-fill.left').style.width =
+      (leftEV / TOTAL_EV * 100) + '%';
+
+    document.querySelector('.bar-fill.right').style.width =
+      (rightEV / TOTAL_EV * 100) + '%';
+
+    if (leftEV >= WIN_EV) {
+      document.querySelector('.subtitle').textContent = 'PROJECTED WINNER';
+    }
+
+    if (rightEV >= WIN_EV) {
+      document.querySelector('.subtitle').textContent = 'PROJECTED WINNER';
+    }
+  }
+
+  updateElection();
+  </script>
 </body>
 </html>
