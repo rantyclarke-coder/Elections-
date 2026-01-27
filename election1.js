@@ -179,24 +179,36 @@ rightNameEl.style.color = CANDIDATES[right].secondaryColor;
      6. COLOR THE MAP
      ========================= */
   
-function colorMapWhenReady() {
+function colorMapSafe() {
   const mapObject = document.getElementById("us-map");
   if (!mapObject) return;
 
-  function paint() {
+  const applyColors = () => {
     const svg = mapObject.contentDocument;
     if (!svg) return;
 
     Object.keys(STATE_RESULTS).forEach(stateCode => {
-      const stateEl = svg.getElementById(stateCode);
+      const stateEl =
+        svg.getElementById(stateCode) ||
+        svg.querySelector(`[id="${stateCode}"]`);
+
       if (!stateEl) return;
 
-      const winner = STATE_RESULTS[stateCode].winner;
+      const winner = STATE_RESULTS[stateCode]?.winner;
+      if (!winner || !CANDIDATES[winner]) return;
+
       stateEl.style.fill = CANDIDATES[winner].primaryColor;
       stateEl.style.stroke = "#000";
       stateEl.style.strokeWidth = "0.5";
       stateEl.style.cursor = "pointer";
     });
+  };
+
+  // run immediately if already loaded
+  if (mapObject.contentDocument) {
+    applyColors();
   }
 
-  
+  // also bind load event (covers all cases)
+  mapObject.addEventListener("load", applyColors);
+}
