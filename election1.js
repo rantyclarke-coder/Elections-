@@ -106,9 +106,15 @@ nationalVotes.C3 = 1;
         };
         
         // Determine winner
-        const winner = Object.keys(votes).reduce((a, b) =>
-          votes[a] > votes[b] ? a : b
-        );
+        // Determine winner (tie-safe)
+const sortedVotes = Object.entries(votes)
+  .sort((a, b) => b[1] - a[1]);
+
+let winner = null;
+
+if (sortedVotes[0][1] > sortedVotes[1][1]) {
+  winner = sortedVotes[0][0];
+}
 
         // Store state result
         STATE_RESULTS[stateCode] = {
@@ -196,6 +202,7 @@ rightNameEl.style.color = CANDIDATES[right].secondaryColor;
       status.textContent = "LIVE ELECTION NIGHT";
     }
   }
+  // STATE POPOUP
   function showStatePopup(stateCode, x, y) {
   const popup = document.getElementById("state-popup");
   if (!STATE_RESULTS[stateCode]) return;
@@ -211,11 +218,12 @@ rightNameEl.style.color = CANDIDATES[right].secondaryColor;
 
   popup.innerHTML = rows.map((row, index) => {
     const cand = CANDIDATES[row.id];
-    const pct = ((row.votes / (
-      nationalVotes.C1 +
-      nationalVotes.C2 +
-      nationalVotes.C3
-    )) * 100).toFixed(1);
+    const stateTotalVotes =
+  state.votes.C1 +
+  state.votes.C2 +
+  state.votes.C3;
+
+const pct = ((row.votes / stateTotalVotes) * 100).toFixed(1);
 
     const indicator = index === 0
       ? `<span style="color:#2ecc71">▲</span>`
@@ -262,9 +270,13 @@ function colorMapSafe() {
       if (!stateEl) return;
 
       const winner = STATE_RESULTS[stateCode]?.winner;
-      if (!winner || !CANDIDATES[winner]) return;
 
-      stateEl.style.fill = CANDIDATES[winner].primaryColor;
+if (!winner) {
+  stateEl.style.fill = "#666"; // uncalled = grey
+  return;
+}
+
+stateEl.style.fill = CANDIDATES[winner].primaryColor;
       stateEl.style.stroke = "#000";
       stateEl.style.strokeWidth = "0.5";
       stateEl.style.cursor = "pointer";
