@@ -7,9 +7,10 @@ document.addEventListener("DOMContentLoaded", () => {
     TOTAL_EV: 538,
     WIN_EV: 270,
     VOTES_PER_EV: 500000
-    const TIE_COLOR = "#8a8a8a"; // ONLY for tied states
+    
   };
-
+const TIE_COLOR = "#8a8a8a"; // ONLY for tied states
+  
   const CSV_URL =
     "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsbbXqdgfMGosYWjOVNR-2UUw6bZzjGNtnfuuWpbBuTutk6Jm1lffgHUis8GNjfQLFZLkaSpJNlck2/pub?gid=0&single=true&output=csv";
 
@@ -312,9 +313,7 @@ popup.style.top = Math.min(y, window.innerHeight - 200) + "px";
   mapObject.addEventListener("load", applyColors);
   }
 
-  // also bind load event (covers all cases)
-  mapObject.addEventListener("load", applyColors);
-}
+
   document.addEventListener("click", () => {
   document.getElementById("state-popup").classList.add("hidden");
 });
