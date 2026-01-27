@@ -93,7 +93,8 @@ const CANDIDATES = {
           C2: Math.round(stateVotes * (c2 / totalPoints)),
           C3: Math.round(stateVotes * (c3 / totalPoints))
         };
-
+setTimeout(renderResults, 1000);
+        
         // Determine winner
         const winner = Object.keys(votes).reduce((a, b) =>
           votes[a] > votes[b] ? a : b
