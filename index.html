@@ -195,14 +195,21 @@
     }
 
     .stats {
-      width:100%;
-      max-width:260px;
-      display:flex;
-      justify-content:space-between;
-      font-size:11px;
-      color:var(--muted);
-      font-weight:700;
-    }
+  width:100%;
+  max-width:260px;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+}
+
+#left-stats {
+  text-align:left;
+}
+
+#right-stats {
+  text-align:right;
+  white-space:pre-line;
+}
 
     /* Map placeholder */
     .map {
