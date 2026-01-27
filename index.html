@@ -391,7 +391,9 @@ const uncW = (undecidedEV / CONSTANTS.TOTAL_EV) * 100;
         status.textContent = 'LIVE ELECTION NIGHT';
       }
     }
-
+// Holds final per-state results for the map
+const STATE_RESULTS = {};
+    
     // initial render
     function render(){
       updateBar();
@@ -445,7 +447,24 @@ fetch(CSV_URL)
   Math.round(stateVotes * (c2 / totalPoints)),
   Math.round(stateVotes * (c3 / totalPoints))
 ];
+// determine winner of the state
+const maxVotes = Math.max(votes[0], votes[1], votes[2]);
 
+let winner;
+if (votes[0] === maxVotes) winner = "C1";
+else if (votes[1] === maxVotes) winner = "C2";
+else winner = "C3";
+
+// SAVE result for map use
+STATE_RESULTS[stateCode] = {
+  ev: ev,
+  votes: {
+    C1: votes[0],
+    C2: votes[1],
+    C3: votes[2]
+  },
+  winner: winner
+};
       // national popular vote
       leftVotes += votes[0];
       rightVotes += votes[1];
