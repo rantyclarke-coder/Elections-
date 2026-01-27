@@ -93,7 +93,6 @@ const CANDIDATES = {
           C2: Math.round(stateVotes * (c2 / totalPoints)),
           C3: Math.round(stateVotes * (c3 / totalPoints))
         };
-setTimeout(renderResults, 1000);
         
         // Determine winner
         const winner = Object.keys(votes).reduce((a, b) =>
@@ -117,7 +116,12 @@ setTimeout(renderResults, 1000);
       renderResults();
 colorMapSafe();
     });
+.catch(err => {
+    console.error("CSV load failed:", err);
 
+    // Fallback render so UI does not stay '-'
+    renderResults();
+  });
 
   /* =========================
      5. RENDER TOP TWO
