@@ -465,6 +465,10 @@ STATE_RESULTS[stateCode] = {
   },
   winner: winner
 };
+      if (stateCode === "CA") {
+  document.getElementById("status").textContent =
+    "CA winner = " + winner;
+      }
       // national popular vote
       leftVotes += votes[0];
       rightVotes += votes[1];
