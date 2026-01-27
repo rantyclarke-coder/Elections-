@@ -342,15 +342,14 @@
     const TOTAL_EV = 538;
     const WIN_EV = 270;
 
-    // initial example values matching the screenshot
-    let leftEV = 284;
-    let rightEV = 194;
-    let undecidedEV = Math.max(0, TOTAL_EV - leftEV - rightEV);
+    // live data placeholders (will be filled from Google Sheets)
+let leftEV = 0;
+let rightEV = 0;
+let undecidedEV = TOTAL_EV;
 
-    // example popular votes (replace with real numbers)
-    let leftVotes = 72520517;
-    let rightVotes = 58020521;
-    let otherVotes = 0;
+let leftVotes = 0;
+let rightVotes = 0;
+let otherVotes = 0;
 
     function numberWithCommas(n){
       return new Intl.NumberFormat('en-US').format(n);
@@ -402,6 +401,78 @@
 
     render();
 
+    // =======================
+// LIVE GOOGLE SHEETS DATA
+// =======================
+
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsbbXqdgfMGosYWjOVNR-2UUw6bZzjGNtnfuuWpbBuTutk6Jm1lffgHUis8GNjfQLFZLkaSpJNlck2/pub?gid=0&single=true&output=csv";
+
+const VOTES_PER_EV = 500000;
+
+// candidate IDs (must match your internal order)
+const CANDIDATES = ["C1", "C2", "C3"];
+
+fetch(CSV_URL)
+  .then(res => res.text())
+  .then(csv => {
+    const rows = csv.trim().split("\n").map(r => r.split(","));
+
+    // reset totals
+    leftEV = 0;
+    rightEV = 0;
+    undecidedEV = 0;
+    leftVotes = 0;
+    rightVotes = 0;
+    otherVotes = 0;
+
+    // skip header rows (A3 = index 2)
+    for (let i = 2; i < rows.length; i++) {
+      const row = rows[i];
+
+      const stateCode = row[0]?.trim();
+      const ev = Number(row[1]);
+
+      const c1 = Number(row[11]); // L
+      const c2 = Number(row[12]); // M
+      const c3 = Number(row[13]); // N
+
+      if (!stateCode || !ev || (c1 + c2 + c3) === 0) continue;
+
+      const totalPoints = c1 + c2 + c3;
+      const stateVotes = ev * VOTES_PER_EV;
+
+      const votes = [
+        stateVotes * (c1 / totalPoints),
+        stateVotes * (c2 / totalPoints),
+        stateVotes * (c3 / totalPoints)
+      ];
+
+      // national popular vote
+      leftVotes += votes[0];
+      rightVotes += votes[1];
+      otherVotes += votes[2];
+
+      // determine state winner
+      const maxVotes = Math.max(...votes);
+      const winnerIndex = votes.indexOf(maxVotes);
+
+      // assign ALL EVs (winner takes all)
+      if (winnerIndex === 0) leftEV += ev;
+      else if (winnerIndex === 1) rightEV += ev;
+      else {
+        // third candidate wins state → EVs still count nationally
+        // but they do not appear in top row
+      }
+    }
+
+    undecidedEV = Math.max(0, TOTAL_EV - leftEV - rightEV);
+
+    // update UI
+    render();
+  })
+  .catch(err => {
+    console.error("Failed to load election data:", err);
+  });
     // Example API: you can call setData(...) to update the UI live
     window.setData = function({leftEV:newLeft, rightEV:newRight, leftVotes:newLeftVotes, rightVotes:newRightVotes}){
       if (typeof newLeft === 'number') leftEV = newLeft;
