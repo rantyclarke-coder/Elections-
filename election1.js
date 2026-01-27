@@ -140,8 +140,14 @@ document.getElementById("right-stats").textContent =
   `| ${((rightVotes / totalVotes) * 100).toFixed(1)}%\n${rightVotes.toLocaleString()}`;
     
     // Names
-    document.getElementById("left-name").textContent = CANDIDATES[left].short;
-document.getElementById("right-name").textContent = CANDIDATES[right].short;
+    const leftNameEl = document.getElementById("left-name");
+const rightNameEl = document.getElementById("right-name");
+
+leftNameEl.textContent = CANDIDATES[left].short;
+rightNameEl.textContent = CANDIDATES[right].short;
+
+leftNameEl.style.color = CANDIDATES[left].secondaryColor;
+rightNameEl.style.color = CANDIDATES[right].secondaryColor;
 
     // EVs
     document.getElementById("left-ev").textContent = nationalEV[left];
