@@ -234,17 +234,49 @@ function showPopup(stateCode, x, y) {
     .map(([id,v])=>({id,v}))
     .sort((a,b)=>b.v-a.v);
 
-  const top = rows[0].id;
-  const status = s.isTie ? "TIED" : "WON";
+  let headerRightName = "";
+let headerRightStatus = "";
+let headerStatusColor = "";
+
+if (state.isTie) {
+  // TIE CASE
+  headerRightName = rows[0].id
+    ? CANDIDATES[rows[0].id].short
+    : "";
+
+  headerRightStatus = "TIED";
+  headerStatusColor = "#8a8a8a"; // neutral grey
+} else {
+  // WINNER CASE
+  const winnerId = state.winner;
+
+  headerRightName = CANDIDATES[winnerId].short;
+  headerRightStatus = "WON";
+  headerStatusColor = CANDIDATES[winnerId].secondaryColor;
+}
   const total = rows.reduce((a,b)=>a+b.v,0);
 
   popup.innerHTML = `
-    <div class="popup-header">
-      <div>${stateCode}</div>
-      <div style="color:${CANDIDATES[top].secondaryColor}">${CANDIDATES[top].short}</div>
-      <div>${s.ev} EVs</div>
-      <div style="color:${CANDIDATES[top].secondaryColor}">${status}</div>
+  <div class="popup-header">
+    <div class="popup-header-left-top">
+      ${STATE_NAMES[stateCode]}
     </div>
+
+    <div class="popup-header-right-top"
+         style="color:${headerStatusColor}">
+      ${headerRightName}
+    </div>
+
+    <div class="popup-header-left-bottom">
+      ${state.ev} EVs
+    </div>
+
+    <div class="popup-header-right-bottom"
+         style="color:${headerStatusColor}">
+      ${headerRightStatus}
+    </div>
+  </div>
+`;
     ${rows.map((r,i)=>`
       <div class="popup-row">
         <div class="popup-photo" style="background:${CANDIDATES[r.id].secondaryColor}"></div>
