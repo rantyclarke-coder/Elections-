@@ -227,8 +227,8 @@ rightNameEl.style.color = CANDIDATES[right].secondaryColor;
         <div class="popup-text">
           <div class="popup-name">${cand.name}</div>
           <div class="popup-party" style="color:${cand.secondaryColor}">
-            ${cand.partyColor ? "" : ""}
-          </div>
+  ${cand.party}
+</div>
           <div class="popup-votes">${pct}% | ${row.votes.toLocaleString()}</div>
         </div>
         <div class="popup-indicator">${indicator}</div>
@@ -236,8 +236,8 @@ rightNameEl.style.color = CANDIDATES[right].secondaryColor;
     `;
   }).join("");
 
-  popup.style.left = x + "px";
-  popup.style.top = y + "px";
+  popup.style.left = Math.min(x, window.innerWidth - 280) + "px";
+popup.style.top = Math.min(y, window.innerHeight - 200) + "px";
   popup.classList.remove("hidden");
     }
 
