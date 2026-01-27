@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     TOTAL_EV: 538,
     WIN_EV: 270,
     VOTES_PER_EV: 500000
+    const TIE_COLOR = "#8a8a8a"; // ONLY for tied states
   };
 
   const CSV_URL =
@@ -271,7 +272,7 @@ popup.style.top = Math.min(y, window.innerHeight - 200) + "px";
      6. COLOR THE MAP
      ========================= */
   
-function colorMapSafe() {
+  function colorMapSafe() {
   const mapObject = document.getElementById("us-map");
   if (!mapObject) return;
 
@@ -287,46 +288,28 @@ function colorMapSafe() {
       if (!stateEl) return;
 
       const result = STATE_RESULTS[stateCode];
-if (!result) return;
 
-// UNCALLED or TIED → GREY
-if (!result.winner) {
-  stateEl.style.fill = "#666";
-  stateEl.style.stroke = "#000";
-  stateEl.style.strokeWidth = "0.5";
-  stateEl.style.cursor = result.isTie ? "pointer" : "default";
-  return;
-}
+      // CASE 1: TIED → GREY
+      if (result.isTie) {
+        stateEl.style.fill = TIE_COLOR;
+        return;
+      }
 
-// CALLED
-stateEl.style.fill = CANDIDATES[result.winner].primaryColor;
-stateEl.style.cursor = "pointer";
+      // CASE 2: CALLED → CANDIDATE COLOR
+      if (result.winner && CANDIDATES[result.winner]) {
+        stateEl.style.fill = CANDIDATES[result.winner].primaryColor;
+        return;
+      }
 
-stateEl.style.fill = CANDIDATES[winner].primaryColor;
-      stateEl.style.stroke = "#000";
-      stateEl.style.strokeWidth = "0.5";
-      stateEl.style.cursor = "pointer";
-      stateEl.addEventListener("click", e => {
-  e.stopPropagation();
-  const result = STATE_RESULTS[stateCode];
-if (!result) return;
-
-const totalVotes =
-  result.votes.C1 +
-  result.votes.C2 +
-  result.votes.C3;
-
-// Uncalled → no popup
-if (totalVotes === 0) return;
-
-showStatePopup(stateCode, e.pageX + 10, e.pageY + 10);
-});
+      // CASE 3: UNCALLED → DO NOTHING (SVG DEFAULT)
     });
   };
 
-  // run immediately if already loaded
   if (mapObject.contentDocument) {
     applyColors();
+  }
+
+  mapObject.addEventListener("load", applyColors);
   }
 
   // also bind load event (covers all cases)
