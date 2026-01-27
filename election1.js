@@ -291,18 +291,12 @@ popup.style.top = Math.min(y, window.innerHeight - 200) + "px";
       const result = STATE_RESULTS[stateCode];
 
       // CASE 1: TIED → GREY
-      if (result.isTie) {
-        stateEl.style.fill = TIE_COLOR;
-        return;
-      }
-
-      // CASE 2: CALLED → CANDIDATE COLOR
-      if (result.winner && CANDIDATES[result.winner]) {
-        stateEl.style.fill = CANDIDATES[result.winner].primaryColor;
-        return;
-      }
-
-       // CASE 3: UNCALLED → DO NOTHING (SVG DEFAULT)
+     if (result.isTie) {
+  stateEl.style.fill = TIE_COLOR;
+} else if (result.winner && CANDIDATES[result.winner]) {
+  stateEl.style.fill = CANDIDATES[result.winner].primaryColor;
+}
+// else: uncalled → do nothing (SVG default)
 
     // ✅ ADD THIS BLOCK (POPUP TRIGGER)
     stateEl.style.cursor = "pointer";
