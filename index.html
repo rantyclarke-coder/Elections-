@@ -182,6 +182,12 @@
   max-width: 100%;
   max-height: 100%;
     }
+    .map object {
+  width: 100%;
+  height: 100%;
+  transform: scale(1.12) translateX(-4%);
+  transform-origin: center;
+    }
 
     .stats {
       width:100%;
@@ -208,6 +214,7 @@
       color:#6f6f6f;
       font-size:13px;
     }
+  
 
     /* Bottom pills */
     .bottom {
@@ -318,7 +325,7 @@
 
     // example popular votes (replace with real numbers)
     let leftVotes = 72520517;
-    let rightVotes = 68020521;
+    let rightVotes = 58020521;
     let otherVotes = 0;
 
     function numberWithCommas(n){
