@@ -230,6 +230,30 @@ rightNameEl.style.color = CANDIDATES[right].secondaryColor;
     }))
     .sort((a, b) => b.votes - a.votes);
 
+    // ===== POPUP HEADER =====
+const topCandidate = rows[0].id;
+const headerStatus = state.isTie ? "TIED" : "WON";
+
+popup.innerHTML = `
+  <div class="popup-header">
+    <div class="popup-header-left-top">
+      ${stateCode}
+    </div>
+    <div class="popup-header-right-top"
+         style="color:${CANDIDATES[topCandidate].secondaryColor}">
+      ${CANDIDATES[topCandidate].short}
+    </div>
+
+    <div class="popup-header-left-bottom">
+      ${state.ev} EVs
+    </div>
+    <div class="popup-header-right-bottom"
+         style="color:${CANDIDATES[topCandidate].secondaryColor}">
+      ${headerStatus}
+    </div>
+  </div>
+`;
+    
   popup.innerHTML = rows.map((row, index) => {
     const cand = CANDIDATES[row.id];
     const stateTotalVotes =
