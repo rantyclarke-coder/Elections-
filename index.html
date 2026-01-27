@@ -365,7 +365,7 @@
 
       const totalPop = leftVotes + rightVotes + otherVotes;
       document.getElementById('left-stats').textContent = `${pct(leftVotes, totalPop)} | ${numberWithCommas(leftVotes)}`;
-      document.getElementById('right-stats').textContent = `${numberWithCommas(rightVotes)} | ${pct(rightVotes, totalPop)}`;
+      document.getElementById('right-stats').textContent = `| ${pct(rightVotes, totalPop)}\n${numberWithCommas(rightVotes)}`;
 
       const status = document.getElementById('status');
       if (leftEV >= WIN_EV && leftEV > rightEV) {
