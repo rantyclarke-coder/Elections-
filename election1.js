@@ -23,6 +23,7 @@ const CANDIDATES = {
     // Text
     name: "TIM WALZ",
     short: "WALZ",
+    party: "DEMOCRAT",
 
     // Colors
     primaryColor: "#1e3fd9",     // states + bar
@@ -37,6 +38,7 @@ const CANDIDATES = {
     id: "C2",
     name: "STELLA COUCH",
     short: "COUCH",
+    party: "REPUBLICAN",
     primaryColor: "#dc143c",
     secondaryColor: "#ffc1cc",
     partyColor: "#dc143c",
@@ -47,6 +49,7 @@ const CANDIDATES = {
     id: "C3",
     name: "BILL CLINTON",
     short: "BILL",
+    party: "NPPA",
     primaryColor: "#2ecc71",
     secondaryColor: "#b9f1cf",
     partyColor: "#2ecc71",
