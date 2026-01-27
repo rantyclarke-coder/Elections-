@@ -194,5 +194,24 @@ rightNameEl.style.color = CANDIDATES[right].secondaryColor;
       });
     });
   }
+function colorMap() {
+  const mapObject = document.getElementById("us-map");
+  if (!mapObject) return;
 
+  mapObject.addEventListener("load", () => {
+    const svg = mapObject.contentDocument;
+    if (!svg) return;
+
+    Object.keys(STATE_RESULTS).forEach(stateCode => {
+      const stateEl = svg.getElementById(stateCode);
+      if (!stateEl) return;
+
+      const winner = STATE_RESULTS[stateCode].winner;
+      stateEl.style.fill = CANDIDATES[winner].primaryColor;
+      stateEl.style.stroke = "#000";
+      stateEl.style.strokeWidth = "0.5";
+      stateEl.style.cursor = "pointer";
+    });
+  });
+}
 });
