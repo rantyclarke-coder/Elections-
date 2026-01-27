@@ -26,7 +26,7 @@ const CANDIDATES = {
 
     // Colors
     primaryColor: "#1e3fd9",     // states + bar
-    secondaryColor: "#9db0ff",   // name, accents, photo ring
+    secondaryColor: "#b8c6ff",   // name, accents, photo ring
     partyColor: "#1e3fd9",       // future use (party label)
 
     // Media (optional, safe if empty)
@@ -38,7 +38,7 @@ const CANDIDATES = {
     name: "STELLA COUCH",
     short: "COUCH",
     primaryColor: "#dc143c",
-    secondaryColor: "#ff9aa9",
+    secondaryColor: "#ffc1cc",
     partyColor: "#dc143c",
     photo: null
   },
@@ -48,7 +48,7 @@ const CANDIDATES = {
     name: "BILL CLINTON",
     short: "BILL",
     primaryColor: "#2ecc71",
-    secondaryColor: "#9be7b5",
+    secondaryColor: "#b9f1cf",
     partyColor: "#2ecc71",
     photo: null
   }
