@@ -225,82 +225,77 @@ function colorMap() {
 /* =========================
    7. POPUP
 ========================= */
-function showPopup(stateCode, x, y) {
+function showStatePopup(stateCode, x, y) {
   const popup = document.getElementById("state-popup");
-  const s = STATE_RESULTS[stateCode];
-  if (!s || (!s.isTie && !s.winner)) return;
+  const state = STATE_RESULTS[stateCode];
+  if (!state) return;
 
-  const rows = Object.entries(s.votes)
-    .map(([id,v])=>({id,v}))
-    .sort((a,b)=>b.v-a.v);
+  const rows = Object.keys(state.votes)
+    .map(cid => ({
+      id: cid,
+      votes: state.votes[cid]
+    }))
+    .sort((a, b) => b.votes - a.votes);
 
-  let headerRightName = "";
-let headerRightStatus = "";
-let headerStatusColor = "";
+  const topCandidate = rows[0].id;
+  const headerStatus = state.isTie ? "TIED" : "WON";
+  const headerColor = state.isTie
+    ? "#8a8a8a"
+    : CANDIDATES[topCandidate].secondaryColor;
 
-if (state.isTie) {
-  // TIE CASE
-  headerRightName = rows[0].id
-    ? CANDIDATES[rows[0].id].short
-    : "";
-
-  headerRightStatus = "TIED";
-  headerStatusColor = "#8a8a8a"; // neutral grey
-} else {
-  // WINNER CASE
-  const winnerId = state.winner;
-
-  headerRightName = CANDIDATES[winnerId].short;
-  headerRightStatus = "WON";
-  headerStatusColor = CANDIDATES[winnerId].secondaryColor;
-}
-  const total = rows.reduce((a,b)=>a+b.v,0);
-
-  popup.innerHTML = `
-  <div class="popup-header">
-    <div class="popup-header-left-top">
-      ${STATE_NAMES[stateCode]}
-    </div>
-
-    <div class="popup-header-right-top"
-         style="color:${headerStatusColor}">
-      ${headerRightName}
-    </div>
-
-    <div class="popup-header-left-bottom">
-      ${state.ev} EVs
-    </div>
-
-    <div class="popup-header-right-bottom"
-         style="color:${headerStatusColor}">
-      ${headerRightStatus}
-    </div>
-  </div>
-`;
-    ${rows.map((r,i)=>`
-      <div class="popup-row">
-        <div class="popup-photo" style="background:${CANDIDATES[r.id].secondaryColor}"></div>
-        <div class="popup-text">
-          <div class="popup-name">${CANDIDATES[r.id].name}</div>
-          <div class="popup-party" style="color:${CANDIDATES[r.id].secondaryColor}">
-            ${CANDIDATES[r.id].party}
-          </div>
-          <div class="popup-votes">
-            ${((r.v/total)*100).toFixed(1)}% | ${r.v.toLocaleString()}
-          </div>
-        </div>
-        <div class="popup-indicator">
-          ${s.isTie ? "—" : i===0 ? "▲" : "▼"}
-        </div>
+  const headerHTML = `
+    <div class="popup-header">
+      <div class="popup-header-left-top">${stateCode}</div>
+      <div class="popup-header-right-top" style="color:${headerColor}">
+        ${CANDIDATES[topCandidate].short}
       </div>
-    `).join("")}
+      <div class="popup-header-left-bottom">${state.ev} EVs</div>
+      <div class="popup-header-right-bottom" style="color:${headerColor}">
+        ${headerStatus}
+      </div>
+    </div>
   `;
 
-  popup.style.left = Math.min(x, window.innerWidth-280)+"px";
-  popup.style.top = Math.min(y, window.innerHeight-220)+"px";
+  const bodyHTML = rows.map((row, index) => {
+    const cand = CANDIDATES[row.id];
+    const total =
+      state.votes.C1 + state.votes.C2 + state.votes.C3;
+
+    const pct = total
+      ? ((row.votes / total) * 100).toFixed(1)
+      : "0.0";
+
+    let indicator = "";
+    if (!state.isTie) {
+      indicator = index === 0
+        ? `<span style="color:#2ecc71">▲</span>`
+        : `<span style="color:#dc143c">▼</span>`;
+    } else {
+      indicator = `<span style="color:#8a8a8a">—</span>`;
+    }
+
+    return `
+      <div class="popup-row">
+        <div class="popup-photo"
+             style="background:${cand.secondaryColor}"></div>
+        <div class="popup-text">
+          <div class="popup-name">${cand.name}</div>
+          <div class="popup-party" style="color:${cand.secondaryColor}">
+            ${cand.party}
+          </div>
+          <div class="popup-votes">${pct}% | ${row.votes.toLocaleString()}</div>
+        </div>
+        <div class="popup-indicator">${indicator}</div>
+      </div>
+    `;
+  }).join("");
+
+  popup.innerHTML = headerHTML + bodyHTML;
+
+  popup.style.left = Math.min(x, window.innerWidth - 280) + "px";
+  popup.style.top = Math.min(y, window.innerHeight - 200) + "px";
   popup.classList.remove("hidden");
 }
-
 /* =========================
    8. CLOSE POPUP
 ========================= */
