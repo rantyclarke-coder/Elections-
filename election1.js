@@ -1,66 +1,183 @@
-/* =========================================
-   ELECTION 1 — INPUT CONFIGURATION
-   ========================================= */
+document.addEventListener("DOMContentLoaded", () => {
 
-/* -------- Election Metadata -------- */
-const ELECTION = {
-  title: "US XXXX ELECTIONS",
-  subtitle: "LIVE ELECTION NIGHT"
-};
+  /* =========================
+     1. CONSTANTS (LOCKED)
+     ========================= */
+  const CONSTANTS = {
+    TOTAL_EV: 538,
+    WIN_EV: 270,
+    VOTES_PER_EV: 500000
+  };
 
-/* -------- Constants -------- */
-const CONSTANTS = {
-  TOTAL_EV: 538,
-  WIN_EV: 270,
-  VOTES_PER_EV: 500000
-};
+  const CSV_URL =
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsbbXqdgfMGosYWjOVNR-2UUw6bZzjGNtnfuuWpbBuTutk6Jm1lffgHUis8GNjfQLFZLkaSpJNlck2/pub?gid=0&single=true&output=csv";
 
-/* -------- Candidates --------
-   Order matters: C1, C2, C3
-*/
-const CANDIDATES = [
-  {
+
+  /* =========================
+     2. CANDIDATE CONFIG
+     ========================= */
+const CANDIDATES = {
+  C1: {
     id: "C1",
-    name: "Candidate One",
-    shortName: "C1",
-    primaryColor: "#1e3fd9",
-    secondaryColor: "#9fb3ff",
-    party: "Party One",
-    photo: "images/c1.jpg"
+
+    // Text
+    name: "CANDIDATE 1",
+    short: "C1",
+
+    // Colors
+    primaryColor: "#1e3fd9",     // states + bar
+    secondaryColor: "#9db0ff",   // name, accents, photo ring
+    partyColor: "#1e3fd9",       // future use (party label)
+
+    // Media (optional, safe if empty)
+    photo: null
   },
-  {
+
+  C2: {
     id: "C2",
-    name: "Candidate Two",
-    shortName: "C2",
+    name: "CANDIDATE 2",
+    short: "C2",
     primaryColor: "#dc143c",
-    secondaryColor: "#ff9aa5",
-    party: "Party Two",
-    photo: "images/c2.jpg"
+    secondaryColor: "#ff9aa9",
+    partyColor: "#dc143c",
+    photo: null
   },
-  {
+
+  C3: {
     id: "C3",
-    name: "Candidate Three",
-    shortName: "C3",
-    primaryColor: "#2e8b57",
-    secondaryColor: "#9fe0c3",
-    party: "Party Three",
-    photo: "images/c3.jpg"
+    name: "CANDIDATE 3",
+    short: "C3",
+    primaryColor: "#2ecc71",
+    secondaryColor: "#9be7b5",
+    partyColor: "#2ecc71",
+    photo: null
   }
-];
-
-/* -------- Live Data Source -------- */
-const DATA_SOURCE = {
-  csvUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsbbXqdgfMGosYWjOVNR-2UUw6bZzjGNtnfuuWpbBuTutk6Jm1lffgHUis8GNjfQLFZLkaSpJNlck2/pub?gid=0&single=true&output=csv",
-
-  // Column mapping (0-based after CSV parsing)
-  columns: {
-    state: 0,   // Column A
-    ev: 1,      // Column B
-    c1: 11,     // Column L
-    c2: 12,     // Column M
-    c3: 13      // Column N
-  },
-
-  startRowIndex: 2 // A3 = index 2
 };
-document.getElementById("left-ev").textContent = "TEST";
+
+
+  /* =========================
+     3. STORAGE
+     ========================= */
+  const STATE_RESULTS = {};
+
+  const nationalEV = { C1: 0, C2: 0, C3: 0 };
+  const nationalVotes = { C1: 0, C2: 0, C3: 0 };
+
+
+  /* =========================
+     4. LOAD GOOGLE SHEET
+     ========================= */
+  fetch(CSV_URL)
+    .then(res => res.text())
+    .then(csv => {
+      const rows = csv.trim().split("\n").map(r => r.split(","));
+
+      // Loop states (A3–A53)
+      for (let i = 2; i < rows.length; i++) {
+        const row = rows[i];
+
+        const stateCode = row[0]?.trim();   // A
+        const ev = Number(row[1]);          // B
+
+        const c1 = Number(row[11]);         // L
+        const c2 = Number(row[12]);         // M
+        const c3 = Number(row[13]);         // N
+
+        if (!stateCode || !ev || (c1 + c2 + c3) === 0) continue;
+
+        const totalPoints = c1 + c2 + c3;
+        const stateVotes = ev * CONSTANTS.VOTES_PER_EV;
+
+        const votes = {
+          C1: Math.round(stateVotes * (c1 / totalPoints)),
+          C2: Math.round(stateVotes * (c2 / totalPoints)),
+          C3: Math.round(stateVotes * (c3 / totalPoints))
+        };
+
+        // Determine winner
+        const winner = Object.keys(votes).reduce((a, b) =>
+          votes[a] > votes[b] ? a : b
+        );
+
+        // Store state result
+        STATE_RESULTS[stateCode] = {
+          ev,
+          votes,
+          winner
+        };
+
+        // National totals
+        nationalEV[winner] += ev;
+        nationalVotes.C1 += votes.C1;
+        nationalVotes.C2 += votes.C2;
+        nationalVotes.C3 += votes.C3;
+      }
+
+      renderResults();
+      colorMap();
+    });
+
+
+  /* =========================
+     5. RENDER TOP TWO
+     ========================= */
+  function renderResults() {
+
+    // Sort candidates by EV
+    const sorted = Object.keys(nationalEV)
+      .sort((a, b) => nationalEV[b] - nationalEV[a]);
+
+    const left = sorted[0];
+    const right = sorted[1];
+
+    // Names
+    document.getElementById("left-name").textContent = CANDIDATES[left].name;
+    document.getElementById("right-name").textContent = CANDIDATES[right].name;
+
+    // EVs
+    document.getElementById("left-ev").textContent = nationalEV[left];
+    document.getElementById("right-ev").textContent = nationalEV[right];
+
+    // Bar widths
+    document.getElementById("seg-left").style.width =
+      (nationalEV[left] / CONSTANTS.TOTAL_EV) * 100 + "%";
+
+    document.getElementById("seg-right").style.width =
+      (nationalEV[right] / CONSTANTS.TOTAL_EV) * 100 + "%";
+
+    document.getElementById("seg-unc").style.width =
+      (1 - (nationalEV[left] + nationalEV[right]) / CONSTANTS.TOTAL_EV) * 100 + "%";
+
+    // Status
+    const status = document.getElementById("status");
+    if (nationalEV[left] >= CONSTANTS.WIN_EV) {
+      status.textContent = "PROJECTED WINNER — " + CANDIDATES[left].name;
+    } else if (nationalEV[right] >= CONSTANTS.WIN_EV) {
+      status.textContent = "PROJECTED WINNER — " + CANDIDATES[right].name;
+    } else {
+      status.textContent = "LIVE ELECTION NIGHT";
+    }
+  }
+
+
+  /* =========================
+     6. COLOR THE MAP
+     ========================= */
+  function colorMap() {
+    const mapObj = document.getElementById("us-map");
+    if (!mapObj) return;
+
+    mapObj.addEventListener("load", () => {
+      const svg = mapObj.contentDocument;
+
+      Object.keys(STATE_RESULTS).forEach(state => {
+        const el = svg.getElementById(state);
+        if (!el) return;
+
+        const winner = STATE_RESULTS[state].winner;
+        el.style.fill = CANDIDATES[winner].color;
+      });
+    });
+  }
+
+});
