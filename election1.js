@@ -299,14 +299,22 @@ popup.style.top = Math.min(y, window.innerHeight - 200) + "px";
 // else: uncalled → do nothing (SVG default)
 
     // ✅ ADD THIS BLOCK (POPUP TRIGGER)
-    stateEl.style.cursor = "pointer";
-    stateEl.addEventListener("click", (e) => {
-      e.stopPropagation(); // prevents document click from closing popup
-      showStatePopup(
-        stateCode,
-        e.clientX,
-        e.clientY
-      );
+    // Only attach popup for CALLED or TIED states
+if (result.isTie || result.winner) {
+  stateEl.style.cursor = "pointer";
+
+  // remove any previous handler
+  stateEl.onclick = null;
+
+  stateEl.addEventListener("click", (e) => {
+    e.stopPropagation();
+    showStatePopup(stateCode, e.clientX, e.clientY);
+  });
+} else {
+  // Uncalled states → no popup, no pointer cursor
+  stateEl.style.cursor = "default";
+  stateEl.onclick = null;
+}
     });
   });
 };
