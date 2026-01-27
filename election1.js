@@ -199,11 +199,4 @@ function colorMapWhenReady() {
     });
   }
 
-  // CASE 1: SVG already loaded
-  if (mapObject.contentDocument) {
-    paint();
-  }
-
-  // CASE 2: SVG loads later
-  mapObject.addEventListener("load", paint);
-}
+  
