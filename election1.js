@@ -193,6 +193,50 @@ rightNameEl.style.color = CANDIDATES[right].secondaryColor;
       status.textContent = "LIVE ELECTION NIGHT";
     }
   }
+  function showStatePopup(stateCode, x, y) {
+  const popup = document.getElementById("state-popup");
+  if (!STATE_RESULTS[stateCode]) return;
+
+  const state = STATE_RESULTS[stateCode];
+
+  const rows = Object.keys(state.votes)
+    .map(cid => ({
+      id: cid,
+      votes: state.votes[cid]
+    }))
+    .sort((a, b) => b.votes - a.votes);
+
+  popup.innerHTML = rows.map((row, index) => {
+    const cand = CANDIDATES[row.id];
+    const pct = ((row.votes / (
+      nationalVotes.C1 +
+      nationalVotes.C2 +
+      nationalVotes.C3
+    )) * 100).toFixed(1);
+
+    const indicator = index === 0
+      ? `<span style="color:#2ecc71">▲</span>`
+      : `<span style="color:#dc143c">▼</span>`;
+
+    return `
+      <div class="popup-row">
+        <div class="popup-photo"></div>
+        <div class="popup-text">
+          <div class="popup-name">${cand.name}</div>
+          <div class="popup-party" style="color:${cand.secondaryColor}">
+            ${cand.partyColor ? "" : ""}
+          </div>
+          <div class="popup-votes">${pct}% | ${row.votes.toLocaleString()}</div>
+        </div>
+        <div class="popup-indicator">${indicator}</div>
+      </div>
+    `;
+  }).join("");
+
+  popup.style.left = x + "px";
+  popup.style.top = y + "px";
+  popup.classList.remove("hidden");
+    }
 
 
   /* =========================
@@ -221,6 +265,10 @@ function colorMapSafe() {
       stateEl.style.stroke = "#000";
       stateEl.style.strokeWidth = "0.5";
       stateEl.style.cursor = "pointer";
+      stateEl.addEventListener("click", e => {
+  e.stopPropagation();
+  showStatePopup(stateCode, e.pageX + 10, e.pageY + 10);
+});
     });
   };
 
@@ -232,4 +280,7 @@ function colorMapSafe() {
   // also bind load event (covers all cases)
   mapObject.addEventListener("load", applyColors);
 }
+  document.addEventListener("click", () => {
+  document.getElementById("state-popup").classList.add("hidden");
+});
   });
