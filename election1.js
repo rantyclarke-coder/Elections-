@@ -1,349 +1,221 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  /* =========================
-     1. CONSTANTS (LOCKED)
-     ========================= */
-  const CONSTANTS = {
-    TOTAL_EV: 538,
-    WIN_EV: 270,
-    VOTES_PER_EV: 500000
-    
-  };
-const TIE_COLOR = "#8a8a8a"; // ONLY for tied states
-  
-  const CSV_URL =
-    "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsbbXqdgfMGosYWjOVNR-2UUw6bZzjGNtnfuuWpbBuTutk6Jm1lffgHUis8GNjfQLFZLkaSpJNlck2/pub?gid=0&single=true&output=csv";
+/* =========================
+   1. CONSTANTS
+========================= */
+const CONSTANTS = {
+  TOTAL_EV: 538,
+  WIN_EV: 270,
+  VOTES_PER_EV: 500000
+};
+const TIE_COLOR = "#8a8a8a";
 
-
-  /* =========================
-     2. CANDIDATE CONFIG
-     ========================= */
+/* =========================
+   2. CANDIDATES
+========================= */
 const CANDIDATES = {
   C1: {
-    id: "C1",
-
-    // Text
     name: "TIM WALZ",
     short: "WALZ",
     party: "DEMOCRAT",
-
-    // Colors
-    primaryColor: "#1e3fd9",     // states + bar
-    secondaryColor: "#b8c6ff",   // name, accents, photo ring
-    partyColor: "#1e3fd9",       // future use (party label)
-
-    // Media (optional, safe if empty)
-    photo: null
+    primaryColor: "#1e3fd9",
+    secondaryColor: "#b8c6ff"
   },
-
   C2: {
-    id: "C2",
     name: "STELLA COUCH",
     short: "COUCH",
     party: "REPUBLICAN",
     primaryColor: "#dc143c",
-    secondaryColor: "#ffc1cc",
-    partyColor: "#dc143c",
-    photo: null
+    secondaryColor: "#ffc1cc"
   },
-
   C3: {
-    id: "C3",
     name: "BILL CLINTON",
     short: "BILL",
     party: "NPPA",
     primaryColor: "#2ecc71",
-    secondaryColor: "#b9f1cf",
-    partyColor: "#2ecc71",
-    photo: null
+    secondaryColor: "#b9f1cf"
   }
 };
 
+/* =========================
+   3. STORAGE
+========================= */
+const STATE_RESULTS = {};
+const nationalEV = { C1: 0, C2: 0, C3: 0 };
+const nationalVotes = { C1: 1, C2: 1, C3: 1 };
 
-  /* =========================
-     3. STORAGE
-     ========================= */
-  const STATE_RESULTS = {};
+/* =========================
+   4. LOAD GOOGLE SHEET
+========================= */
+fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vSsbbXqdgfMGosYWjOVNR-2UUw6bZzjGNtnfuuWpbBuTutk6Jm1lffgHUis8GNjfQLFZLkaSpJNlck2/pub?gid=0&single=true&output=csv")
+.then(r => r.text())
+.then(csv => {
+  const rows = csv.trim().split("\n").map(r => r.split(","));
 
-  const nationalEV = { C1: 0, C2: 0, C3: 0 };
-  const nationalVotes = { C1: 0, C2: 0, C3: 0 };
+  for (let i = 2; i < rows.length; i++) {
+    const state = rows[i][0]?.trim();
+    const ev = Number(rows[i][1]);
+    const c1 = Number(rows[i][11]);
+    const c2 = Number(rows[i][12]);
+    const c3 = Number(rows[i][13]);
 
-// ---- SAFE DEFAULTS (prevents dashes) ----
-nationalEV.C1 = 0;
-nationalEV.C2 = 0;
-nationalEV.C3 = 0;
+    if (!state || !ev) continue;
 
-nationalVotes.C1 = 1;
-nationalVotes.C2 = 1;
-nationalVotes.C3 = 1;
-  
-  /* =========================
-     4. LOAD GOOGLE SHEET
-     ========================= */
-  fetch(CSV_URL)
-    .then(res => res.text())
-    .then(csv => {
-      const rows = csv.trim().split("\n").map(r => r.split(","));
-
-      // Loop states (A3–A53)
-      for (let i = 2; i < rows.length; i++) {
-        const row = rows[i];
-
-        const stateCode = row[0]?.trim();   // A
-        const ev = Number(row[1]);          // B
-
-        const c1 = Number(row[11]);         // L
-        const c2 = Number(row[12]);         // M
-        const c3 = Number(row[13]);         // N
-
-        if ((c1 + c2 + c3) === 0) {
-  STATE_RESULTS[stateCode] = {
-    ev,
-    votes: { C1: 0, C2: 0, C3: 0 },
-    winner: null,
-    isTie: false
-  };
-  continue;
-        }
-
-        const totalPoints = c1 + c2 + c3;
-        const stateVotes = ev * CONSTANTS.VOTES_PER_EV;
-
-        const votes = {
-          C1: Math.round(stateVotes * (c1 / totalPoints)),
-          C2: Math.round(stateVotes * (c2 / totalPoints)),
-          C3: Math.round(stateVotes * (c3 / totalPoints))
-        };
-        
-        // Determine winner
-        // Determine winner (tie-safe)
-const sortedVotes = Object.entries(votes)
-  .sort((a, b) => b[1] - a[1]);
-
-let winner = null;
-let isTie = false;
-
-if (sortedVotes[0][1] === sortedVotes[1][1]) {
-  isTie = true;
-} else {
-  winner = sortedVotes[0][0];
-}
-
-        // Store state result
-        STATE_RESULTS[stateCode] = {
-  ev,
-  votes,
-  winner,   // null if uncalled OR tied
-  isTie     // true only for tied
-};
-
-        // National totals
-        nationalEV[winner] += ev;
-        nationalVotes.C1 += votes.C1;
-        nationalVotes.C2 += votes.C2;
-        nationalVotes.C3 += votes.C3;
-      }
-
-      renderResults();
-colorMapSafe();
-    })
-.catch(err => {
-    console.error("CSV load failed:", err);
-
-    // Fallback render so UI does not stay '-'
-    renderResults();
-  });
-
-  /* =========================
-     5. RENDER TOP TWO
-     ========================= */
-  function renderResults() {
-
-    // Sort candidates by EV
-    const sorted = Object.keys(nationalEV)
-      .sort((a, b) => nationalEV[b] - nationalEV[a]);
-
-    const left = sorted[0];
-    const right = sorted[1];
-    // ===== DYNAMIC BAR COLORS (CRITICAL FIX) =====
-const leftSeg = document.getElementById("seg-left");
-const rightSeg = document.getElementById("seg-right");
-
-leftSeg.style.backgroundColor = CANDIDATES[left].primaryColor;
-rightSeg.style.backgroundColor = CANDIDATES[right].primaryColor;
-    
-const leftVotes = nationalVotes[left];
-const rightVotes = nationalVotes[right];
-const totalVotes = nationalVotes.C1 + nationalVotes.C2 + nationalVotes.C3;
-
-    document.getElementById("left-stats").textContent =
-  `${((leftVotes / totalVotes) * 100).toFixed(1)}% | ${leftVotes.toLocaleString()}`;
-
-document.getElementById("right-stats").textContent =
-  `| ${((rightVotes / totalVotes) * 100).toFixed(1)}%\n${rightVotes.toLocaleString()}`;
-    
-    // Names
-    const leftNameEl = document.getElementById("left-name");
-const rightNameEl = document.getElementById("right-name");
-
-leftNameEl.textContent = CANDIDATES[left].short;
-rightNameEl.textContent = CANDIDATES[right].short;
-
-leftNameEl.style.color = CANDIDATES[left].secondaryColor;
-rightNameEl.style.color = CANDIDATES[right].secondaryColor;
-
-    // EVs
-    document.getElementById("left-ev").textContent = nationalEV[left];
-    document.getElementById("right-ev").textContent = nationalEV[right];
-
-    // Bar widths
-    document.getElementById("seg-left").style.width =
-      (nationalEV[left] / CONSTANTS.TOTAL_EV) * 100 + "%";
-
-    document.getElementById("seg-right").style.width =
-      (nationalEV[right] / CONSTANTS.TOTAL_EV) * 100 + "%";
-
-    document.getElementById("seg-unc").style.width =
-      (1 - (nationalEV[left] + nationalEV[right]) / CONSTANTS.TOTAL_EV) * 100 + "%";
-
-    // Status
-    const status = document.getElementById("status");
-    if (nationalEV[left] >= CONSTANTS.WIN_EV) {
-      status.textContent = "PROJECTED WINNER — " + CANDIDATES[left].name;
-    } else if (nationalEV[right] >= CONSTANTS.WIN_EV) {
-      status.textContent = "PROJECTED WINNER — " + CANDIDATES[right].name;
-    } else {
-      status.textContent = "LIVE ELECTION NIGHT";
+    if ((c1 + c2 + c3) === 0) {
+      STATE_RESULTS[state] = { ev, votes:{C1:0,C2:0,C3:0}, winner:null, isTie:false };
+      continue;
     }
+
+    const total = c1 + c2 + c3;
+    const votes = {
+      C1: Math.round(ev * CONSTANTS.VOTES_PER_EV * c1 / total),
+      C2: Math.round(ev * CONSTANTS.VOTES_PER_EV * c2 / total),
+      C3: Math.round(ev * CONSTANTS.VOTES_PER_EV * c3 / total)
+    };
+
+    const sorted = Object.entries(votes).sort((a,b)=>b[1]-a[1]);
+    const isTie = sorted[0][1] === sorted[1][1];
+    const winner = isTie ? null : sorted[0][0];
+
+    STATE_RESULTS[state] = { ev, votes, winner, isTie };
+
+    if (winner) nationalEV[winner] += ev;
+    nationalVotes.C1 += votes.C1;
+    nationalVotes.C2 += votes.C2;
+    nationalVotes.C3 += votes.C3;
   }
-  // STATE POPOUP
-  function showStatePopup(stateCode, x, y) {
-  const popup = document.getElementById("state-popup");
-  if (!STATE_RESULTS[stateCode]) return;
 
-  const state = STATE_RESULTS[stateCode];
+  renderTop();
+  colorMap();
+});
 
-  const rows = Object.keys(state.votes)
-    .map(cid => ({
-      id: cid,
-      votes: state.votes[cid]
-    }))
-    .sort((a, b) => b.votes - a.votes);
+/* =========================
+   5. TOP BAR
+========================= */
+function renderTop() {
+  const order = Object.keys(nationalEV).sort((a,b)=>nationalEV[b]-nationalEV[a]);
+  const left = order[0];
+  const right = order[1];
 
-    // ===== POPUP HEADER =====
-const topCandidate = rows[0].id;
-const headerStatus = state.isTie ? "TIED" : "WON";
+  document.getElementById("left-name").textContent = CANDIDATES[left].short;
+  document.getElementById("right-name").textContent = CANDIDATES[right].short;
 
-popup.innerHTML = `
-  <div class="popup-header">
-    <div class="popup-header-left-top">
-      ${stateCode}
-    </div>
-    <div class="popup-header-right-top"
-         style="color:${CANDIDATES[topCandidate].secondaryColor}">
-      ${CANDIDATES[topCandidate].short}
-    </div>
+  document.getElementById("left-name").style.color = CANDIDATES[left].secondaryColor;
+  document.getElementById("right-name").style.color = CANDIDATES[right].secondaryColor;
 
-    <div class="popup-header-left-bottom">
-      ${state.ev} EVs
-    </div>
-    <div class="popup-header-right-bottom"
-         style="color:${CANDIDATES[topCandidate].secondaryColor}">
-      ${headerStatus}
-    </div>
-  </div>
-`;
-    
-  popup.innerHTML = rows.map((row, index) => {
-    const cand = CANDIDATES[row.id];
-    const stateTotalVotes =
-  state.votes.C1 +
-  state.votes.C2 +
-  state.votes.C3;
+  document.getElementById("left-ev").textContent = nationalEV[left];
+  document.getElementById("right-ev").textContent = nationalEV[right];
 
-const pct = ((row.votes / stateTotalVotes) * 100).toFixed(1);
+  document.getElementById("seg-left").style.width =
+    (nationalEV[left]/CONSTANTS.TOTAL_EV)*100+"%";
+  document.getElementById("seg-right").style.width =
+    (nationalEV[right]/CONSTANTS.TOTAL_EV)*100+"%";
+  document.getElementById("seg-unc").style.width =
+    (1-(nationalEV[left]+nationalEV[right])/CONSTANTS.TOTAL_EV)*100+"%";
 
-    let indicator = "";
+  document.getElementById("seg-left").style.background = CANDIDATES[left].primaryColor;
+  document.getElementById("seg-right").style.background = CANDIDATES[right].primaryColor;
 
-if (state.isTie) {
-  indicator = `<span style="color:#aaa">—</span>`;
-} else {
-  indicator = index === 0
-    ? `<span style="color:#2ecc71">▲</span>`
-    : `<span style="color:#dc143c">▼</span>`;
+  const totalVotes = nationalVotes.C1 + nationalVotes.C2 + nationalVotes.C3;
+
+  document.getElementById("left-stats").textContent =
+    `${((nationalVotes[left]/totalVotes)*100).toFixed(1)}% | ${nationalVotes[left].toLocaleString()}`;
+  document.getElementById("right-stats").textContent =
+    `| ${((nationalVotes[right]/totalVotes)*100).toFixed(1)}%\n${nationalVotes[right].toLocaleString()}`;
+
+  document.getElementById("status").textContent =
+    nationalEV[left] >= CONSTANTS.WIN_EV
+    ? `PROJECTED WINNER — ${CANDIDATES[left].name}`
+    : "LIVE ELECTION NIGHT";
 }
-    return `
-      <div class="popup-row">
-        <div class="popup-photo"></div>
-        <div class="popup-text">
-          <div class="popup-name">${cand.name}</div>
-          <div class="popup-party" style="color:${cand.secondaryColor}">
-  ${cand.party}
-</div>
-          <div class="popup-votes">${pct}% | ${row.votes.toLocaleString()}</div>
-        </div>
-        <div class="popup-indicator">${indicator}</div>
-      </div>
-    `;
-  }).join("");
 
-  popup.style.left = Math.min(x, window.innerWidth - 280) + "px";
-popup.style.top = Math.min(y, window.innerHeight - 200) + "px";
-  popup.classList.remove("hidden");
-    }
+/* =========================
+   6. MAP + POPUPS
+========================= */
+function colorMap() {
+  const map = document.getElementById("us-map");
+  if (!map) return;
 
-
-  // k
-                          /* =========================
-   6. COLOR THE MAP + POPUP (STABLE)
-   ========================= */
-function colorMapSafe() {
-  const mapObject = document.getElementById("us-map");
-  if (!mapObject) return;
-
-  const applyColors = () => {
-    const svg = mapObject.contentDocument;
+  const apply = () => {
+    const svg = map.contentDocument;
     if (!svg) return;
 
-    Object.keys(STATE_RESULTS).forEach(stateCode => {
-      const stateEl =
-        svg.getElementById(stateCode) ||
-        svg.querySelector(`[id="${stateCode}"]`);
+    Object.keys(STATE_RESULTS).forEach(code => {
+      const el = svg.getElementById(code);
+      if (!el) return;
 
-      if (!stateEl) return;
+      const r = STATE_RESULTS[code];
+      el.onclick = null;
 
-      const result = STATE_RESULTS[stateCode];
+      if (r.isTie) el.style.fill = TIE_COLOR;
+      else if (r.winner) el.style.fill = CANDIDATES[r.winner].primaryColor;
 
-      /* ---- COLORING ---- */
-      if (result.isTie) {
-        stateEl.style.fill = TIE_COLOR;
-      } else if (result.winner && CANDIDATES[result.winner]) {
-        stateEl.style.fill = CANDIDATES[result.winner].primaryColor;
-      }
-      // uncalled → SVG default
-
-      /* ---- INTERACTIVITY ---- */
-      stateEl.onclick = null;
-
-      if (result.isTie || result.winner) {
-        stateEl.style.cursor = "pointer";
-
-        stateEl.addEventListener("click", (e) => {
+      if (r.isTie || r.winner) {
+        el.style.cursor = "pointer";
+        el.addEventListener("click", e => {
           e.stopPropagation();
-          showStatePopup(stateCode, e.clientX, e.clientY);
+          showPopup(code, e.clientX, e.clientY);
         });
-      } else {
-        stateEl.style.cursor = "default";
       }
     });
   };
 
-  // run if already loaded
-  if (mapObject.contentDocument) {
-    applyColors();
-  }
-
-  // run when SVG finishes loading
-  mapObject.addEventListener("load", applyColors);
+  if (map.contentDocument) apply();
+  map.addEventListener("load", apply);
 }
- });
+
+/* =========================
+   7. POPUP
+========================= */
+function showPopup(stateCode, x, y) {
+  const popup = document.getElementById("state-popup");
+  const s = STATE_RESULTS[stateCode];
+  if (!s || (!s.isTie && !s.winner)) return;
+
+  const rows = Object.entries(s.votes)
+    .map(([id,v])=>({id,v}))
+    .sort((a,b)=>b.v-a.v);
+
+  const top = rows[0].id;
+  const status = s.isTie ? "TIED" : "WON";
+  const total = rows.reduce((a,b)=>a+b.v,0);
+
+  popup.innerHTML = `
+    <div class="popup-header">
+      <div>${stateCode}</div>
+      <div style="color:${CANDIDATES[top].secondaryColor}">${CANDIDATES[top].short}</div>
+      <div>${s.ev} EVs</div>
+      <div style="color:${CANDIDATES[top].secondaryColor}">${status}</div>
+    </div>
+    ${rows.map((r,i)=>`
+      <div class="popup-row">
+        <div class="popup-photo" style="background:${CANDIDATES[r.id].secondaryColor}"></div>
+        <div class="popup-text">
+          <div class="popup-name">${CANDIDATES[r.id].name}</div>
+          <div class="popup-party" style="color:${CANDIDATES[r.id].secondaryColor}">
+            ${CANDIDATES[r.id].party}
+          </div>
+          <div class="popup-votes">
+            ${((r.v/total)*100).toFixed(1)}% | ${r.v.toLocaleString()}
+          </div>
+        </div>
+        <div class="popup-indicator">
+          ${s.isTie ? "—" : i===0 ? "▲" : "▼"}
+        </div>
+      </div>
+    `).join("")}
+  `;
+
+  popup.style.left = Math.min(x, window.innerWidth-280)+"px";
+  popup.style.top = Math.min(y, window.innerHeight-220)+"px";
+  popup.classList.remove("hidden");
+}
+
+/* =========================
+   8. CLOSE POPUP
+========================= */
+document.addEventListener("click", () => {
+  document.getElementById("state-popup").classList.add("hidden");
+});
+
+});
