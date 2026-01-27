@@ -94,7 +94,15 @@ nationalVotes.C3 = 1;
         const c2 = Number(row[12]);         // M
         const c3 = Number(row[13]);         // N
 
-        if (!stateCode || !ev || (c1 + c2 + c3) === 0) continue;
+        if ((c1 + c2 + c3) === 0) {
+  STATE_RESULTS[stateCode] = {
+    ev,
+    votes: { C1: 0, C2: 0, C3: 0 },
+    winner: null,
+    isTie: false
+  };
+  continue;
+        }
 
         const totalPoints = c1 + c2 + c3;
         const stateVotes = ev * CONSTANTS.VOTES_PER_EV;
@@ -111,17 +119,21 @@ const sortedVotes = Object.entries(votes)
   .sort((a, b) => b[1] - a[1]);
 
 let winner = null;
+let isTie = false;
 
-if (sortedVotes[0][1] > sortedVotes[1][1]) {
+if (sortedVotes[0][1] === sortedVotes[1][1]) {
+  isTie = true;
+} else {
   winner = sortedVotes[0][0];
 }
 
         // Store state result
         STATE_RESULTS[stateCode] = {
-          ev,
-          votes,
-          winner
-        };
+  ev,
+  votes,
+  winner,   // null if uncalled OR tied
+  isTie     // true only for tied
+};
 
         // National totals
         nationalEV[winner] += ev;
@@ -225,10 +237,15 @@ rightNameEl.style.color = CANDIDATES[right].secondaryColor;
 
 const pct = ((row.votes / stateTotalVotes) * 100).toFixed(1);
 
-    const indicator = index === 0
-      ? `<span style="color:#2ecc71">▲</span>`
-      : `<span style="color:#dc143c">▼</span>`;
+    let indicator = "";
 
+if (state.isTie) {
+  indicator = `<span style="color:#aaa">—</span>`;
+} else {
+  indicator = index === 0
+    ? `<span style="color:#2ecc71">▲</span>`
+    : `<span style="color:#dc143c">▼</span>`;
+}
     return `
       <div class="popup-row">
         <div class="popup-photo"></div>
@@ -269,12 +286,21 @@ function colorMapSafe() {
 
       if (!stateEl) return;
 
-      const winner = STATE_RESULTS[stateCode]?.winner;
+      const result = STATE_RESULTS[stateCode];
+if (!result) return;
 
-if (!winner) {
-  stateEl.style.fill = "#666"; // uncalled = grey
+// UNCALLED or TIED → GREY
+if (!result.winner) {
+  stateEl.style.fill = "#666";
+  stateEl.style.stroke = "#000";
+  stateEl.style.strokeWidth = "0.5";
+  stateEl.style.cursor = result.isTie ? "pointer" : "default";
   return;
 }
+
+// CALLED
+stateEl.style.fill = CANDIDATES[result.winner].primaryColor;
+stateEl.style.cursor = "pointer";
 
 stateEl.style.fill = CANDIDATES[winner].primaryColor;
       stateEl.style.stroke = "#000";
@@ -282,7 +308,18 @@ stateEl.style.fill = CANDIDATES[winner].primaryColor;
       stateEl.style.cursor = "pointer";
       stateEl.addEventListener("click", e => {
   e.stopPropagation();
-  showStatePopup(stateCode, e.pageX + 10, e.pageY + 10);
+  const result = STATE_RESULTS[stateCode];
+if (!result) return;
+
+const totalVotes =
+  result.votes.C1 +
+  result.votes.C2 +
+  result.votes.C3;
+
+// Uncalled → no popup
+if (totalVotes === 0) return;
+
+showStatePopup(stateCode, e.pageX + 10, e.pageY + 10);
 });
     });
   };
