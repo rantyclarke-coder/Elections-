@@ -442,10 +442,10 @@ fetch(CSV_URL)
       const stateVotes = ev * VOTES_PER_EV;
 
       const votes = [
-        stateVotes * (c1 / totalPoints),
-        stateVotes * (c2 / totalPoints),
-        stateVotes * (c3 / totalPoints)
-      ];
+  Math.round(stateVotes * (c1 / totalPoints)),
+  Math.round(stateVotes * (c2 / totalPoints)),
+  Math.round(stateVotes * (c3 / totalPoints))
+];
 
       // national popular vote
       leftVotes += votes[0];
