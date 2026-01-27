@@ -302,9 +302,20 @@ popup.style.top = Math.min(y, window.innerHeight - 200) + "px";
         return;
       }
 
-      // CASE 3: UNCALLED → DO NOTHING (SVG DEFAULT)
+       // CASE 3: UNCALLED → DO NOTHING (SVG DEFAULT)
+
+    // ✅ ADD THIS BLOCK (POPUP TRIGGER)
+    stateEl.style.cursor = "pointer";
+    stateEl.addEventListener("click", (e) => {
+      e.stopPropagation(); // prevents document click from closing popup
+      showStatePopup(
+        stateCode,
+        e.clientX,
+        e.clientY
+      );
     });
-  };
+  });
+};
 
   if (mapObject.contentDocument) {
     applyColors();
