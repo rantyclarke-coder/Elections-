@@ -3,426 +3,290 @@
 <head>
   <meta charset="utf-8" />
   <title>US XXXX ELECTIONS</title>
+
+  <!-- JS (already working) -->
   <script src="./election1.js?v=1" defer></script>
+
   <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-  <!-- Mobile-first fonts (falls back to system fonts) -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Playfair+Display:wght@700;900&family=League+Spartan:wght@600;700;800&display=swap" rel="stylesheet">
 
   <style>
     :root{
-      --bg: #000;
-      --muted: #bfbfbf;
-      --divider: #fff;
-      --blue: #1e3fd9;
-      --red: #dc143c;
-      --grey: #cfcfcf;
-      --pill: #4a4a4a;
-      --max-width: 420px; /* target mobile portrait */
+      --bg:#000;
+      --muted:#bfbfbf;
+      --divider:#fff;
+      --pill:#4a4a4a;
+      --max-width:420px;
     }
 
-    /* Safe area + base */
     html,body{
-      height:100%;
       margin:0;
-      background:var(--bg);
+      background:#000;
       color:#fff;
-      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
+      font-family:Inter,system-ui;
     }
-    .page {
-      box-sizing: border-box;
-      padding: calc(16px + env(safe-area-inset-top)) 14px calc(18px + env(safe-area-inset-bottom)) 14px;
+
+    .page{
       max-width:var(--max-width);
-      margin: 0 auto;
-      min-height:100vh;
-      display:flex;
-      flex-direction:column;
+      margin:0 auto;
+      padding:16px 14px 20px;
     }
 
-    /* Header */
-.title {
-  font-family: "League Spartan", system-ui, sans-serif;
-  font-weight: 800;
-  text-align: center;
-  letter-spacing: 2px;
-  font-size: 30px;
-  margin: 8px 0 8px;
-}
-    <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@600;700;800&display=swap" rel="stylesheet">
-
-    .top-divider {
-  width: 72px;            /* REQUIRED — otherwise invisible */
-  height: 3px;
-  background: #ffffff;
-  margin: 14px auto 10px;
-  opacity: 1;
-  border-radius: 2px;
-    }
-
-    .subtitle {
+    /* HEADER */
+    .title{
+      font-family:"League Spartan",sans-serif;
+      font-weight:800;
       text-align:center;
-      color:var(--muted);
+      letter-spacing:2px;
+      font-size:30px;
+    }
+
+    .top-divider{
+      width:72px;
+      height:3px;
+      background:#fff;
+      margin:12px auto;
+      border-radius:2px;
+    }
+
+    .subtitle{
+      text-align:center;
       font-size:12px;
       letter-spacing:3px;
-      margin-bottom:12px;
+      color:var(--muted);
+      margin-bottom:14px;
     }
 
-    /* Top row - candidate, bar, candidate */
-    .top-row {
+    /* TOP ROW */
+    .top-row{
       display:flex;
-      align-items:center;
       justify-content:space-between;
-      gap:10px;
-      width:100%;
-      box-sizing:border-box;
-    }
-
-    .candidate {
-      display:flex;
-      flex-direction:column;
       align-items:center;
-      gap:6px;
-      width:88px; /* tight to fit on mobile with center bar */
-      flex-shrink:0;
+      gap:10px;
     }
 
-    .photo {
+    .candidate{
+      width:88px;
+      text-align:center;
+    }
+
+    .photo{
       width:82px;
       height:96px;
       border-radius:50%;
-      overflow:hidden;
-      border:2px solid rgba(255,255,255,0.55);
+      border:2px solid rgba(255,255,255,.45);
       background:#222;
-      box-shadow:0 6px 14px rgba(0,0,0,0.6);
-    }
-    .photo img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      display:block;
+      margin:0 auto 6px;
     }
 
-    .name {
-      font-family: "Playfair Display", Georgia, serif;
+    .name{
+      font-family:"Playfair Display",serif;
       font-weight:900;
-      font-size:22px;
       letter-spacing:2px;
-      text-transform:uppercase;
-      line-height:1;
+      font-size:22px;
+    }
+
+    .ev{
+      font-size:40px;
+      font-weight:900;
+    }
+
+    /* BAR */
+    .center{
+      flex:1;
       text-align:center;
     }
 
-    .ev {
-  font-family: "Inter", system-ui, sans-serif;
-  font-size:40px;
-  font-weight:900;
-  line-height:1;
-  letter-spacing:-1px;
-    }
-
-    /* Center bar area */
-    .center {
-      flex:1;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:8px;
-      padding:0 6px;
-      box-sizing:border-box;
-      min-width:120px;
-    }
-
-    .bar-wrap {
-      width:100%;
-      max-width:220px;
+    .bar-wrap{
       position:relative;
-      box-sizing:border-box;
+      max-width:220px;
+      margin:0 auto;
     }
 
-    .bar {
-  display:flex;
-  width:100%;
-  height:28px;
-  border-radius:14px;
-  overflow:hidden;
-  background:#222;
-  border:2px solid rgba(255,255,255,0.05); /* thinner */
-  box-shadow: inset 0 -3px 6px rgba(0,0,0,0.6);
+    .bar{
+      display:flex;
+      height:28px;
+      border-radius:14px;
+      overflow:hidden;
+      background:#222;
+      border:2px solid rgba(255,255,255,.06);
     }
 
-    .seg {
-      height:100%;
-      transition: width 500ms ease;
-    }
-    .seg.left { background: var(--blue); }
-    .seg.unc { background: var(--grey); }
-    .seg.right { background: var(--red); }
+    .seg{height:100%;}
+    .seg.left{}
+    .seg.unc{background:#cfcfcf;}
+    .seg.right{}
 
-    /* 270 marker */
-    .marker {
-  position:absolute;
-  top:-6px;
-  left:50%;
-  transform:translateX(-50%);
-  width:1px;
-  height:38px; /* slightly taller than bar */
-  background:#fff;
-  border-radius:2px;
-    }
-    .marker-label {
-  position:absolute;
-  top:-24px;   /* ABOVE the bar */
-  left:50%;
-  transform:translateX(-50%);
-  font-size:10px;
-  color:var(--muted);
-  font-weight:700;
-  white-space:nowrap;
-    }
-    .map object {
-  width: 100%;
-  height: 100%;
-  max-width: 100%;
-  max-height: 100%;
-    }
-    .map-inner {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-    }
-    .map-inner object {
-  width: 100%;
-  height: 100%;
-  transform: scale(1.12) translateX(-4%);
-  transform-origin: center;
+    .marker{
+      position:absolute;
+      top:-6px;
+      left:50%;
+      width:1px;
+      height:38px;
+      background:#fff;
     }
 
-    .stats {
-  width:100%;
-  max-width:260px;
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-}
+    .marker-label{
+      position:absolute;
+      top:-22px;
+      left:50%;
+      transform:translateX(-50%);
+      font-size:10px;
+      color:var(--muted);
+    }
 
-#left-stats {
-  text-align:left;
-}
+    .stats{
+      display:flex;
+      justify-content:space-between;
+      font-size:11px;
+      margin-top:6px;
+    }
 
-#right-stats {
-  text-align:right;
-  white-space:pre-line;
-}
-    #left-stats,
-#right-stats {
-  font-size: 11px;      /* smaller, broadcast-style */
-  line-height: 1.25;
-  font-weight: 600;
-}
+    #right-stats{white-space:pre-line;text-align:right;}
 
-    /* Map placeholder */
-    .map {
+    /* MAP */
+    .map{
       margin-top:18px;
-      width:100%;
       height:44vh;
       background:#111;
       border:1px solid #333;
       border-radius:6px;
-      box-shadow:0 8px 30px rgba(0,0,0,0.6);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      color:#6f6f6f;
-      font-size:13px;
     }
 
-    .state-popup {
-  position: absolute;
-  background: #000;
-  border: 1px solid rgba(255,255,255,0.6);
-  border-radius: 6px;
-  padding: 8px;
-  width: 260px;
-  z-index: 999;
-}
+    .map-inner{
+      width:100%;
+      height:100%;
+      overflow:hidden;
+    }
 
-.state-popup.hidden {
-  display: none;
-}
+    .map-inner object{
+      width:100%;
+      height:100%;
+      transform:scale(1.12) translateX(-4%);
+    }
 
-.popup-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px;
-  border-bottom: 1px solid rgba(255,255,255,0.15);
-}
+    /* POPUP */
+    .state-popup{
+      position:absolute;
+      background:#000;
+      border:1px solid rgba(255,255,255,.6);
+      border-radius:6px;
+      padding:8px;
+      width:260px;
+      z-index:999;
+    }
 
-.popup-row:last-child {
-  border-bottom: none;
-}
+    .state-popup.hidden{display:none;}
 
-.popup-photo {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 1px solid #fff;
-  background: #222;
-  flex-shrink: 0;
-}
+    .popup-header{
+      display:grid;
+      grid-template-columns:1fr auto;
+      row-gap:2px;
+      margin-bottom:8px;
+      font-size:12px;
+      font-weight:700;
+    }
 
-.popup-text {
-  flex: 1;
-}
+    .popup-header-left-top{color:#fff;}
+    .popup-header-left-bottom{font-size:11px;color:#bfbfbf;}
+    .popup-header-right-top{text-align:right;}
+    .popup-header-right-bottom{text-align:right;}
 
-.popup-name {
-  font-size: 13px;
-  font-weight: 700;
-  color: #fff;
-}
-
-.popup-party {
-  font-size: 11px;
-  font-weight: 600;
-}
-
-.popup-votes {
-  font-size: 11px;
-  color: #ccc;
-}
-
-.popup-indicator {
-  font-size: 14px;
-  font-weight: 900;
-}
-    .popup-header {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  row-gap: 2px;
-  margin-bottom: 8px;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.popup-header-left-top {
-  color: #fff;
-}
-
-.popup-header-left-bottom {
-  color: #bfbfbf;
-  font-size: 11px;
-}
-
-.popup-header-right-top {
-  text-align: right;
-}
-
-.popup-header-right-bottom {
-  text-align: right;
-}
-
-    /* Bottom pills */
-    .bottom {
+    .popup-row{
       display:flex;
-      gap:12px;
+      gap:10px;
+      padding:8px 0;
+      border-bottom:1px solid rgba(255,255,255,.15);
+    }
+
+    .popup-row:last-child{border-bottom:none;}
+
+    .popup-photo{
+      width:32px;
+      height:32px;
+      border-radius:50%;
+      border:1px solid #fff;
+    }
+
+    .popup-name{font-size:13px;font-weight:700;}
+    .popup-party{font-size:11px;font-weight:600;}
+    .popup-votes{font-size:11px;color:#ccc;}
+    .popup-indicator{font-size:14px;font-weight:900;}
+
+    /* BOTTOM */
+    .bottom{
+      display:flex;
       justify-content:center;
+      gap:12px;
       margin-top:18px;
     }
 
-    .pill {
+    .pill{
       background:var(--pill);
-      color:#fff;
       border-radius:28px;
       padding:12px 22px;
       font-weight:700;
       letter-spacing:1px;
-      text-transform:uppercase;
-      border:1px solid rgba(255,255,255,0.03);
-      min-width:92px;
-      text-align:center;
       cursor:pointer;
-    }
-
-    /* Larger screens: maintain the portrait look but allow expansion */
-    @media (min-width: 600px) {
-      :root{ --max-width: 720px; }
-      .page{ padding:28px 28px 36px; }
-      .title{ font-size:40px; }
-      .photo{ width:128px;height:128px;border-width:6px; }
-      .candidate{ width:140px; }
-      .name{ font-size:34px; }
-      .ev{ font-size:64px; }
-      .bar-wrap{ max-width:520px; }
-      .bar{ height:34px; border-radius:18px; }
-      .marker{ top:-20px; height:76px; }
-      .chart-stats{ font-size:13px; }
-      .map{ height:55vh; }
     }
   </style>
 </head>
+
 <body>
-  <div class="page" role="main" aria-labelledby="site-title">
-    <h1 id="site-title" class="title">US XXXX ELECTIONS</h1>
-    <div class="top-divider" aria-hidden="true"></div>
-    <div class="subtitle" id="status">LIVE ELECTION NIGHT</div>
+<div class="page">
 
-    <div class="top-row" role="region" aria-label="Top candidates and electoral bar">
-      <!-- Left candidate -->
-      <div class="candidate" id="left-cand">
-        <div class="photo" aria-hidden="true">
-          <!-- image file omitted per your instruction; replace src to show photo -->
-          <img src="images/walz.jpg" alt="Left candidate photo" onerror="this.style.opacity=0.0" />
+  <h1 class="title">US XXXX ELECTIONS</h1>
+  <div class="top-divider"></div>
+  <div class="subtitle" id="status">LIVE ELECTION NIGHT</div>
+
+  <div class="top-row">
+
+    <div class="candidate">
+      <div class="photo"></div>
+      <div class="name" id="left-name">—</div>
+      <div class="ev" id="left-ev">—</div>
+    </div>
+
+    <div class="center">
+      <div class="bar-wrap">
+        <div class="bar">
+          <div class="seg left" id="seg-left"></div>
+          <div class="seg unc" id="seg-unc"></div>
+          <div class="seg right" id="seg-right"></div>
         </div>
-        <div class="name" id="left-name">—</div>
-        <div class="ev" id="left-ev">—</div>
+        <div class="marker"></div>
+        <div class="marker-label">270 to win</div>
       </div>
-
-      <!-- Center bar -->
-      <div class="center" role="figure" aria-label="Electoral vote progress">
-        <div class="bar-wrap">
-          <div class="bar" id="electoralBar">
-            <div class="seg left" id="seg-left" style="width:0%"></div>
-            <div class="seg unc" id="seg-unc" style="width:0%"></div>
-            <div class="seg right" id="seg-right" style="width:0%"></div>
-          </div>
-          <div class="marker" id="marker" aria-hidden="true"></div>
-          <div class="marker-label" aria-hidden="true">270 to win</div>
-        </div>
-
-        <div class="stats" aria-hidden="true">
-          <div id="left-stats">—</div>
-<div id="right-stats">—</div>
-        </div>
-      </div>
-
-      <!-- Right candidate -->
-      <div class="candidate" id="right-cand">
-        <div class="photo" aria-hidden="true">
-          <img src="images/couch.jpg" alt="Right candidate photo" onerror="this.style.opacity=0.0" />
-        </div>
-        <div class="name" id="right-name">—</div>
-        <div class="ev" id="right-ev">—</div>
+      <div class="stats">
+        <div id="left-stats">—</div>
+        <div id="right-stats">—</div>
       </div>
     </div>
 
-    <!-- Map placeholder -->
-    <div class="map" id="map">
-  <div class="map-inner">
-    <object id="us-map" data="us.svg" type="image/svg+xml"></object>
+    <div class="candidate">
+      <div class="photo"></div>
+      <div class="name" id="right-name">—</div>
+      <div class="ev" id="right-ev">—</div>
+    </div>
+
   </div>
-    </div>
 
-    <div id="state-popup" class="state-popup hidden"></div>
-
-    <!-- Bottom pills -->
-    <div class="bottom" role="navigation" aria-label="Switch races">
-      <button class="pill" id="pill-house">House</button>
-      <button class="pill" id="pill-senate">Senate</button>
-      <button class="pill" id="pill-governor">Governor</button>
+  <div class="map">
+    <div class="map-inner">
+      <object id="us-map" data="us.svg" type="image/svg+xml"></object>
     </div>
   </div>
 
+  <div id="state-popup" class="state-popup hidden"></div>
+
+  <div class="bottom">
+    <div class="pill">House</div>
+    <div class="pill">Senate</div>
+    <div class="pill">Governor</div>
+  </div>
+
+</div>
 </body>
 </html>
