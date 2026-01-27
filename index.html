@@ -162,7 +162,7 @@
   left:50%;
   transform:translateX(-50%);
   width:2px;
-  height:38px; /* slightly taller than bar */
+  height:40px; /* slightly taller than bar */
   background:#fff;
   border-radius:2px;
     }
@@ -190,7 +190,7 @@
     .map-inner object {
   width: 100%;
   height: 100%;
-  transform: scale(1.22) translateX(-4%);
+  transform: scale(1.12) translateX(-4%);
   transform-origin: center;
     }
 
@@ -216,13 +216,6 @@
   line-height: 1.25;
   font-weight: 600;
 }
-    /* winner tick */
-    .winner-tick {
-  color: #2ecc71;
-  font-size: 0.85em;
-  margin-left: 6px;
-  vertical-align: middle;
-    }
 
     /* Map placeholder */
     .map {
@@ -388,24 +381,14 @@
       document.getElementById('right-stats').textContent = `| ${pct(rightVotes, totalPop)}\n${numberWithCommas(rightVotes)}`;
 
       const status = document.getElementById('status');
-const leftName = document.getElementById('left-name');
-const rightName = document.getElementById('right-name');
-
-// reset names every time (important)
-leftName.innerHTML = 'WALZ';
-rightName.innerHTML = 'COUCH';
-
-if (leftEV >= WIN_EV && leftEV > rightEV) {
-  status.textContent = 'PROJECTED WINNER — WALZ';
-  leftName.innerHTML = 'WALZ <span class="winner-tick">✓</span>';
-} 
-else if (rightEV >= WIN_EV && rightEV > leftEV) {
-  status.textContent = 'PROJECTED WINNER — COUCH';
-  rightName.innerHTML = 'COUCH <span class="winner-tick">✓</span>';
-} 
-else {
-  status.textContent = 'LIVE ELECTION NIGHT';
-}
+      if (leftEV >= WIN_EV && leftEV > rightEV) {
+        status.textContent = 'PROJECTED WINNER — WALZ';
+      } else if (rightEV >= WIN_EV && rightEV > leftEV) {
+        status.textContent = 'PROJECTED WINNER — COUCH';
+      } else {
+        status.textContent = 'LIVE ELECTION NIGHT';
+      }
+    }
 
     // initial render
     function render(){
