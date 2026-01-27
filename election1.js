@@ -114,7 +114,7 @@ const CANDIDATES = {
       }
 
       renderResults();
-      colorMap();
+colorMapSafe();
     });
 
 
