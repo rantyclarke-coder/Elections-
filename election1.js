@@ -190,38 +190,46 @@ document.querySelector("#right-cand .photo").style.background =
 /* =========================
    6. MAP + POPUPS
 ========================= */
-function colorMap() {
-  const map = document.getElementById("us-map");
-  if (!map) return;
+/* =========================
+   6. COLOR THE MAP (FIXED)
+   ========================= */
+function colorMapSafe() {
+  const mapObject = document.getElementById("us-map");
+  if (!mapObject) return;
 
-  const apply = () => {
-    const svg = map.contentDocument;
+  mapObject.addEventListener("load", () => {
+    const svg = mapObject.contentDocument;
     if (!svg) return;
 
-    Object.keys(STATE_RESULTS).forEach(code => {
-      const el = svg.getElementById(code);
-      if (!el) return;
+    Object.keys(STATE_RESULTS).forEach(stateCode => {
+      const stateEl = svg.getElementById(stateCode);
+      if (!stateEl) return;
 
-      const r = STATE_RESULTS[code];
-      el.onclick = null;
+      const result = STATE_RESULTS[stateCode];
 
-      if (r.isTie) el.style.fill = TIE_COLOR;
-      else if (r.winner) el.style.fill = CANDIDATES[r.winner].primaryColor;
+      // ---- COLOR ----
+      if (result.isTie) {
+        stateEl.style.fill = TIE_COLOR;
+      } else if (result.winner && CANDIDATES[result.winner]) {
+        stateEl.style.fill = CANDIDATES[result.winner].primaryColor;
+      }
+      // else → uncalled → SVG default
 
-      if (r.isTie || r.winner) {
-        el.style.cursor = "pointer";
-        el.addEventListener("click", e => {
+      // ---- CLICK / POPUP ----
+      stateEl.onclick = null;
+
+      if (result.isTie || result.winner) {
+        stateEl.style.cursor = "pointer";
+        stateEl.addEventListener("click", (e) => {
           e.stopPropagation();
-          showPopup(code, e.clientX, e.clientY);
+          showStatePopup(stateCode, e.clientX, e.clientY);
         });
+      } else {
+        stateEl.style.cursor = "default";
       }
     });
-  };
-
-  if (map.contentDocument) apply();
-  map.addEventListener("load", apply);
+  });
 }
-
 /* =========================
    7. POPUP
 ========================= */
