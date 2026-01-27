@@ -179,11 +179,11 @@ rightNameEl.style.color = CANDIDATES[right].secondaryColor;
      6. COLOR THE MAP
      ========================= */
   
-function colorMap() {
+function colorMapWhenReady() {
   const mapObject = document.getElementById("us-map");
   if (!mapObject) return;
 
-  mapObject.addEventListener("load", () => {
+  function paint() {
     const svg = mapObject.contentDocument;
     if (!svg) return;
 
@@ -197,5 +197,13 @@ function colorMap() {
       stateEl.style.strokeWidth = "0.5";
       stateEl.style.cursor = "pointer";
     });
-  });
+  }
+
+  // CASE 1: SVG already loaded
+  if (mapObject.contentDocument) {
+    paint();
+  }
+
+  // CASE 2: SVG loads later
+  mapObject.addEventListener("load", paint);
 }
