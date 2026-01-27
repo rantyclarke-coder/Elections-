@@ -212,3 +212,4 @@ function colorMapSafe() {
   // also bind load event (covers all cases)
   mapObject.addEventListener("load", applyColors);
 }
+  });
