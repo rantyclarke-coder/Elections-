@@ -123,7 +123,7 @@ nationalVotes.C3 = 1;
 
       renderResults();
 colorMapSafe();
-    });
+    })
 .catch(err => {
     console.error("CSV load failed:", err);
 
@@ -225,5 +225,4 @@ function colorMapSafe() {
   // also bind load event (covers all cases)
   mapObject.addEventListener("load", applyColors);
 }
-renderResults();
   });
