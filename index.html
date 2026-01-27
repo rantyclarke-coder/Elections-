@@ -178,14 +178,41 @@
     }
 
     .stats {
-      width:100%;
-      max-width:260px;
-      display:flex;
-      justify-content:space-between;
-      font-size:11px;
-      color:var(--muted);
-      font-weight:700;
-    }
+  width: 100%;
+  max-width: 260px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 4px;
+}
+
+.stats-left,
+.stats-right {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 48%;
+}
+
+.stats-left {
+  text-align: left;
+}
+
+.stats-right {
+  text-align: right;
+}
+
+.pct {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.votes {
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+}
 
     /* Map placeholder */
     .map {
@@ -272,9 +299,15 @@
         </div>
 
         <div class="stats" aria-hidden="true">
-          <div id="left-stats">52.6% | 72,520,517</div>
-          <div id="right-stats">68,020,521 | 49.2%</div>
-        </div>
+  <div class="stats-left">
+    <div class="pct">51.2% |</div>
+    <div class="votes">53,467,532</div>
+  </div>
+
+  <div class="stats-right">
+    <div class="pct">| 47.3%</div>
+    <div class="votes">51,644,346</div>
+  </div>
       </div>
 
       <!-- Right candidate -->
