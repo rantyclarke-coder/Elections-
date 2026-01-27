@@ -129,7 +129,16 @@ const CANDIDATES = {
 
     const left = sorted[0];
     const right = sorted[1];
+const leftVotes = nationalVotes[left];
+const rightVotes = nationalVotes[right];
+const totalVotes = nationalVotes.C1 + nationalVotes.C2 + nationalVotes.C3;
 
+    document.getElementById("left-stats").textContent =
+  `${((leftVotes / totalVotes) * 100).toFixed(1)}% | ${leftVotes.toLocaleString()}`;
+
+document.getElementById("right-stats").textContent =
+  `| ${((rightVotes / totalVotes) * 100).toFixed(1)}%\n${rightVotes.toLocaleString()}`;
+    
     // Names
     document.getElementById("left-name").textContent = CANDIDATES[left].short;
 document.getElementById("right-name").textContent = CANDIDATES[right].short;
