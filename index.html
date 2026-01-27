@@ -237,7 +237,67 @@
       color:#6f6f6f;
       font-size:13px;
     }
-  
+
+    .state-popup {
+  position: absolute;
+  background: #000;
+  border: 1px solid rgba(255,255,255,0.6);
+  border-radius: 6px;
+  padding: 8px;
+  width: 260px;
+  z-index: 999;
+}
+
+.state-popup.hidden {
+  display: none;
+}
+
+.popup-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+
+.popup-row:last-child {
+  border-bottom: none;
+}
+
+.popup-photo {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid #fff;
+  background: #222;
+  flex-shrink: 0;
+}
+
+.popup-text {
+  flex: 1;
+}
+
+.popup-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.popup-party {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.popup-votes {
+  font-size: 11px;
+  color: #ccc;
+}
+
+.popup-indicator {
+  font-size: 14px;
+  font-weight: 900;
+}
+    
 
     /* Bottom pills */
     .bottom {
@@ -329,6 +389,8 @@
     <object id="us-map" data="us.svg" type="image/svg+xml"></object>
   </div>
     </div>
+
+    <div id="state-popup" class="state-popup hidden"></div>
 
     <!-- Bottom pills -->
     <div class="bottom" role="navigation" aria-label="Switch races">
