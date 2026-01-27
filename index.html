@@ -464,8 +464,7 @@ fetch(CSV_URL)
       }
     }
 
-    undecidedEV = Math.max(0, TOTAL_EV - leftEV - rightEV);
-
+    undecidedEV = Math.max(0, CONSTANTS.TOTAL_EV - leftEV - rightEV);
     // update UI
     render();
   })
