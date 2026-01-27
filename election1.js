@@ -178,22 +178,7 @@ rightNameEl.style.color = CANDIDATES[right].secondaryColor;
   /* =========================
      6. COLOR THE MAP
      ========================= */
-  function colorMap() {
-    const mapObj = document.getElementById("us-map");
-    if (!mapObj) return;
-
-    mapObj.addEventListener("load", () => {
-      const svg = mapObj.contentDocument;
-
-      Object.keys(STATE_RESULTS).forEach(state => {
-        const el = svg.getElementById(state);
-        if (!el) return;
-
-        const winner = STATE_RESULTS[state].winner;
-        el.style.fill = CANDIDATES[winner].color;
-      });
-    });
-  }
+  
 function colorMap() {
   const mapObject = document.getElementById("us-map");
   if (!mapObject) return;
@@ -214,4 +199,3 @@ function colorMap() {
     });
   });
 }
-});
