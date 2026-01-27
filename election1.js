@@ -142,6 +142,13 @@ colorMapSafe();
 
     const left = sorted[0];
     const right = sorted[1];
+    // ===== DYNAMIC BAR COLORS (CRITICAL FIX) =====
+const leftSeg = document.getElementById("seg-left");
+const rightSeg = document.getElementById("seg-right");
+
+leftSeg.style.backgroundColor = CANDIDATES[left].primaryColor;
+rightSeg.style.backgroundColor = CANDIDATES[right].primaryColor;
+    
 const leftVotes = nationalVotes[left];
 const rightVotes = nationalVotes[right];
 const totalVotes = nationalVotes.C1 + nationalVotes.C2 + nationalVotes.C3;
