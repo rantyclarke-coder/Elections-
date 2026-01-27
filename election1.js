@@ -269,11 +269,11 @@ popup.style.top = Math.min(y, window.innerHeight - 200) + "px";
     }
 
 
-  /* =========================
-     6. COLOR THE MAP
-     ========================= */
-  
-  function colorMapSafe() {
+  // k
+                          /* =========================
+   6. COLOR THE MAP + POPUP (STABLE)
+   ========================= */
+function colorMapSafe() {
   const mapObject = document.getElementById("us-map");
   if (!mapObject) return;
 
@@ -290,44 +290,35 @@ popup.style.top = Math.min(y, window.innerHeight - 200) + "px";
 
       const result = STATE_RESULTS[stateCode];
 
-      // CASE 1: TIED → GREY
-     if (result.isTie) {
-  stateEl.style.fill = TIE_COLOR;
-} else if (result.winner && CANDIDATES[result.winner]) {
-  stateEl.style.fill = CANDIDATES[result.winner].primaryColor;
-}
-// else: uncalled → do nothing (SVG default)
+      /* ---- COLORING ---- */
+      if (result.isTie) {
+        stateEl.style.fill = TIE_COLOR;
+      } else if (result.winner && CANDIDATES[result.winner]) {
+        stateEl.style.fill = CANDIDATES[result.winner].primaryColor;
+      }
+      // uncalled → SVG default
 
-    // ✅ ADD THIS BLOCK (POPUP TRIGGER)
-    // Only attach popup for CALLED or TIED states
-if (result.isTie || result.winner) {
-  stateEl.style.cursor = "pointer";
+      /* ---- INTERACTIVITY ---- */
+      stateEl.onclick = null;
 
-  // remove any previous handler
-  stateEl.onclick = null;
+      if (result.isTie || result.winner) {
+        stateEl.style.cursor = "pointer";
 
-  stateEl.addEventListener("click", (e) => {
-    e.stopPropagation();
-    showStatePopup(stateCode, e.clientX, e.clientY);
-  });
-} else {
-  // Uncalled states → no popup, no pointer cursor
-  stateEl.style.cursor = "default";
-  stateEl.onclick = null;
-}
+        stateEl.addEventListener("click", (e) => {
+          e.stopPropagation();
+          showStatePopup(stateCode, e.clientX, e.clientY);
+        });
+      } else {
+        stateEl.style.cursor = "default";
+      }
     });
-  });
-};
+  };
 
+  // run if already loaded
   if (mapObject.contentDocument) {
     applyColors();
   }
 
+  // run when SVG finishes loading
   mapObject.addEventListener("load", applyColors);
-  }
-
-
-  document.addEventListener("click", () => {
-  document.getElementById("state-popup").classList.add("hidden");
-});
-  });
+}
