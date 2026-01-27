@@ -322,3 +322,4 @@ function colorMapSafe() {
   // run when SVG finishes loading
   mapObject.addEventListener("load", applyColors);
 }
+ });
