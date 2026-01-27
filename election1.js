@@ -127,6 +127,11 @@ function renderTop() {
     nationalEV[left] >= CONSTANTS.WIN_EV
     ? `PROJECTED WINNER — ${CANDIDATES[left].name}`
     : "LIVE ELECTION NIGHT";
+   document.querySelector("#left-cand .photo").style.background =
+  CANDIDATES[left].secondaryColor;
+
+document.querySelector("#right-cand .photo").style.background =
+  CANDIDATES[right].secondaryColor;
 }
 
 /* =========================
