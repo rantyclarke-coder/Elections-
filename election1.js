@@ -63,7 +63,15 @@ const CANDIDATES = {
   const nationalEV = { C1: 0, C2: 0, C3: 0 };
   const nationalVotes = { C1: 0, C2: 0, C3: 0 };
 
+// ---- SAFE DEFAULTS (prevents dashes) ----
+nationalEV.C1 = 0;
+nationalEV.C2 = 0;
+nationalEV.C3 = 0;
 
+nationalVotes.C1 = 1;
+nationalVotes.C2 = 1;
+nationalVotes.C3 = 1;
+  
   /* =========================
      4. LOAD GOOGLE SHEET
      ========================= */
@@ -217,4 +225,5 @@ function colorMapSafe() {
   // also bind load event (covers all cases)
   mapObject.addEventListener("load", applyColors);
 }
+renderResults();
   });
