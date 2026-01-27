@@ -131,8 +131,8 @@ const CANDIDATES = {
     const right = sorted[1];
 
     // Names
-    document.getElementById("left-name").textContent = CANDIDATES[left].name;
-    document.getElementById("right-name").textContent = CANDIDATES[right].name;
+    document.getElementById("left-name").textContent = CANDIDATES[left].short;
+document.getElementById("right-name").textContent = CANDIDATES[right].short;
 
     // EVs
     document.getElementById("left-ev").textContent = nationalEV[left];
