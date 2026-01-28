@@ -268,7 +268,9 @@ function showPopup(code, x, y) {
       const indColor = s.isTie ? TIE_COLOR : (i===0?"#2ecc71":"#dc143c");
       return `
         <div class="popup-row">
-          <div class="popup-photo" style="background:${c.secondaryColor}"></div>
+          <div class="popup-photo" style="background:${c.secondaryColor}">
+  ${c.photo ? `<img src="${c.photo}" alt="${c.name}">` : ``}
+</div>
           <div class="popup-text">
             <div class="popup-name">${c.name}</div>
             <div class="popup-party" style="color:${c.secondaryColor}">${c.party}</div>
