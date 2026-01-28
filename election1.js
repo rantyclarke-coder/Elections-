@@ -39,7 +39,7 @@ const CANDIDATES = {
     party: "DEMOCRAT",
     primaryColor: "#1e3fd9",
     secondaryColor: "#b8c6ff",
-    photo: "images/walz.jpg"
+    photo: "images/walz.png"
   },
 
   C2: {
@@ -48,7 +48,7 @@ const CANDIDATES = {
     party: "REPUBLICAN",
     primaryColor: "#dc143c",
     secondaryColor: "#ffc1cc",
-    photo: "images/couch.jpg"
+    photo: "images/couch.png"
   },
 
   C3: {
@@ -57,7 +57,7 @@ const CANDIDATES = {
     party: "NPPA",
     primaryColor: "#2ecc71",
     secondaryColor: "#b9f1cf",
-    photo: "images/bill.jpg"
+    photo: "images/bill.png"
   }
 };
 
