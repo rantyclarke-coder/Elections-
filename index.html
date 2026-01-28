@@ -214,11 +214,21 @@
     .popup-row:last-child{border-bottom:none;}
 
     .popup-photo{
-      width:32px;
-      height:32px;
-      border-radius:50%;
-      border:1px solid #fff;
-    }
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  border:1px solid #fff;
+  background:#222;        /* secondary color still visible if no image */
+  overflow:hidden;        /* 🔑 THIS MAKES IT A CIRCLE */
+  flex-shrink:0;
+}
+
+.popup-photo img{
+  width:100%;
+  height:100%;
+  object-fit:cover;       /* perfect face crop */
+  display:block;
+}
 
     .popup-name{font-size:13px;font-weight:700;}
     .popup-party{font-size:11px;font-weight:600;}
