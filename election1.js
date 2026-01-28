@@ -52,8 +52,8 @@ const CANDIDATES = {
   },
 
   C3: {
-    name: "BILL CLINTON",
-    short: "BILL",
+    name: "JUSTIN MOORE",
+    short: "MOORE",
     party: "NPPA",
     primaryColor: "#2ecc71",
     secondaryColor: "#b9f1cf",
