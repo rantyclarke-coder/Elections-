@@ -8,7 +8,8 @@ const CONSTANTS = {
   WIN_EV: 270,
   VOTES_PER_EV: 500000
 };
-
+// Popup visibility control
+const SHOW_C3_IN_POPUP = false;
 const TIE_COLOR = "#8a8a8a";
 
 /* =========================
@@ -244,7 +245,12 @@ function showPopup(code, x, y) {
   const s = STATE_RESULTS[code];
   if (!s) return;
 
-  const rows = Object.entries(s.votes).sort((a,b)=>b[1]-a[1]);
+  const rows = Object.entries(s.votes)
+  .filter(([cid]) => {
+    if (cid === "C3" && !SHOW_C3_IN_POPUP) return false;
+    return true;
+  })
+  .sort((a,b)=>b[1]-a[1]);
   const top = rows[0][0];
   const status = s.isTie ? "TIED" : "WON";
   const statusColor = s.isTie ? TIE_COLOR : CANDIDATES[top].secondaryColor;
