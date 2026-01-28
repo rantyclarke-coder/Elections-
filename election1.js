@@ -143,14 +143,14 @@ function colorMap() {
 
       const r = STATE_RESULTS[code];
 
-      // COLOR
+      // ---- COLOR ----
       if (r.isTie) {
         el.style.fill = TIE_COLOR;
       } else if (r.winner) {
         el.style.fill = CANDIDATES[r.winner].primaryColor;
       }
 
-      // CLICK
+      // ---- POPUP ----
       el.onclick = null;
       if (r.isTie || r.winner) {
         el.style.cursor = "pointer";
@@ -164,14 +164,13 @@ function colorMap() {
     });
   };
 
-  // ✅ RUN IMMEDIATELY if already loaded
+  // 🔥 THIS IS THE MISSING PART
   if (map.contentDocument) {
-    apply();
+    apply();           // <-- RUN IMMEDIATELY
   }
 
-  // ✅ ALSO run on load (covers cold loads)
   map.addEventListener("load", apply);
-    }
+}
 
 /* =========================
    7. POPUP
