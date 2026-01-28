@@ -72,13 +72,22 @@
       text-align:center;
     }
 
-    .photo{
-      width:82px;
-      height:96px;
-      border-radius:50%;
-      border:2px solid rgba(255,255,255,.45);
-      background:#222;
-      margin:0 auto 6px;
+    .photo {
+  width: 86px;
+  height: 94px;                /* 👈 taller than wide = oval */
+  border-radius: 50%;           /* keeps ellipse shape */
+
+  border: 2px solid rgba(255,255,255,.45);
+
+  /* background layer (secondary color from JS) */
+  background-color: #222;
+
+  /* image layer */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  margin: 0 auto 6px;
     }
 
     .name{
