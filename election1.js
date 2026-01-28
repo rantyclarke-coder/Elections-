@@ -113,41 +113,82 @@ fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vSsbbXqdgfMGosYWjOVNR-2UU
 /* =========================
    5. TOP BAR (SAFE)
 ========================= */
-function renderTop() {
+
+  function renderTop() {
   const order = Object.keys(nationalEV).sort((a,b)=>nationalEV[b]-nationalEV[a]);
   const left = order[0];
   const right = order[1];
 
+  // ---- NAMES ----
   document.getElementById("left-name").textContent = CANDIDATES[left].short;
   document.getElementById("right-name").textContent = CANDIDATES[right].short;
 
   document.getElementById("left-name").style.color = CANDIDATES[left].secondaryColor;
   document.getElementById("right-name").style.color = CANDIDATES[right].secondaryColor;
 
+  // ---- EVs ----
   document.getElementById("left-ev").textContent = nationalEV[left];
   document.getElementById("right-ev").textContent = nationalEV[right];
 
-  document.getElementById("seg-left").style.width = (nationalEV[left]/538*100)+"%";
-  document.getElementById("seg-right").style.width = (nationalEV[right]/538*100)+"%";
+  // ---- BAR WIDTHS ----
+  document.getElementById("seg-left").style.width =
+    (nationalEV[left] / 538 * 100) + "%";
+  document.getElementById("seg-right").style.width =
+    (nationalEV[right] / 538 * 100) + "%";
   document.getElementById("seg-unc").style.width =
-    (1-(nationalEV[left]+nationalEV[right])/538)*100+"%";
+    (1 - (nationalEV[left] + nationalEV[right]) / 538) * 100 + "%";
 
-  document.getElementById("seg-left").style.background = CANDIDATES[left].primaryColor;
-  document.getElementById("seg-right").style.background = CANDIDATES[right].primaryColor;
+  // ---- BAR COLORS ----
+  document.getElementById("seg-left").style.background =
+    CANDIDATES[left].primaryColor;
+  document.getElementById("seg-right").style.background =
+    CANDIDATES[right].primaryColor;
 
+  // ---- STATS ----
   const totalVotes = nationalVotes.C1 + nationalVotes.C2 + nationalVotes.C3;
 
   document.getElementById("left-stats").textContent =
-    `${((nationalVotes[left]/totalVotes)*100).toFixed(1)}% |\n${nationalVotes[left].toLocaleString()}`;
+    `${((nationalVotes[left] / totalVotes) * 100).toFixed(1)}% |\n${nationalVotes[left].toLocaleString()}`;
 
   document.getElementById("right-stats").textContent =
-    `| ${((nationalVotes[right]/totalVotes)*100).toFixed(1)}%\n${nationalVotes[right].toLocaleString()}`;
+    `| ${((nationalVotes[right] / totalVotes) * 100).toFixed(1)}%\n${nationalVotes[right].toLocaleString()}`;
 
+  // ---- STATUS ----
   document.getElementById("status").textContent =
     nationalEV[left] >= 270
       ? `PROJECTED WINNER — ${CANDIDATES[left].name}`
       : "LIVE ELECTION NIGHT";
-}
+
+  // ==================================================
+  // 🟢 HEADER PHOTOS (THIS WAS MISSING)
+  // ==================================================
+
+  ["left","right"].forEach((side, i) => {
+    const cid = i === 0 ? left : right;
+    const photoBox = document.querySelector(
+      side === "left" ? ".candidate:first-child .photo"
+                      : ".candidate:last-child .photo"
+    );
+
+    // Secondary color background ALWAYS
+    photoBox.style.background = CANDIDATES[cid].secondaryColor;
+
+    // Reset any old image
+    photoBox.innerHTML = "";
+
+    // Inject image only if present
+    if (CANDIDATES[cid].photo) {
+      const img = document.createElement("img");
+      img.src = CANDIDATES[cid].photo;
+      img.alt = CANDIDATES[cid].name;
+      img.style.width = "100%";
+      img.style.height = "100%";
+      img.style.objectFit = "cover";
+      img.style.borderRadius = "50%";
+      photoBox.appendChild(img);
+    }
+  });
+  }
 
 /* =========================
    6. MAP + POPUP
