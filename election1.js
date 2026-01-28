@@ -6,10 +6,10 @@ document.addEventListener("DOMContentLoaded", () => {
 const CONSTANTS = {
   TOTAL_EV: 538,
   WIN_EV: 270,
-  VOTES_PER_EV: 500000
+  VOTES_PER_EV: 100000
 };
 // Popup visibility control
-const SHOW_C3_IN_POPUP = false;
+const SHOW_C3_IN_POPUP = true;
 const TIE_COLOR = "#8a8a8a";
 
 /* =========================
