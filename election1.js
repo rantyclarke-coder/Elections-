@@ -131,8 +131,11 @@ function renderTop() {
 ========================= */
 function colorMap() {
   const map = document.getElementById("us-map");
-  map.addEventListener("load", () => {
+  if (!map) return;
+
+  const apply = () => {
     const svg = map.contentDocument;
+    if (!svg) return;
 
     Object.keys(STATE_RESULTS).forEach(code => {
       const el = svg.getElementById(code);
@@ -140,9 +143,14 @@ function colorMap() {
 
       const r = STATE_RESULTS[code];
 
-      if (r.isTie) el.style.fill = TIE_COLOR;
-      else if (r.winner) el.style.fill = CANDIDATES[r.winner].primaryColor;
+      // COLOR
+      if (r.isTie) {
+        el.style.fill = TIE_COLOR;
+      } else if (r.winner) {
+        el.style.fill = CANDIDATES[r.winner].primaryColor;
+      }
 
+      // CLICK
       el.onclick = null;
       if (r.isTie || r.winner) {
         el.style.cursor = "pointer";
@@ -150,10 +158,20 @@ function colorMap() {
           e.stopPropagation();
           showPopup(code, e.clientX, e.clientY);
         };
+      } else {
+        el.style.cursor = "default";
       }
     });
-  });
-}
+  };
+
+  // ✅ RUN IMMEDIATELY if already loaded
+  if (map.contentDocument) {
+    apply();
+  }
+
+  // ✅ ALSO run on load (covers cold loads)
+  map.addEventListener("load", apply);
+    }
 
 /* =========================
    7. POPUP
