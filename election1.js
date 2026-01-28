@@ -107,7 +107,7 @@ function renderTop(){
   document.getElementById("seg-right").style.background=CANDIDATES[right].primaryColor;
 
   const totalVotes=nationalVotes.C1+nationalVotes.C2+nationalVotes.C3;
-  document.getElementById("left-stats").textContent=`${((nationalVotes[left]/totalVotes)*100).toFixed(1)}% | ${nationalVotes[left].toLocaleString()}`;
+  document.getElementById("left-stats").textContent=`${((nationalVotes[left]/totalVotes)*100).toFixed(1)}% |\n${nationalVotes[left].toLocaleString()}`;
   document.getElementById("right-stats").textContent=`| ${((nationalVotes[right]/totalVotes)*100).toFixed(1)}%\n${nationalVotes[right].toLocaleString()}`;
 
   document.getElementById("status").textContent=
