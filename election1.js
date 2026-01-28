@@ -33,9 +33,32 @@ const STATE_NAMES = {
    2. CANDIDATES
 ========================= */
 const CANDIDATES = {
-  C1:{ name:"TIM WALZ", short:"WALZ", party:"DEMOCRAT", primaryColor:"#1e3fd9", secondaryColor:"#b8c6ff" },
-  C2:{ name:"STELLA COUCH", short:"COUCH", party:"REPUBLICAN", primaryColor:"#dc143c", secondaryColor:"#ffc1cc" },
-  C3:{ name:"BILL CLINTON", short:"BILL", party:"NPPA", primaryColor:"#2ecc71", secondaryColor:"#b9f1cf" }
+  C1: {
+    name: "TIM WALZ",
+    short: "WALZ",
+    party: "DEMOCRAT",
+    primaryColor: "#1e3fd9",
+    secondaryColor: "#b8c6ff",
+    photo: "images/walz.jpg"
+  },
+
+  C2: {
+    name: "STELLA COUCH",
+    short: "COUCH",
+    party: "REPUBLICAN",
+    primaryColor: "#dc143c",
+    secondaryColor: "#ffc1cc",
+    photo: "images/couch.jpg"
+  },
+
+  C3: {
+    name: "BILL CLINTON",
+    short: "BILL",
+    party: "NPPA",
+    primaryColor: "#2ecc71",
+    secondaryColor: "#b9f1cf",
+    photo: "images/bill.jpg"
+  }
 };
 
 /* =========================
