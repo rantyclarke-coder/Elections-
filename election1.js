@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-let selectedStateEl = null;
-   
+
 /* =========================
    1. CONSTANTS
 ========================= */
@@ -192,92 +191,36 @@ fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vSsbbXqdgfMGosYWjOVNR-2UU
   });
   }
 
-   function ensureGlowFilter(svg) {
-  if (svg.getElementById("state-glow")) return;
-
-  const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
-
-  const filter = document.createElementNS("http://www.w3.org/2000/svg", "filter");
-  filter.setAttribute("id", "state-glow");
-  filter.setAttribute("x", "-50%");
-  filter.setAttribute("y", "-50%");
-  filter.setAttribute("width", "200%");
-  filter.setAttribute("height", "200%");
-
-  const blur = document.createElementNS("http://www.w3.org/2000/svg", "feGaussianBlur");
-  blur.setAttribute("stdDeviation", "3");
-  blur.setAttribute("result", "blur");
-
-  const merge = document.createElementNS("http://www.w3.org/2000/svg", "feMerge");
-
-  const m1 = document.createElementNS("http://www.w3.org/2000/svg", "feMergeNode");
-  m1.setAttribute("in", "blur");
-
-  const m2 = document.createElementNS("http://www.w3.org/2000/svg", "feMergeNode");
-  m2.setAttribute("in", "SourceGraphic");
-
-  merge.appendChild(m1);
-  merge.appendChild(m2);
-
-  filter.appendChild(blur);
-  filter.appendChild(merge);
-  defs.appendChild(filter);
-  svg.appendChild(defs);
-   }
 /* =========================
    6. MAP + POPUP
 ========================= */
-
-    function colorMap() {
+function colorMap() {
   const map = document.getElementById("us-map");
   if (!map) return;
 
-  const waitForSVGReady = () => {
+  const apply = () => {
     const svg = map.contentDocument;
-
-    // SVG not ready yet → retry
-    if (!svg || !svg.querySelector("path")) {
-      setTimeout(waitForSVGReady, 100);
-      return;
-    }
-
-    // Ensure glow filter once SVG is real
-    ensureGlowFilter(svg);
+    if (!svg) return;
 
     Object.keys(STATE_RESULTS).forEach(code => {
-      const el =
-        svg.getElementById(code) ||
-        svg.querySelector(`[id="${code}"]`);
-
+      const el = svg.getElementById(code);
       if (!el) return;
-
-      // RESET FIRST (important)
-      el.style.fill = "";
-      el.style.filter = "none";
-      el.onclick = null;
 
       const r = STATE_RESULTS[code];
 
-      // COLOR
+      // ---- COLOR ----
       if (r.isTie) {
         el.style.fill = TIE_COLOR;
       } else if (r.winner) {
         el.style.fill = CANDIDATES[r.winner].primaryColor;
       }
 
-      // INTERACTION
+      // ---- POPUP ----
+      el.onclick = null;
       if (r.isTie || r.winner) {
         el.style.cursor = "pointer";
         el.onclick = e => {
           e.stopPropagation();
-
-          if (selectedStateEl && selectedStateEl !== el) {
-            selectedStateEl.style.filter = "";
-          }
-
-          el.style.filter = "url(#state-glow)";
-          selectedStateEl = el;
-
           showPopup(code, e.clientX, e.clientY);
         };
       } else {
@@ -286,8 +229,13 @@ fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vSsbbXqdgfMGosYWjOVNR-2UU
     });
   };
 
-  waitForSVGReady();
-    }
+  // 🔥 THIS IS THE MISSING PART
+  if (map.contentDocument) {
+    apply();           // <-- RUN IMMEDIATELY
+  }
+
+  map.addEventListener("load", apply);
+}
 
 /* =========================
    7. POPUP
@@ -349,11 +297,6 @@ function showPopup(code, x, y) {
 ========================= */
 document.addEventListener("click", () => {
   document.getElementById("state-popup").classList.add("hidden");
-
-  if (selectedStateEl) {
-    selectedStateEl.style.filter = "";
-    selectedStateEl = null;
-  }
 });
 
 });
