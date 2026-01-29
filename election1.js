@@ -239,6 +239,8 @@ function colorMap() {
     Object.keys(STATE_RESULTS).forEach(code => {
       const el = svg.getElementById(code);
       if (!el) return;
+       // ALWAYS reset filter before coloring (SVG safety)
+el.style.filter = "none";
 
       const r = STATE_RESULTS[code];
 
