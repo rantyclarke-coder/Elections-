@@ -34,21 +34,25 @@
       color:#aaa;
       font-size:12px;
       letter-spacing:3px;
-      margin-bottom:12px;
+      margin-bottom:28px; /* bigger gap before bar */
     }
 
     .bar{
       display:flex;
       height:26px;
+      width:75%;        /* 25% smaller */
+      margin:0 auto;    /* centered */
       border-radius:14px;
       overflow:hidden;
       background:#222;
-      margin:16px 0;
     }
 
-    .seg{height:100%;}
+    .seg{
+      height:100%;
+    }
 
     .map{
+      margin-top:34px;  /* clear gap after bar */
       height:45vh;
       background:#111;
       border:1px solid #333;
@@ -61,10 +65,14 @@
     }
 
     .back{
-      margin-top:16px;
+      display:block;
+      margin-top:18px;
       text-align:center;
       opacity:.7;
       font-size:12px;
+      text-decoration:none;
+      color:#fff;
+      letter-spacing:1px;
     }
   </style>
 </head>
@@ -74,13 +82,16 @@
     <h1>US GUBERNATORIAL ELECTIONS</h1>
     <div class="sub">XXXX ELECTION NIGHT</div>
 
+    <!-- Party bar (filled dynamically by governor.js) -->
     <div class="bar" id="party-bar"></div>
 
+    <!-- Map -->
     <div class="map">
       <object id="us-map" data="us.svg" type="image/svg+xml"></object>
     </div>
 
-    <div class="back">BACK</div>
+    <!-- Back to President page -->
+    <a class="back" href="./index.html">BACK</a>
   </div>
 </body>
 </html>
