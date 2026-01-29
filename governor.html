@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>US GUBERNATORIAL ELECTIONS</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Governor JS -->
+  <script src="governor.js" defer></script>
+
+  <style>
+    body{
+      margin:0;
+      background:#000;
+      color:#fff;
+      font-family:Inter,system-ui;
+    }
+
+    .page{
+      max-width:420px;
+      margin:0 auto;
+      padding:16px;
+    }
+
+    h1{
+      text-align:center;
+      letter-spacing:2px;
+      font-size:26px;
+    }
+
+    .sub{
+      text-align:center;
+      color:#aaa;
+      font-size:12px;
+      letter-spacing:3px;
+      margin-bottom:12px;
+    }
+
+    .bar{
+      display:flex;
+      height:26px;
+      border-radius:14px;
+      overflow:hidden;
+      background:#222;
+      margin:16px 0;
+    }
+
+    .seg{height:100%;}
+
+    .map{
+      height:45vh;
+      background:#111;
+      border:1px solid #333;
+      border-radius:6px;
+    }
+
+    .map object{
+      width:100%;
+      height:100%;
+    }
+
+    .back{
+      margin-top:16px;
+      text-align:center;
+      opacity:.7;
+      font-size:12px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <h1>US GUBERNATORIAL ELECTIONS</h1>
+    <div class="sub">XXXX ELECTION NIGHT</div>
+
+    <div class="bar" id="party-bar"></div>
+
+    <div class="map">
+      <object id="us-map" data="us.svg" type="image/svg+xml"></object>
+    </div>
+
+    <div class="back">BACK</div>
+  </div>
+</body>
+</html>
