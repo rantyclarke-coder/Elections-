@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
-
+let selectedStateEl = null;
+   
 /* =========================
    1. CONSTANTS
 ========================= */
@@ -191,6 +192,38 @@ fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vSsbbXqdgfMGosYWjOVNR-2UU
   });
   }
 
+   function ensureGlowFilter(svg) {
+  if (svg.getElementById("state-glow")) return;
+
+  const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+
+  const filter = document.createElementNS("http://www.w3.org/2000/svg", "filter");
+  filter.setAttribute("id", "state-glow");
+  filter.setAttribute("x", "-50%");
+  filter.setAttribute("y", "-50%");
+  filter.setAttribute("width", "200%");
+  filter.setAttribute("height", "200%");
+
+  const blur = document.createElementNS("http://www.w3.org/2000/svg", "feGaussianBlur");
+  blur.setAttribute("stdDeviation", "3");
+  blur.setAttribute("result", "blur");
+
+  const merge = document.createElementNS("http://www.w3.org/2000/svg", "feMerge");
+
+  const m1 = document.createElementNS("http://www.w3.org/2000/svg", "feMergeNode");
+  m1.setAttribute("in", "blur");
+
+  const m2 = document.createElementNS("http://www.w3.org/2000/svg", "feMergeNode");
+  m2.setAttribute("in", "SourceGraphic");
+
+  merge.appendChild(m1);
+  merge.appendChild(m2);
+
+  filter.appendChild(blur);
+  filter.appendChild(merge);
+  defs.appendChild(filter);
+  svg.appendChild(defs);
+   }
 /* =========================
    6. MAP + POPUP
 ========================= */
@@ -200,6 +233,7 @@ function colorMap() {
 
   const apply = () => {
     const svg = map.contentDocument;
+     ensureGlowFilter(svg);
     if (!svg) return;
 
     Object.keys(STATE_RESULTS).forEach(code => {
@@ -220,9 +254,19 @@ function colorMap() {
       if (r.isTie || r.winner) {
         el.style.cursor = "pointer";
         el.onclick = e => {
-          e.stopPropagation();
-          showPopup(code, e.clientX, e.clientY);
-        };
+  e.stopPropagation();
+
+  // Remove glow from previous state
+  if (selectedStateEl && selectedStateEl !== el) {
+    selectedStateEl.style.filter = "";
+  }
+
+  // Apply glow to this state
+  el.style.filter = "url(#state-glow)";
+  selectedStateEl = el;
+
+  showPopup(code, e.clientX, e.clientY);
+};
       } else {
         el.style.cursor = "default";
       }
@@ -297,6 +341,11 @@ function showPopup(code, x, y) {
 ========================= */
 document.addEventListener("click", () => {
   document.getElementById("state-popup").classList.add("hidden");
+
+  if (selectedStateEl) {
+    selectedStateEl.style.filter = "";
+    selectedStateEl = null;
+  }
 });
 
 });
