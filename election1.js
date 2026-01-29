@@ -227,62 +227,67 @@ fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vSsbbXqdgfMGosYWjOVNR-2UU
 /* =========================
    6. MAP + POPUP
 ========================= */
-function colorMap() {
+
+    function colorMap() {
   const map = document.getElementById("us-map");
   if (!map) return;
 
-  const apply = () => {
+  const waitForSVGReady = () => {
     const svg = map.contentDocument;
-if (!svg) return;
 
-ensureGlowFilter(svg);
+    // SVG not ready yet → retry
+    if (!svg || !svg.querySelector("path")) {
+      setTimeout(waitForSVGReady, 100);
+      return;
+    }
+
+    // Ensure glow filter once SVG is real
+    ensureGlowFilter(svg);
 
     Object.keys(STATE_RESULTS).forEach(code => {
-      const el = svg.getElementById(code);
+      const el =
+        svg.getElementById(code) ||
+        svg.querySelector(`[id="${code}"]`);
+
       if (!el) return;
-       // ALWAYS reset filter before coloring (SVG safety)
-el.style.filter = "none";
+
+      // RESET FIRST (important)
+      el.style.fill = "";
+      el.style.filter = "none";
+      el.onclick = null;
 
       const r = STATE_RESULTS[code];
 
-      // ---- COLOR ----
+      // COLOR
       if (r.isTie) {
         el.style.fill = TIE_COLOR;
       } else if (r.winner) {
         el.style.fill = CANDIDATES[r.winner].primaryColor;
       }
 
-      // ---- POPUP ----
-      el.onclick = null;
+      // INTERACTION
       if (r.isTie || r.winner) {
         el.style.cursor = "pointer";
         el.onclick = e => {
-  e.stopPropagation();
+          e.stopPropagation();
 
-  // Remove glow from previous state
-  if (selectedStateEl && selectedStateEl !== el) {
-    selectedStateEl.style.filter = "";
-  }
+          if (selectedStateEl && selectedStateEl !== el) {
+            selectedStateEl.style.filter = "";
+          }
 
-  // Apply glow to this state
-  el.style.filter = "url(#state-glow)";
-  selectedStateEl = el;
+          el.style.filter = "url(#state-glow)";
+          selectedStateEl = el;
 
-  showPopup(code, e.clientX, e.clientY);
-};
+          showPopup(code, e.clientX, e.clientY);
+        };
       } else {
         el.style.cursor = "default";
       }
     });
   };
 
-  // 🔥 THIS IS THE MISSING PART
-  if (map.contentDocument) {
-    apply();           // <-- RUN IMMEDIATELY
-  }
-
-  map.addEventListener("load", apply);
-}
+  waitForSVGReady();
+    }
 
 /* =========================
    7. POPUP
