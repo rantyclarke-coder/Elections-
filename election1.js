@@ -233,8 +233,9 @@ function colorMap() {
 
   const apply = () => {
     const svg = map.contentDocument;
-     ensureGlowFilter(svg);
-    if (!svg) return;
+if (!svg) return;
+
+ensureGlowFilter(svg);
 
     Object.keys(STATE_RESULTS).forEach(code => {
       const el = svg.getElementById(code);
