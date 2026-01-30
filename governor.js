@@ -9,45 +9,26 @@ const CSV_URL =
 
 /* PARTY DEFINITIONS (CODE-ONLY) */
 const PARTIES = {
-  D: { name:"DEMOCRAT", color:"#1e3fd9" },
+  D: { name:"DEMOCRAT",   color:"#1e3fd9" },
   R: { name:"REPUBLICAN", color:"#dc143c" },
-  I: { name:"INDEPENDENT", color:"#888" },
-  G: { name:"GREEN", color:"#2ecc71" }
+  I: { name:"INDEPENDENT",color:"#888888" },
+  G: { name:"GREEN",      color:"#2ecc71" }
 };
 
-/* REGIONS */
-const REGIONS = ["NE","PA","DX","LN"];
-/* STATES INSIDE EACH REGION (HARDCODED) */
+/* HARD CODED STATES IN REGIONS */
 const REGION_STATES = {
-
-  // New England
-  NE: [
-    "ME","NH","VT","MA","RI","CT",
-    "NY","NJ","PA","DE","MD","WV"
-  ],
-
-  // Dixie
-  DX: [
-    "VA","NC","SC","GA","FL",
-    "AL","TN","MS","LA","AR","OK","TX"
-  ],
-
-  // Lincoln
-  LN: [
-    "OH","KY","IN","MI","WI","IL",
-    "MO","IA","MN","ND","SD","NE","KS"
-  ],
-
-  // Pacifica
-  PA: [
-    "MT","WY","CO","NM","AZ","UT","ID",
-    "WA","OR","NV","CA","AK","HI"
-  ]
+  NE: ["ME","NH","VT","MA","RI","CT","NY","NJ","PA","DE","MD","WV"],
+  DX: ["VA","NC","SC","GA","FL","AL","TN","MS","LA","AR","OK","TX"],
+  LN: ["OH","KY","IN","MI","WI","IL","MO","IA","MN","ND","SD","NE","KS"],
+  PA: ["MT","WY","CO","NM","AZ","UT","ID","WA","OR","NV","CA","AK","HI"]
 };
-   
+
+const REGIONS = ["NE","DX","LN","PA"];
+
 /* STORAGE */
-const regionElection = {};     // NE → true/false
-const regionResults = {};      // NE → winner party
+const regionElection = {};   // NE → true/false
+const regionFixedParty = {}; // NE → "R" or "D" when FALSE
+const regionResults = {};    // NE → winning party when TRUE
 
 /* =========================
    LOAD SHEET
@@ -57,32 +38,47 @@ fetch(CSV_URL)
 .then(csv => {
   const rows = csv.split("\n").map(r=>r.split(","));
 
-  /* ---- REGION ELECTION FLAGS (ROW 60–63) ---- */
+  /* ---- REGION FLAGS (ROW 60–63) ----
+     B = region
+     D = TRUE/FALSE
+     E = party if FALSE
+  */
   for(let i=60;i<=63;i++){
-    const region = rows[i][1]?.trim();
-    const flag = rows[i][2]?.trim();
+    const region = rows[i][1]?.trim(); // B
+    const flag   = rows[i][3]?.trim(); // D
+    const party  = rows[i][4]?.trim(); // E
+
     if(region){
-      regionElection[region] = flag === "TRUE";
+      regionElection[region] = (flag === "TRUE");
+      if(flag === "FALSE" && party){
+        regionFixedParty[region] = party; // R/D/etc
+      }
     }
   }
 
-  /* ---- CANDIDATES (ROW 65+) ---- */
-  REGIONS.forEach(region=>{
+  /* ---- DYNAMIC RESULTS FOR TRUE REGIONS ----
+     5 candidates per region
+     start at row 65, then +6 each region block
+     E = party code
+     F = active TRUE/FALSE
+     G = points
+  */
+  REGIONS.forEach((region, idx)=>{
     if(!regionElection[region]) return;
 
-    const start = 65 + REGIONS.indexOf(region)*6;
+    const start = 65 + idx*6;
     const candidates = [];
 
-    for(let r=start;r<start+5;r++){
+    for(let r=start; r<start+5; r++){
       const row = rows[r];
       if(!row) continue;
 
-      const party = row[4]?.trim();
-      const active = row[5]?.trim() === "TRUE";
-      const points = Number(row[6]);
+      const party  = row[4]?.trim();      // E
+      const active = row[5]?.trim()==="TRUE"; // F
+      const points = Number(row[6]);      // G
 
-      if(active && points > 0){
-        candidates.push({ party, points });
+      if(active && points>0 && PARTIES[party]){
+        candidates.push({party, points});
       }
     }
 
@@ -97,18 +93,30 @@ fetch(CSV_URL)
 });
 
 /* =========================
-   BAR
+   TOP PARTY BAR
 ========================= */
 function renderBar(){
   const bar = document.getElementById("party-bar");
   bar.innerHTML = "";
 
   const counts = {};
-  Object.values(regionResults).forEach(p=>{
-    counts[p] = (counts[p]||0)+1;
+
+  REGIONS.forEach(region=>{
+    let party = null;
+
+    if(regionElection[region]){
+      party = regionResults[region];       // dynamic
+    } else {
+      party = regionFixedParty[region];    // fixed from sheet
+    }
+
+    if(party){
+      counts[party] = (counts[party]||0)+1;
+    }
   });
 
   const total = Object.values(counts).reduce((a,b)=>a+b,0);
+  if(!total) return;
 
   Object.keys(counts).forEach(p=>{
     const seg = document.createElement("div");
@@ -120,7 +128,7 @@ function renderBar(){
 }
 
 /* =========================
-   MAP
+   MAP COLORING
 ========================= */
 function colorMap(){
   const map = document.getElementById("us-map");
@@ -130,16 +138,35 @@ function colorMap(){
     if(!svg) return;
 
     REGIONS.forEach(region=>{
-      const el = svg.getElementById(region);
-      if(!el) return;
+      const states = REGION_STATES[region];
+      let party = null;
 
       if(regionElection[region]){
-        const party = regionResults[region];
-        if(party){
-          el.style.fill = PARTIES[party].color;
-          el.style.filter = "drop-shadow(0 0 4px white)";
-        }
+        party = regionResults[region];       // dynamic
+      } else {
+        party = regionFixedParty[region];    // fixed
       }
+
+      if(!party || !PARTIES[party]) return;
+
+      states.forEach(code=>{
+        const el = svg.getElementById(code);
+        if(!el) return;
+
+        // fill by party
+        el.style.fill = PARTIES[party].color;
+
+        // 1. always thick dark borders
+        el.style.stroke = "#000";
+        el.style.strokeWidth = "2";
+
+        // 2 & 3. glow only if TRUE (election happening)
+        if(regionElection[region]){
+          el.style.filter = "drop-shadow(0 0 4px white)";
+        } else {
+          el.style.filter = "none";
+        }
+      });
     });
   });
 }
