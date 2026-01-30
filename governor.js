@@ -19,13 +19,30 @@ const PARTIES = {
 const REGIONS = ["NE","PA","DX","LN"];
 /* STATES INSIDE EACH REGION (HARDCODED) */
 const REGION_STATES = {
-  NE: ["ME","NH","VT","MA","RI","CT"],
 
-  PA: ["CA","OR","WA","NV","AZ"],       // Pacifica (example)
+  // New England
+  NE: [
+    "ME","NH","VT","MA","RI","CT",
+    "NY","NJ","PA","DE","MD","WV"
+  ],
 
-  DX: ["TX","OK","LA","AR","MS","AL"],  // Dixie (example)
+  // Dixie
+  DX: [
+    "VA","NC","SC","GA","FL",
+    "AL","TN","MS","LA","AR","OK","TX"
+  ],
 
-  LN: ["IL","IN","OH","MI","WI","MN"]   // Lincoln (example)
+  // Lincoln
+  LN: [
+    "OH","KY","IN","MI","WI","IL",
+    "MO","IA","MN","ND","SD","NE","KS"
+  ],
+
+  // Pacifica
+  PA: [
+    "MT","WY","CO","NM","AZ","UT","ID",
+    "WA","OR","NV","CA","AK","HI"
+  ]
 };
    
 /* STORAGE */
