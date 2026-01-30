@@ -17,7 +17,17 @@ const PARTIES = {
 
 /* REGIONS */
 const REGIONS = ["NE","PA","DX","LN"];
+/* STATES INSIDE EACH REGION (HARDCODED) */
+const REGION_STATES = {
+  NE: ["ME","NH","VT","MA","RI","CT"],
 
+  PA: ["CA","OR","WA","NV","AZ"],       // Pacifica (example)
+
+  DX: ["TX","OK","LA","AR","MS","AL"],  // Dixie (example)
+
+  LN: ["IL","IN","OH","MI","WI","MN"]   // Lincoln (example)
+};
+   
 /* STORAGE */
 const regionElection = {};     // NE → true/false
 const regionResults = {};      // NE → winner party
