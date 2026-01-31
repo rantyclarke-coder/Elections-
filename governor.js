@@ -133,42 +133,54 @@ function renderBar(){
 function colorMap(){
   const map = document.getElementById("us-map");
 
-  map.addEventListener("load", ()=>{
-    const svg = map.contentDocument;
+  const apply = ()=>{
+    const svgDoc = map.contentDocument;
+    if(!svgDoc) return;
+
+    const svg = svgDoc.querySelector("svg");
     if(!svg) return;
 
     REGIONS.forEach(region=>{
       const states = REGION_STATES[region];
-      let party = null;
 
+      let party = null;
       if(regionElection[region]){
-        party = regionResults[region];       // dynamic
+        party = regionResults[region];        // dynamic winner
       } else {
-        party = regionFixedParty[region];    // fixed
+        party = regionFixedParty[region];     // fixed ruling party
       }
 
       if(!party || !PARTIES[party]) return;
 
       states.forEach(code=>{
-        const el = svg.getElementById(code);
+        // 🔑 this is the important change
+        const el = svg.querySelector(`#${code}`);
         if(!el) return;
 
-        // fill by party
+        // fill colour
         el.style.fill = PARTIES[party].color;
 
-        // 1. always thick dark borders
+        // dark regional borders (always)
         el.style.stroke = "#000";
         el.style.strokeWidth = "2";
 
-        // 2 & 3. glow only if TRUE (election happening)
+        // glow only if election TRUE
         if(regionElection[region]){
-          el.style.filter = "drop-shadow(0 0 4px white)";
+          el.style.filter = "drop-shadow(0 0 5px white)";
         } else {
           el.style.filter = "none";
         }
       });
     });
-  });
+  };
+
+  // run immediately if already loaded
+  if(map.contentDocument){
+    apply();
+  }
+
+  // also run when SVG finishes loading
+  map.addEventListener("load", apply);
 }
 
 });
