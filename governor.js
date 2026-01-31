@@ -27,7 +27,7 @@ const REGIONS = ["NE","DX","LN","PA"];
 
 /* STORAGE */
 const regionElection = {};   // NE → true/false
-const regionFixedParty = {}; // NE → "R" or "D" when FALSE
+const regionFixedParty = {}; // NE → "R"/"D" when FALSE
 const regionResults = {};    // NE → winning party when TRUE
 
 /* =========================
@@ -38,7 +38,7 @@ fetch(CSV_URL)
 .then(csv => {
   const rows = csv.split("\n").map(r=>r.split(","));
 
-  /* ---- REGION FLAGS (ROW 60–63) ----
+  /* ---- REGION FLAGS (ROW 60–63)
      B = region
      D = TRUE/FALSE
      E = party if FALSE
@@ -73,9 +73,9 @@ fetch(CSV_URL)
       const row = rows[r];
       if(!row) continue;
 
-      const party  = row[4]?.trim();      // E
-      const active = row[5]?.trim()==="TRUE"; // F
-      const points = Number(row[6]);      // G
+      const party  = row[4]?.trim();           // E
+      const active = row[5]?.trim()==="TRUE";  // F
+      const points = Number(row[6]);           // G
 
       if(active && points>0 && PARTIES[party]){
         candidates.push({party, points});
@@ -105,12 +105,12 @@ function renderBar(){
     let party = null;
 
     if(regionElection[region]){
-      party = regionResults[region];       // dynamic
+      party = regionResults[region];      // dynamic
     } else {
-      party = regionFixedParty[region];    // fixed from sheet
+      party = regionFixedParty[region];   // fixed
     }
 
-    if(party){
+    if(party && PARTIES[party]){
       counts[party] = (counts[party]||0)+1;
     }
   });
@@ -143,30 +143,37 @@ function colorMap(){
     REGIONS.forEach(region=>{
       const states = REGION_STATES[region];
 
-      let party = null;
+      // default grey if nothing known
+      let color = "#8a8a8a";
+      let dynamic = false;
+
       if(regionElection[region]){
-        party = regionResults[region];        // dynamic winner
+        const p = regionResults[region];
+        if(p && PARTIES[p]){
+          color = PARTIES[p].color;
+          dynamic = true; // glow
+        }
       } else {
-        party = regionFixedParty[region];     // fixed ruling party
+        const p = regionFixedParty[region];
+        if(p && PARTIES[p]){
+          color = PARTIES[p].color;
+        }
       }
 
-      if(!party || !PARTIES[party]) return;
-
       states.forEach(code=>{
-        // 🔑 this is the important change
         const el = svg.querySelector(`#${code}`);
         if(!el) return;
 
-        // fill colour
-        el.style.fill = PARTIES[party].color;
+        // fill colour (party or grey)
+        el.style.fill = color;
 
-        // dark regional borders (always)
-        el.style.stroke = "#000";
+        // dark thick borders for all regions
+        el.style.stroke = "#000000";
         el.style.strokeWidth = "2";
 
-        // glow only if election TRUE
-        if(regionElection[region]){
-          el.style.filter = "drop-shadow(0 0 5px white)";
+        // glow only if TRUE (dynamic election)
+        if(dynamic){
+          el.style.filter = "drop-shadow(0 0 6px white)";
         } else {
           el.style.filter = "none";
         }
