@@ -88,18 +88,19 @@ h1{
   z-index:3;
 }
 
-/* 🔵 BORDER RING (separate layer) */
+/* THE BORDER LIVES HERE */
 .capitol::before{
   content:"";
   position:absolute;
-  inset:-6px;                  /* border thickness */
+  inset:-6px;
   border-radius:50%;
-  background:
-    linear-gradient(
-      to bottom,
-      var(--house-border) 50%,
-      var(--senate-border) 50%
-    );
+  background:linear-gradient(
+    to bottom,
+    var(--house-border),
+    var(--house-border) 50%,
+    var(--senate-border) 50%,
+    var(--senate-border)
+  );
   z-index:-1;
 }
 
