@@ -124,7 +124,7 @@ h1{
   Math.PI * 0.1 +
   (i / (row.seats - 1 || 1)) * Math.PI * 0.8;
         const x = 140 + row.radius * Math.cos(angle);
-        const y = 140 + row.radius * Math.sin(angle);
+        const y = centerY - radius * Math.sin(angle);
         document.write(`<div class="dot" style="left:${x}px;top:${y}px;"></div>`);
       }
     });
