@@ -156,10 +156,77 @@ document.addEventListener("DOMContentLoaded", () => {
   const houseArr  = buildSeatArray(houseSeats);
   const senateArr = buildSeatArray(senateSeats);
 
-  houseDots.forEach((dot, i) => {
-    const party = houseArr[i] || "V";
-    dot.style.background = PARTIES[party].primary;
+  /* ===== HOUSE COLUMN-WISE PARLIAMENT COLORING ===== */
+
+const rows = [
+  document.querySelectorAll(".house-group .dot.house:nth-child(n+1)")
+];
+
+// 🔴 Build columns manually (3 rows)
+const houseRows = [
+  Array.from(document.querySelectorAll(".house-group .dot.house")).slice(0,12),
+  Array.from(document.querySelectorAll(".house-group .dot.house")).slice(12,22),
+  Array.from(document.querySelectorAll(".house-group .dot.house")).slice(22)
+];
+
+const columns = [];
+const maxCols = Math.max(...houseRows.map(r => r.length));
+
+for (let c = 0; c < maxCols; c++) {
+  const col = [];
+  houseRows.forEach(r => {
+    if (r[c]) col.push(r[c]);
   });
+  columns.push(col);
+}
+
+/* ---- COUNTS ---- */
+let d = houseSeats.D || 0;
+let r = houseSeats.R || 0;
+let n = houseSeats.N || 0;
+let i = houseSeats.I || 0;
+let v = houseSeats.V || 0;
+
+/* ---- LEFT → DEMOCRATS ---- */
+let left = 0;
+while (d > 0 && left < columns.length) {
+  columns[left].forEach(dot => {
+    if (d > 0) {
+      dot.style.background = PARTIES.D.primary;
+      d--;
+    }
+  });
+  left++;
+}
+
+/* ---- RIGHT → REPUBLICANS ---- */
+let right = columns.length - 1;
+while (r > 0 && right >= left) {
+  columns[right].forEach(dot => {
+    if (r > 0) {
+      dot.style.background = PARTIES.R.primary;
+      r--;
+    }
+  });
+  right--;
+}
+
+/* ---- CENTER → OTHERS ---- */
+[
+  ["N", n],
+  ["I", i],
+  ["V", v]
+].forEach(([code, count]) => {
+  while (count > 0 && left <= right) {
+    columns[left].forEach(dot => {
+      if (!dot.style.background && count > 0) {
+        dot.style.background = PARTIES[code].primary;
+        count--;
+      }
+    });
+    left++;
+  }
+});
 
   senateDots.forEach((dot, i) => {
     const party = senateArr[i] || "V";
