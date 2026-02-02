@@ -42,14 +42,13 @@ h1{
 
   .toggle{
   display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:10px;
-  margin-bottom:24px;
+  justify-content:center;   /* horizontal centering */
+  align-items:center;       /* vertical centering */
+  width:100%;               /* 🔑 forces true centering */
+  margin:24px 0 28px;       /* balanced spacing */
   font-size:12px;
   letter-spacing:2px;
-}
-
+  }
 .toggle-btn{
   cursor:pointer;
   color:#888;
@@ -111,7 +110,7 @@ h1{
 }
 
 .senate-group{
-  transform: translateY(-5px, -20px);  /* move SENATE up/down */
+  transform: translateY(-20px);  /* move SENATE up/down */
 }
 
 /* DOTS */
