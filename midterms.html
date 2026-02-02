@@ -1,160 +1,166 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>US MIDTERM ELECTIONS</title>
+<meta charset="UTF-8">
+<title>US MIDTERM ELECTIONS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+body{
+  margin:0;
+  background:#000;
+  color:#fff;
+  font-family:Inter,system-ui;
+}
 
-  <style>
-    body{
-      margin:0;
-      background:#000;
-      color:#fff;
-      font-family:Inter,system-ui;
-    }
+.page{
+  max-width:420px;
+  margin:0 auto;
+  padding:16px;
+}
 
-    .page{
-      max-width:420px;
-      margin:0 auto;
-      padding:16px;
-    }
+/* HEADER */
+h1{
+  text-align:center;
+  font-size:28px;
+  font-weight:900;
+  letter-spacing:2px;
+  margin-bottom:6px;
+}
 
-    h1{
-      text-align:center;
-      letter-spacing:2px;
-      font-size:26px;
-      margin-bottom:6px;
-    }
+.sub{
+  text-align:center;
+  font-size:12px;
+  letter-spacing:3px;
+  color:#aaa;
+}
 
-    .sub{
-      text-align:center;
-      color:#aaa;
-      font-size:12px;
-      letter-spacing:3px;
-    }
+.divider{
+  height:2px;
+  background:#fff;
+  margin:24px 0 42px;
+}
 
-    /* 👇 PUSH EVERYTHING DOWN */
-    .content{
-      margin-top:36px;
-    }
+/* CENTRAL VISUAL */
+.capitol-wrap{
+  position:relative;
+  width:280px;
+  height:280px;
+  margin:0 auto 40px;
+}
 
-    /* ======================
-       CENTRAL COMPOSITION
-    ====================== */
-    .capitol-wrap{
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:14px;
-      margin-bottom:32px;
-    }
+/* CENTRAL CIRCLE (SMALLER) */
+.capitol{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:80px;
+  height:80px;
+  border-radius:50%;
+  background:#111;
+  border:3px solid #555;
+  z-index:3;
+}
 
-    /* HOUSE HEMICYCLE */
-    .house-hemi,
-    .senate-hemi{
-      display:flex;
-      justify-content:center;
-      gap:6px;
-    }
+/* DOT */
+.dot{
+  position:absolute;
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:#555;
+}
 
-    .house-hemi div,
-    .senate-hemi div{
-      width:12px;
-      height:12px;
-      border-radius:50%;
-      background:#444; /* placeholder */
-    }
+/* LOWER PANELS */
+.split{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
 
-    /* CENTRAL PLACEHOLDER */
-    .capitol{
-      width:120px;        /* smaller */
-      height:120px;
-      border-radius:50%;
-      background:#111;
-      border:3px solid #555; /* will be split later */
-    }
+.panel{
+  border-top:1px solid #333;
+  padding-top:12px;
+  font-size:12px;
+}
 
-    /* ======================
-       LOWER COMPOSITION
-    ====================== */
-    .split{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:16px;
-      margin-top:24px;
-    }
+.panel h3{
+  margin:0 0 8px;
+  font-size:13px;
+  letter-spacing:1px;
+  color:#ccc;
+}
 
-    .panel{
-      border-top:1px solid #333;
-      padding-top:12px;
-      font-size:12px;
-    }
-
-    .panel h3{
-      margin:0 0 8px;
-      font-size:13px;
-      letter-spacing:1px;
-      color:#ccc;
-    }
-
-    .back{
-      margin-top:28px;
-      text-align:center;
-      font-size:12px;
-      opacity:.6;
-    }
-  </style>
+.back{
+  margin-top:28px;
+  text-align:center;
+  font-size:12px;
+  opacity:.6;
+}
+</style>
 </head>
 
 <body>
-  <div class="page">
+<div class="page">
 
-    <h1>US MIDTERM ELECTIONS</h1>
-    <div class="sub">XXXX ELECTION NIGHT</div>
+<h1>US MIDTERM ELECTIONS</h1>
+<div class="sub">XXXX ELECTION NIGHT</div>
+<div class="divider"></div>
 
-    <div class="content">
+<div class="capitol-wrap" id="capitol">
 
-      <!-- CENTRAL VISUAL -->
-      <div class="capitol-wrap">
+  <!-- HOUSE: 3 CONCENTRIC SEMICIRCLES -->
+  <script>
+    const houseRows = [
+      { seats:12, radius:120 },
+      { seats:10, radius:100 },
+      { seats:8,  radius:80  }
+    ];
 
-        <!-- HOUSE (30 seats) -->
-        <div class="house-hemi">
-          <div></div><div></div><div></div><div></div><div></div>
-          <div></div><div></div><div></div><div></div><div></div>
-          <div></div><div></div><div></div><div></div><div></div>
-          <div></div><div></div><div></div><div></div><div></div>
-          <div></div><div></div><div></div><div></div><div></div>
-          <div></div><div></div><div></div><div></div><div></div>
-        </div>
+    houseRows.forEach(row=>{
+      for(let i=0;i<row.seats;i++){
+        const angle = (-160 + (140/(row.seats-1))*i) * Math.PI/180;
+        const x = 140 + row.radius * Math.cos(angle);
+        const y = 140 + row.radius * Math.sin(angle);
+        document.write(`<div class="dot" style="left:${x}px;top:${y}px;"></div>`);
+      }
+    });
+  </script>
 
-        <!-- CENTRAL PLACEHOLDER -->
-        <div class="capitol"></div>
+  <!-- CENTRAL PLACEHOLDER -->
+  <div class="capitol"></div>
 
-        <!-- SENATE (8 seats) -->
-        <div class="senate-hemi">
-          <div></div><div></div><div></div><div></div>
-          <div></div><div></div><div></div><div></div>
-        </div>
+  <!-- SENATE: 2 CONCENTRIC SEMICIRCLES -->
+  <script>
+    const senateRows = [
+      { seats:5, radius:80 },
+      { seats:3, radius:62 }
+    ];
 
-      </div>
+    senateRows.forEach(row=>{
+      for(let i=0;i<row.seats;i++){
+        const angle = (20 + (140/(row.seats-1))*i) * Math.PI/180;
+        const x = 140 + row.radius * Math.cos(angle);
+        const y = 140 + row.radius * Math.sin(angle);
+        document.write(`<div class="dot" style="left:${x}px;top:${y}px;"></div>`);
+      }
+    });
+  </script>
 
-      <!-- LOWER PANELS -->
-      <div class="split">
-        <div class="panel">
-          <h3>HOUSE OF REPRESENTATIVES</h3>
-          <!-- party composition goes here -->
-        </div>
+</div>
 
-        <div class="panel">
-          <h3>SENATE</h3>
-          <!-- party composition goes here -->
-        </div>
-      </div>
-
-      <div class="back">BACK</div>
-
-    </div>
+<div class="split">
+  <div class="panel">
+    <h3>HOUSE OF REPRESENTATIVES</h3>
   </div>
+  <div class="panel">
+    <h3>SENATE</h3>
+  </div>
+</div>
+
+<div class="back">BACK</div>
+
+</div>
 </body>
 </html>
