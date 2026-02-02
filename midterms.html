@@ -62,6 +62,25 @@ h1{
   z-index:3;
 }
 
+/* GROUPS */
+.house-group,
+.senate-group{
+  position:absolute;
+  left:0;
+  top:0;
+  width:100%;
+  height:100%;
+}
+
+/* 🔧 EASY ADJUSTMENTS */
+.house-group{
+  transform: translateY(-18px); /* move HOUSE up/down */
+}
+
+.senate-group{
+  transform: translateY(28px);  /* move SENATE up/down */
+}
+
 /* DOTS */
 .dot{
   position:absolute;
@@ -69,13 +88,11 @@ h1{
   background:#777;
 }
 
-/* HOUSE dots smaller */
 .dot.house{
   width:8px;
   height:8px;
 }
 
-/* SENATE dots bigger */
 .dot.senate{
   width:11px;
   height:11px;
@@ -117,7 +134,13 @@ h1{
 <div class="sub">XXXX ELECTION NIGHT</div>
 <div class="divider"></div>
 
-<div class="capitol-wrap" id="capitol"></div>
+<div class="capitol-wrap" id="capitol">
+
+  <div class="house-group" id="house"></div>
+  <div class="senate-group" id="senate"></div>
+
+  <div class="capitol"></div>
+</div>
 
 <div class="split">
   <div class="panel">
@@ -128,27 +151,21 @@ h1{
   </div>
 </div>
 
-
 </div>
 
 <script>
-const wrap = document.getElementById("capitol");
-
-/* FIXED CENTER — DO NOT TOUCH */
 const CENTER_X = 150;
 const CENTER_Y = 150;
 
-/* ===== HOUSE (ABOVE) ===== */
-const houseRows = [
-  { seats:12, radius:110 },
-  { seats:10, radius:90 },
-  { seats:8,  radius:70 }
-];
-
-houseRows.forEach(row=>{
+/* ===== HOUSE (TOP OPENING DOWN) ===== */
+const house = document.getElementById("house");
+[
+  { seats:12, radius:115 },
+  { seats:10, radius:95 },
+  { seats:8,  radius:75 }
+].forEach(row=>{
   for(let i=0;i<row.seats;i++){
-    const angle =
-  Math.PI + (i / (row.seats - 1 || 1)) * Math.PI;
+    const angle = Math.PI + (i/(row.seats-1))*Math.PI;
     const x = CENTER_X + row.radius * Math.cos(angle);
     const y = CENTER_Y + row.radius * Math.sin(angle);
 
@@ -156,34 +173,28 @@ houseRows.forEach(row=>{
     d.className = "dot house";
     d.style.left = `${x}px`;
     d.style.top  = `${y}px`;
-    wrap.appendChild(d);
+    house.appendChild(d);
   }
 });
 
-/* ===== SENATE (BELOW) ===== */
-const senateRows = [
+/* ===== SENATE (BOTTOM OPENING UP) ===== */
+const senate = document.getElementById("senate");
+[
   { seats:5, radius:70 },
   { seats:3, radius:52 }
-];
-
-senateRows.forEach(row=>{
+].forEach(row=>{
   for(let i=0;i<row.seats;i++){
-    const angle = (i/(row.seats-1)) * Math.PI;
+    const angle = (i/(row.seats-1))*Math.PI;
     const x = CENTER_X + row.radius * Math.cos(angle);
-    const y = CENTER_Y + row.radius * Math.sin(angle) + 20;
+    const y = CENTER_Y + row.radius * Math.sin(angle);
 
     const d = document.createElement("div");
     d.className = "dot senate";
     d.style.left = `${x}px`;
     d.style.top  = `${y}px`;
-    wrap.appendChild(d);
+    senate.appendChild(d);
   }
 });
-
-/* CENTER */
-const c = document.createElement("div");
-c.className = "capitol";
-wrap.appendChild(c);
 </script>
 
 </body>
