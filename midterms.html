@@ -189,27 +189,29 @@ const house = document.getElementById("house");
 });
 
 /* ===== SENATE (VISIBLE ARC BELOW) ===== */
-const senateRows = [
-  { seats:5, radius:95 },
-  { seats:3, radius:75 }
-];
+/* ===== SENATE (BOTTOM ARC) ===== */
+const senate = document.getElementById("senate");
 
-senateRows.forEach(row=>{
+[
+  { seats:5, radius:78 },
+  { seats:3, radius:60 }
+].forEach(row=>{
   for(let i=0;i<row.seats;i++){
 
-    // shallow arc
+    // 🔑 ARC instead of perfect semicircle
     const angle =
-      Math.PI * 0.2 +
-      (i / (row.seats - 1 || 1)) * Math.PI * 0.6;
+      Math.PI * 0.15 +
+      (i / (row.seats - 1 || 1)) * Math.PI * 0.7;
 
     const x = CENTER_X + row.radius * Math.cos(angle);
-    const y = CENTER_Y + row.radius * Math.sin(angle) + 55;
+    const y = CENTER_Y + row.radius * Math.sin(angle) + 34; // stays BELOW center
 
     const d = document.createElement("div");
     d.className = "dot senate";
     d.style.left = `${x}px`;
     d.style.top  = `${y}px`;
-    wrap.appendChild(d);
+
+    senate.appendChild(d);
   }
 });
 </script>
