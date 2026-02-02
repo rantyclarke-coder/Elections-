@@ -1,254 +1,160 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8" />
   <title>US MIDTERM ELECTIONS</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
-
   <style>
-    :root{
-      --bg:#000;
-      --muted:#aaa;
-      --divider:#fff;
-
-      /* PARTY SECONDARY (PASTEL) */
-      --dem:#b8c6ff;
-      --rep:#ffc1cc;
-      --nppa:#c6f2d6;
-      --ind:#d4c48a;   /* muted gold */
-      --vac:#777;
-
-      --max-width:420px;
-    }
-
-    html,body{
+    body{
       margin:0;
-      background:var(--bg);
+      background:#000;
       color:#fff;
       font-family:Inter,system-ui;
     }
 
     .page{
-      max-width:var(--max-width);
+      max-width:420px;
       margin:0 auto;
-      padding:16px 14px 20px;
+      padding:16px;
     }
 
-    /* HEADER */
-    .title{
+    h1{
       text-align:center;
-      font-weight:900;
       letter-spacing:2px;
-      font-size:28px;
+      font-size:26px;
+      margin-bottom:6px;
     }
 
-    .subtitle{
+    .sub{
       text-align:center;
-      color:var(--muted);
+      color:#aaa;
       font-size:12px;
       letter-spacing:3px;
-      margin-top:4px;
     }
 
-    .divider{
-      width:72px;
-      height:3px;
-      background:#fff;
-      margin:14px auto 18px;
-      border-radius:2px;
+    /* 👇 PUSH EVERYTHING DOWN */
+    .content{
+      margin-top:36px;
     }
 
-    /* TOGGLES */
-    .toggles{
-      display:flex;
-      justify-content:center;
-      gap:18px;
-      margin-bottom:20px;
-      font-size:13px;
-      font-weight:700;
-      letter-spacing:1px;
-    }
-
-    .toggle{
-      opacity:.6;
-    }
-
-    .toggle.active{
-      opacity:1;
-    }
-
-    /* CENTRAL CONGRESS BLOCK */
-    .congress{
+    /* ======================
+       CENTRAL COMPOSITION
+    ====================== */
+    .capitol-wrap{
       display:flex;
       flex-direction:column;
       align-items:center;
       gap:14px;
+      margin-bottom:32px;
     }
 
-    /* HOUSE HEMI (30) */
-    .hemi.house{
-      display:grid;
-      grid-template-columns:repeat(15, 1fr);
-      gap:4px;
-      width:100%;
-      max-width:260px;
-    }
-
-    /* SENATE HEMI (8) */
-    .hemi.senate{
-      display:grid;
-      grid-template-columns:repeat(4, 1fr);
+    /* HOUSE HEMICYCLE */
+    .house-hemi,
+    .senate-hemi{
+      display:flex;
+      justify-content:center;
       gap:6px;
-      width:120px;
     }
 
-    .seat{
-      width:100%;
-      padding-top:100%;
+    .house-hemi div,
+    .senate-hemi div{
+      width:12px;
+      height:12px;
       border-radius:50%;
-      background:#444;
+      background:#444; /* placeholder */
     }
 
-    /* CONGRESS IMAGE + RING */
-    .congress-core{
-      position:relative;
-      width:140px;
-      height:140px;
+    /* CENTRAL PLACEHOLDER */
+    .capitol{
+      width:120px;        /* smaller */
+      height:120px;
       border-radius:50%;
       background:#111;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      overflow:hidden;
+      border:3px solid #555; /* will be split later */
     }
 
-    /* circular ring split into two halves */
-    .ring{
-      position:absolute;
-      inset:0;
-      border-radius:50%;
-      border:4px solid transparent;
-      pointer-events:none;
-    }
-
-    .ring.house{
-      border-top-color:var(--dem); /* placeholder */
-      border-left-color:var(--dem);
-      border-right-color:var(--dem);
-    }
-
-    .ring.senate{
-      border-bottom-color:var(--rep); /* placeholder */
-      border-left-color:var(--rep);
-      border-right-color:var(--rep);
-    }
-
-    .congress-core img{
-      width:72%;
-      height:72%;
-      object-fit:contain;
-      opacity:.85;
-    }
-
-    /* LOWER PANELS */
-    .panels{
+    /* ======================
+       LOWER COMPOSITION
+    ====================== */
+    .split{
       display:grid;
       grid-template-columns:1fr 1fr;
-      gap:14px;
-      margin-top:20px;
+      gap:16px;
+      margin-top:24px;
     }
 
     .panel{
-      border:1px solid #333;
-      border-radius:6px;
-      padding:10px;
+      border-top:1px solid #333;
+      padding-top:12px;
+      font-size:12px;
     }
 
     .panel h3{
       margin:0 0 8px;
       font-size:13px;
       letter-spacing:1px;
-      text-align:center;
-      opacity:.9;
+      color:#ccc;
     }
 
-    .row{
-      display:flex;
-      justify-content:space-between;
+    .back{
+      margin-top:28px;
+      text-align:center;
       font-size:12px;
-      margin:4px 0;
+      opacity:.6;
     }
   </style>
 </head>
 
 <body>
-<div class="page">
+  <div class="page">
 
-  <div class="title">US MIDTERM ELECTIONS</div>
-  <div class="subtitle">XXXX ELECTION NIGHT</div>
-  <div class="divider"></div>
+    <h1>US MIDTERM ELECTIONS</h1>
+    <div class="sub">XXXX ELECTION NIGHT</div>
 
-  <!-- TOGGLES -->
-  <div class="toggles">
-    <div class="toggle active">CONGRESS</div>
-    <div class="toggle">GOVERNOR</div>
+    <div class="content">
+
+      <!-- CENTRAL VISUAL -->
+      <div class="capitol-wrap">
+
+        <!-- HOUSE (30 seats) -->
+        <div class="house-hemi">
+          <div></div><div></div><div></div><div></div><div></div>
+          <div></div><div></div><div></div><div></div><div></div>
+          <div></div><div></div><div></div><div></div><div></div>
+          <div></div><div></div><div></div><div></div><div></div>
+          <div></div><div></div><div></div><div></div><div></div>
+          <div></div><div></div><div></div><div></div><div></div>
+        </div>
+
+        <!-- CENTRAL PLACEHOLDER -->
+        <div class="capitol"></div>
+
+        <!-- SENATE (8 seats) -->
+        <div class="senate-hemi">
+          <div></div><div></div><div></div><div></div>
+          <div></div><div></div><div></div><div></div>
+        </div>
+
+      </div>
+
+      <!-- LOWER PANELS -->
+      <div class="split">
+        <div class="panel">
+          <h3>HOUSE OF REPRESENTATIVES</h3>
+          <!-- party composition goes here -->
+        </div>
+
+        <div class="panel">
+          <h3>SENATE</h3>
+          <!-- party composition goes here -->
+        </div>
+      </div>
+
+      <div class="back">BACK</div>
+
+    </div>
   </div>
-
-  <!-- CONGRESS CORE -->
-  <div class="congress">
-
-    <!-- HOUSE HEMI -->
-    <div class="hemi house">
-      <!-- 30 seats -->
-      <!-- JS will color these -->
-      <div class="seat"></div><!-- x30 -->
-    </div>
-
-    <!-- CORE -->
-    <div class="congress-core">
-      <div class="ring house"></div>
-      <div class="ring senate"></div>
-      <!-- placeholder image -->
-      <img src="images/capitol.png" alt="Congress">
-    </div>
-
-    <!-- SENATE HEMI -->
-    <div class="hemi senate">
-      <!-- 8 seats -->
-      <div class="seat"></div><!-- x8 -->
-    </div>
-
-  </div>
-
-  <!-- PANELS -->
-  <div class="panels">
-
-    <!-- HOUSE PANEL -->
-    <div class="panel">
-      <h3>HOUSE OF REPRESENTATIVES</h3>
-      <div class="row"><span>DEMOCRAT</span><span>—</span></div>
-      <div class="row"><span>REPUBLICAN</span><span>—</span></div>
-      <div class="row"><span>NPPA</span><span>—</span></div>
-      <div class="row"><span>INDEPENDENT</span><span>—</span></div>
-      <div class="row"><span>VACANT</span><span>—</span></div>
-    </div>
-
-    <!-- SENATE PANEL -->
-    <div class="panel">
-      <h3>SENATE</h3>
-      <div class="row"><span>DEMOCRAT</span><span>—</span></div>
-      <div class="row"><span>REPUBLICAN</span><span>—</span></div>
-      <div class="row"><span>NPPA</span><span>—</span></div>
-      <div class="row"><span>INDEPENDENT</span><span>—</span></div>
-      <div class="row"><span>VACANT</span><span>—</span></div>
-    </div>
-
-  </div>
-
-</div>
 </body>
 </html>
