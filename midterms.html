@@ -81,18 +81,26 @@ h1{
   top:50%;
   transform:translate(-50%,-50%);
   width:86px;
-  height:88px;                 /* vertical ellipse */
+  height:88px;
   border-radius:50%;
   background:#111;
-
-  border:6px solid transparent;
-  border-image: linear-gradient(
-    to bottom,
-    var(--house-border) 50%,
-    var(--senate-border) 50%
-  ) 1;
-overflow:hidden;
+  overflow:hidden;
   z-index:3;
+}
+
+/* 🔵 BORDER RING (separate layer) */
+.capitol::before{
+  content:"";
+  position:absolute;
+  inset:-6px;                  /* border thickness */
+  border-radius:50%;
+  background:
+    linear-gradient(
+      to bottom,
+      var(--house-border) 50%,
+      var(--senate-border) 50%
+    );
+  z-index:-1;
 }
 
   .capitol img{
