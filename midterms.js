@@ -211,21 +211,22 @@ while (r > 0 && right >= left) {
   right--;
 }
 
-/* ---- CENTER → OTHERS ---- */
-[
-  ["N", n],
-  ["I", i],
-  ["V", v]
-].forEach(([code, count]) => {
-  while (count > 0 && left <= right) {
-    columns[left].forEach(dot => {
-      if (!dot.style.background && count > 0) {
-        dot.style.background = PARTIES[code].primary;
-        count--;
-      }
-    });
-    left++;
-  }
+/* ---- CENTER → OTHERS (AFTER BOTH SIDES LOCKED) ---- */
+const centerCols = columns.slice(left, right + 1);
+
+let centerFill = [];
+for (let k = 0; k < n; k++) centerFill.push("N");
+for (let k = 0; k < i; k++) centerFill.push("I");
+for (let k = 0; k < v; k++) centerFill.push("V");
+
+let idx = 0;
+centerCols.forEach(col => {
+  col.forEach(dot => {
+    if (idx < centerFill.length) {
+      dot.style.background = PARTIES[centerFill[idx]].primary;
+      idx++;
+    }
+  });
 });
 
   senateDots.forEach((dot, i) => {
