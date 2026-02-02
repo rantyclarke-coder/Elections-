@@ -12,12 +12,32 @@ document.addEventListener("DOMContentLoaded", () => {
   ========================= */
 
   const PARTIES = {
-    D: { name:"DEMOCRAT",    secondary:"#b8c6ff" },
-    R: { name:"REPUBLICAN",  secondary:"#ffc1cc" },
-    N: { name:"NPPA",        secondary:"#b9f1cf" },
-    I: { name:"INDEPENDENT", secondary:"#e6d79c" },
-    V: { name:"VACANT",      secondary:"#999999" }
-  };
+  D: {
+    name: "DEMOCRAT",
+    primary: "#1e3fd9",      // strong blue
+    secondary: "#b8c6ff"     // pastel blue
+  },
+  R: {
+    name: "REPUBLICAN",
+    primary: "#dc143c",      // strong red
+    secondary: "#ffc1cc"     // pastel red
+  },
+  N: {
+    name: "NPPA",
+    primary: "#2ecc71",      // strong green
+    secondary: "#b9f1cf"     // pastel green
+  },
+  I: {
+    name: "INDEPENDENT",
+    primary: "#bfa23a",      // muted gold
+    secondary: "#e6d79c"     // light gold
+  },
+  V: {
+    name: "VACANT",
+    primary: "#666666",      // dark gray
+    secondary: "#999999"     // light gray
+  }
+};
 
   /* =========================
      STORAGE
@@ -130,21 +150,21 @@ document.addEventListener("DOMContentLoaded", () => {
   ========================= */
 
   function colorHemicycles() {
-    const houseDots  = document.querySelectorAll(".dot.house");
-    const senateDots = document.querySelectorAll(".dot.senate");
+  const houseDots  = document.querySelectorAll(".dot.house");
+  const senateDots = document.querySelectorAll(".dot.senate");
 
-    const houseArr  = buildSeatArray(houseSeats);
-    const senateArr = buildSeatArray(senateSeats);
+  const houseArr  = buildSeatArray(houseSeats);
+  const senateArr = buildSeatArray(senateSeats);
 
-    houseDots.forEach((dot, i) => {
-      const party = houseArr[i] || "V";
-      dot.style.background = PARTIES[party].secondary;
-    });
+  houseDots.forEach((dot, i) => {
+    const party = houseArr[i] || "V";
+    dot.style.background = PARTIES[party].primary;
+  });
 
-    senateDots.forEach((dot, i) => {
-      const party = senateArr[i] || "V";
-      dot.style.background = PARTIES[party].secondary;
-    });
+  senateDots.forEach((dot, i) => {
+    const party = senateArr[i] || "V";
+    dot.style.background = PARTIES[party].primary;
+  });
   }
 
   /* =========================
