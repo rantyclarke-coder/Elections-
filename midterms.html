@@ -40,6 +40,30 @@ h1{
   margin:24px 0 42px;
 }
 
+  .toggle{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:10px;
+  margin-bottom:24px;
+  font-size:12px;
+  letter-spacing:2px;
+}
+
+.toggle-btn{
+  cursor:pointer;
+  color:#888;
+}
+
+.toggle-btn.active{
+  color:#fff;
+  font-weight:700;
+}
+
+.toggle-sep{
+  color:#666;
+}
+  
 /* VISUAL WRAP */
 .capitol-wrap{
   position:relative;
@@ -87,7 +111,7 @@ h1{
 }
 
 .senate-group{
-  transform: translateY(0px);  /* move SENATE up/down */
+  transform: translateY(-3px, -10px);  /* move SENATE up/down */
 }
 
 /* DOTS */
@@ -214,6 +238,21 @@ const senate = document.getElementById("senate");
 
     senate.appendChild(d);
   }
+});
+
+  document.querySelectorAll(".toggle-btn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    document.querySelectorAll(".toggle-btn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+
+    const view = btn.dataset.view;
+
+    // FOR NOW: just log (nothing breaks)
+    console.log("Switched to:", view);
+
+    // Later:
+    // if(view==="governor") window.location.href="governor.html";
+  });
 });
 </script>
 
