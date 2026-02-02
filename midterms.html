@@ -19,10 +19,9 @@ body{
   padding:16px;
 }
 
-/* HEADER */
 h1{
   text-align:center;
-  font-size:30px;
+  font-size:28px;
   font-weight:900;
   letter-spacing:2px;
   margin-bottom:6px;
@@ -38,22 +37,22 @@ h1{
 .divider{
   height:2px;
   background:#fff;
-  margin:24px 0 44px;
+  margin:24px 0 42px;
 }
 
-/* CENTRAL VISUAL */
+/* VISUAL WRAP */
 .capitol-wrap{
   position:relative;
-  width:280px;
-  height:280px;
-  margin:0 auto 44px;
+  width:300px;
+  height:300px;
+  margin:0 auto 40px;
 }
 
-/* CENTRAL CIRCLE */
+/* CENTER */
 .capitol{
   position:absolute;
-  top:50%;
   left:50%;
+  top:50%;
   transform:translate(-50%,-50%);
   width:72px;
   height:72px;
@@ -67,7 +66,19 @@ h1{
 .dot{
   position:absolute;
   border-radius:50%;
-  background:#666;
+  background:#777;
+}
+
+/* HOUSE dots smaller */
+.dot.house{
+  width:8px;
+  height:8px;
+}
+
+/* SENATE dots bigger */
+.dot.senate{
+  width:11px;
+  height:11px;
 }
 
 /* LOWER PANELS */
@@ -84,11 +95,10 @@ h1{
 }
 
 .panel h3{
-  margin:0 0 8px;
+  margin:0;
   font-size:13px;
   letter-spacing:1px;
   color:#ccc;
-  text-align:center;
 }
 
 .back{
@@ -125,60 +135,55 @@ h1{
 <script>
 const wrap = document.getElementById("capitol");
 
-const CX = 140;
-const CY = 140;
+/* FIXED CENTER — DO NOT TOUCH */
+const CENTER_X = 150;
+const CENTER_Y = 150;
 
-/* ---------------- HOUSE ---------------- */
+/* ===== HOUSE (ABOVE) ===== */
 const houseRows = [
-  { seats:12, radius:86 },
-  { seats:10, radius:70 },
-  { seats:8,  radius:54 }
+  { seats:12, radius:110 },
+  { seats:10, radius:90 },
+  { seats:8,  radius:70 }
 ];
 
 houseRows.forEach(row=>{
   for(let i=0;i<row.seats;i++){
-    const angle =
-  ((180 + (180/(row.seats-1))*i) + 180) * Math.PI / 180;
-
-    const x = CX + row.radius * Math.cos(angle);
-    const y = centerY - row.radius * Math.sin(angle) + 30;
+    const angle = Math.PI + (i/(row.seats-1)) * Math.PI;
+    const x = CENTER_X + row.radius * Math.cos(angle);
+    const y = CENTER_Y - row.radius * Math.sin(angle) - 20;
 
     const d = document.createElement("div");
-    d.className = "dot";
-    d.style.width = d.style.height = "8px";
-    d.style.left = `${x-4}px`;
-    d.style.top  = `${y-4}px`;
+    d.className = "dot house";
+    d.style.left = `${x}px`;
+    d.style.top  = `${y}px`;
     wrap.appendChild(d);
   }
 });
 
-/* CENTRAL PLACEHOLDER */
-const cap = document.createElement("div");
-cap.className = "capitol";
-wrap.appendChild(cap);
-
-/* ---------------- SENATE ---------------- */
+/* ===== SENATE (BELOW) ===== */
 const senateRows = [
-  { seats:5, radius:54 },
-  { seats:3, radius:38 }
+  { seats:5, radius:70 },
+  { seats:3, radius:52 }
 ];
 
 senateRows.forEach(row=>{
   for(let i=0;i<row.seats;i++){
-    const angle =
-      (i/(row.seats-1||1)) * Math.PI;
-
-    const x = CX + row.radius * Math.cos(angle);
-    const y = CY + 46 + row.radius * Math.sin(angle);
+    const angle = (i/(row.seats-1)) * Math.PI;
+    const x = CENTER_X + row.radius * Math.cos(angle);
+    const y = CENTER_Y + row.radius * Math.sin(angle) + 20;
 
     const d = document.createElement("div");
-    d.className = "dot";
-    d.style.width = d.style.height = "11px";
-    d.style.left = `${x-5.5}px`;
-    d.style.top  = `${y-5.5}px`;
+    d.className = "dot senate";
+    d.style.left = `${x}px`;
+    d.style.top  = `${y}px`;
     wrap.appendChild(d);
   }
 });
+
+/* CENTER */
+const c = document.createElement("div");
+c.className = "capitol";
+wrap.appendChild(c);
 </script>
 
 </body>
