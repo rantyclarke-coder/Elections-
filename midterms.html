@@ -1,20 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
+<meta charset="UTF-8">
 <title>US MIDTERM ELECTIONS</title>
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-:root{
-  --bg:#000;
-  --muted:#aaa;
-  --white:#fff;
-}
-
-html,body{
+body{
   margin:0;
   background:#000;
   color:#fff;
@@ -24,191 +16,151 @@ html,body{
 .page{
   max-width:420px;
   margin:0 auto;
-  padding:18px 16px 22px;
+  padding:16px;
 }
 
 /* HEADER */
-.title{
+h1{
   text-align:center;
+  font-size:28px;
   font-weight:900;
-  font-size:30px;
   letter-spacing:2px;
+  margin-bottom:6px;
 }
 
-.subtitle{
+.sub{
   text-align:center;
   font-size:12px;
   letter-spacing:3px;
-  color:var(--muted);
-  margin-top:6px;
+  color:#aaa;
 }
 
-/* DIVIDER */
 .divider{
-  width:100%;
-  height:1px;
+  height:2px;
   background:#fff;
-  margin:18px 0 28px;
-  opacity:.9;
+  margin:24px 0 42px;
 }
 
 /* CENTRAL VISUAL */
-.central{
+.capitol-wrap{
   position:relative;
-  height:260px;
+  width:280px;
+  height:280px;
+  margin:0 auto 40px;
 }
 
-/* PLACEHOLDER */
-.placeholder{
+/* CENTRAL CIRCLE (SMALLER) */
+.capitol{
   position:absolute;
-  inset:0;
-  margin:auto;
-  width:110px;
-  height:110px;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:80px;
+  height:80px;
   border-radius:50%;
-  border:3px solid #555;
   background:#111;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:700;
-  font-size:11px;
-  color:#777;
+  border:3px solid #555;
+  z-index:3;
 }
 
-/* HEMICYCLES */
-.hemi{
-  position:absolute;
-  inset:0;
-}
-
+/* DOT */
 .dot{
   position:absolute;
-  width:10px;
-  height:10px;
+  width:9px;
+  height:9px;
   border-radius:50%;
-  background:#ccc;
+  background:#555;
 }
 
-/* PANELS */
-.panels{
-  display:flex;
-  gap:14px;
-  margin-top:18px;
+/* LOWER PANELS */
+.split{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
 }
 
 .panel{
-  flex:1;
-  border-top:1px solid rgba(255,255,255,.25);
+  border-top:1px solid #333;
   padding-top:12px;
+  font-size:12px;
 }
 
 .panel h3{
-  margin:0;
+  margin:0 0 8px;
   font-size:13px;
-  letter-spacing:2px;
+  letter-spacing:1px;
   color:#ccc;
-  text-align:center;
-  line-height:1.2;
 }
 
+.back{
+  margin-top:28px;
+  text-align:center;
+  font-size:12px;
+  opacity:.6;
+}
 </style>
 </head>
 
 <body>
 <div class="page">
 
-  <div class="title">US MIDTERM ELECTIONS</div>
-  <div class="subtitle">LIVE ELECTION NIGHT</div>
+<h1>US MIDTERM ELECTIONS</h1>
+<div class="sub">XXXX ELECTION NIGHT</div>
+<div class="divider"></div>
 
-  <div class="divider"></div>
+<div class="capitol-wrap" id="capitol">
 
-  <!-- CENTRAL VISUAL -->
-  <div class="central">
+  <!-- HOUSE: 3 CONCENTRIC SEMICIRCLES -->
+  <script>
+    const houseRows = [
+      { seats:12, radius:120 },
+      { seats:10, radius:100 },
+      { seats:8,  radius:80  }
+    ];
 
-    <!-- HOUSE HEMICYCLES -->
-    <div class="hemi" id="house-hemi"></div>
+    houseRows.forEach(row=>{
+      for(let i=0;i<row.seats;i++){
+        const angle = (-160 + (140/(row.seats-1))*i) * Math.PI/180;
+        const x = 140 + row.radius * Math.cos(angle);
+        const y = 140 + row.radius * Math.sin(angle);
+        document.write(`<div class="dot" style="left:${x}px;top:${y}px;"></div>`);
+      }
+    });
+  </script>
 
-    <!-- PLACEHOLDER -->
-    <div class="placeholder">CONGRESS</div>
+  <!-- CENTRAL PLACEHOLDER -->
+  <div class="capitol"></div>
 
-    <!-- SENATE HEMICYCLES -->
-    <div class="hemi" id="senate-hemi"></div>
+  <!-- SENATE: 2 CONCENTRIC SEMICIRCLES -->
+  <script>
+    const senateRows = [
+      { seats:5, radius:80 },
+      { seats:3, radius:62 }
+    ];
 
-  </div>
-
-  <!-- PANELS -->
-  <div class="panels">
-    <div class="panel">
-      <h3>
-        HOUSE<br>
-        OF REPRESENTATIVES
-      </h3>
-    </div>
-
-    <div class="panel">
-      <h3>SENATE</h3>
-    </div>
-  </div>
+    senateRows.forEach(row=>{
+      for(let i=0;i<row.seats;i++){
+        const angle = (20 + (140/(row.seats-1))*i) * Math.PI/180;
+        const x = 140 + row.radius * Math.cos(angle);
+        const y = 140 + row.radius * Math.sin(angle);
+        document.write(`<div class="dot" style="left:${x}px;top:${y}px;"></div>`);
+      }
+    });
+  </script>
 
 </div>
 
-<script>
-/* =========================
-   HEMICYCLE RENDERING
-========================= */
+<div class="split">
+  <div class="panel">
+    <h3>HOUSE OF REPRESENTATIVES</h3>
+  </div>
+  <div class="panel">
+    <h3>SENATE</h3>
+  </div>
+</div>
 
-function drawHemicycle(containerId, rows, radiusBase, isTop){
-  const el = document.getElementById(containerId);
-  el.innerHTML = "";
+<div class="back">BACK</div>
 
-  const cx = 210;
-  const cy = 130;
-
-  rows.forEach((row, rowIndex)=>{
-    const radius = radiusBase + rowIndex*14;
-
-    for(let i=0;i<row.seats;i++){
-      const angle = isTop
-        ? (180 + (180/(row.seats-1))*i) * Math.PI/180
-        : ((180/(row.seats-1))*i) * Math.PI/180;
-
-      const x = cx + radius * Math.cos(angle);
-      const y = cy + radius * Math.sin(angle);
-
-      const dot = document.createElement("div");
-      dot.className = "dot";
-      dot.style.left = x+"px";
-      dot.style.top = y+"px";
-      dot.style.background = row.color;
-
-      el.appendChild(dot);
-    }
-  });
-}
-
-/* NORMALISED DATA */
-drawHemicycle(
-  "house-hemi",
-  [
-    { seats: 30, color:"#b8c6ff" },
-    { seats: 26, color:"#ffc1cc" },
-    { seats: 22, color:"#d6c48a" }
-  ],
-  78,
-  true
-);
-
-drawHemicycle(
-  "senate-hemi",
-  [
-    { seats: 8, color:"#b8c6ff" },
-    { seats: 6, color:"#ffc1cc" }
-  ],
-  58,
-  false
-);
-</script>
-
+</div>
 </body>
 </html>
