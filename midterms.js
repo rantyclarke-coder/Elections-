@@ -66,6 +66,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       /* ---- ELECTION YEAR ---- */
       electionYear = rows[10]?.[20]?.trim(); // U11
+      // Inject election year into subtitle
+const yearSpan = document.getElementById("election-year");
+if (yearSpan && electionYear) {
+  yearSpan.textContent = electionYear;
+}
 
       /* ---- HOUSE COMPOSITION ---- */
       for (let r = 13; r <= 17; r++) {        // U14–U18
