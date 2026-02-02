@@ -141,7 +141,7 @@ houseRows.forEach(row=>{
   ((180 + (180/(row.seats-1))*i) + 180) * Math.PI / 180;
 
     const x = CX + row.radius * Math.cos(angle);
-    const y = CY - 46 - row.radius * Math.sin(angle);
+    const y = centerY - row.radius * Math.sin(angle) + 30;
 
     const d = document.createElement("div");
     d.className = "dot";
