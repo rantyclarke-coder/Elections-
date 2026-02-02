@@ -148,7 +148,8 @@ const houseRows = [
 
 houseRows.forEach(row=>{
   for(let i=0;i<row.seats;i++){
-    const angle = (i / (row.seats - 1)) * Math.PI + Math.PI;
+    const angle =
+  Math.PI + (i / (row.seats - 1 || 1)) * Math.PI;
     const x = CENTER_X + row.radius * Math.cos(angle);
     const y = CENTER_Y - row.radius * Math.sin(angle) - 20;
 
