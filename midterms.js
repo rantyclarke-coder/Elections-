@@ -199,21 +199,15 @@ while (d > 0 && left < columns.length) {
   left++;
 }
 
-/* ---- RIGHT → REPUBLICANS (FIXED) ---- */
-
+/* ---- RIGHT → REPUBLICANS (MIRRORED) ---- */
 let right = columns.length - 1;
-
 while (r > 0 && right >= 0) {
-
-  // TOP → MIDDLE → BOTTOM (row-wise)
-  for (let row = 0; row < houseRows.length; row++) {
-    const dot = houseRows[row][right];
-    if (dot && r > 0 && !dot.style.background) {
+  columns[right].forEach(dot => {
+    if (r > 0 && !dot.style.background) {
       dot.style.background = PARTIES.R.primary;
       r--;
     }
-  }
-
+  });
   right--;
 }
 
