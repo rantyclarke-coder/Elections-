@@ -119,18 +119,17 @@ document.addEventListener("DOMContentLoaded", () => {
   ========================= */
 
   function applyPlaceholderBorder() {
-    const capitol = document.querySelector(".capitol");
-    if (!capitol) return;
+  const root = document.documentElement;
 
-    const houseColor =
-      PARTIES[HOUSE_WINNER]?.secondary || PARTIES.V.secondary;
+  root.style.setProperty(
+    "--house-border",
+    PARTIES[HOUSE_WINNER]?.secondary || PARTIES.V.secondary
+  );
 
-    const senateColor =
-      PARTIES[SENATE_WINNER]?.secondary || PARTIES.V.secondary;
-
-    /* Set CSS variables ON ELEMENT */
-    capitol.style.setProperty("--house-border", houseColor);
-    capitol.style.setProperty("--senate-border", senateColor);
+  root.style.setProperty(
+    "--senate-border",
+    PARTIES[SENATE_WINNER]?.secondary || PARTIES.V.secondary
+  );
   }
 
 });
