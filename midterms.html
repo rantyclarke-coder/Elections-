@@ -48,7 +48,7 @@ h1{
   margin:24px 0 28px;       /* balanced spacing */
   font-size:12px;
   letter-spacing:2px;
-    transform: translateX(3px);
+    transform: translateX(4px);
   }
 .toggle-btn{
   cursor:pointer;
@@ -80,13 +80,19 @@ h1{
   left:50%;
   top:50%;
   transform:translate(-50%,-50%);
-  width:86px;
-  height:88px;
+  width:80px;
+  height:82px;                 /* vertical ellipse */
   border-radius:50%;
   background:#111;
-  border:3px solid #555;
-  z-index:5;
-  overflow:hidden;
+
+  border:4px solid transparent;
+  border-image: linear-gradient(
+    to bottom,
+    var(--house-border) 50%,
+    var(--senate-border) 50%
+  ) 1;
+
+  z-index:3;
 }
 
   .capitol img{
