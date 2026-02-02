@@ -120,7 +120,9 @@ h1{
 
     houseRows.forEach(row=>{
       for(let i=0;i<row.seats;i++){
-        const angle = (180 + (180/(row.seats-1))*i) * Math.PI/180;
+        const angle =
+  Math.PI * 0.1 +
+  (i / (row.seats - 1 || 1)) * Math.PI * 0.8;
         const x = 140 + row.radius * Math.cos(angle);
         const y = 140 + row.radius * Math.sin(angle);
         document.write(`<div class="dot" style="left:${x}px;top:${y}px;"></div>`);
