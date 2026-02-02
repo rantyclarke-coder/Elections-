@@ -117,17 +117,18 @@ document.addEventListener("DOMContentLoaded", () => {
   ========================= */
 
   function applyPlaceholderBorder() {
-    const root = document.documentElement;
+  const capitol = document.querySelector(".capitol");
+  if (!capitol) return;
 
-    const houseColor =
-      PARTIES[HOUSE_WINNER]?.secondary || PARTIES.V.secondary;
+  const houseColor =
+    PARTIES[HOUSE_WINNER]?.secondary || PARTIES.V.secondary;
 
-    const senateColor =
-      PARTIES[SENATE_WINNER]?.secondary || PARTIES.V.secondary;
+  const senateColor =
+    PARTIES[SENATE_WINNER]?.secondary || PARTIES.V.secondary;
 
-    /* CSS variables consumed by HTML/CSS */
-    root.style.setProperty("--house-border", houseColor);
-    root.style.setProperty("--senate-border", senateColor);
+  // Apply variables DIRECTLY on the element that uses border-image
+  capitol.style.setProperty("--house-border", houseColor);
+  capitol.style.setProperty("--senate-border", senateColor);
   }
 
 });
