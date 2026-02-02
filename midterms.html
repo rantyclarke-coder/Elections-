@@ -22,7 +22,7 @@ body{
 /* HEADER */
 h1{
   text-align:center;
-  font-size:28px;
+  font-size:30px;
   font-weight:900;
   letter-spacing:2px;
   margin-bottom:6px;
@@ -38,7 +38,7 @@ h1{
 .divider{
   height:2px;
   background:#fff;
-  margin:24px 0 42px;
+  margin:24px 0 44px;
 }
 
 /* CENTRAL VISUAL */
@@ -46,30 +46,28 @@ h1{
   position:relative;
   width:280px;
   height:280px;
-  margin:0 auto 40px;
+  margin:0 auto 44px;
 }
 
-/* CENTRAL CIRCLE (SMALLER) */
+/* CENTRAL CIRCLE */
 .capitol{
   position:absolute;
   top:50%;
   left:50%;
   transform:translate(-50%,-50%);
-  width:80px;
-  height:80px;
+  width:72px;
+  height:72px;
   border-radius:50%;
   background:#111;
   border:3px solid #555;
   z-index:3;
 }
 
-/* DOT */
+/* DOTS */
 .dot{
   position:absolute;
-  width:9px;
-  height:9px;
   border-radius:50%;
-  background:#555;
+  background:#666;
 }
 
 /* LOWER PANELS */
@@ -90,6 +88,7 @@ h1{
   font-size:13px;
   letter-spacing:1px;
   color:#ccc;
+  text-align:center;
 }
 
 .back{
@@ -108,54 +107,11 @@ h1{
 <div class="sub">XXXX ELECTION NIGHT</div>
 <div class="divider"></div>
 
-<div class="capitol-wrap" id="capitol">
-
-  <!-- HOUSE: 3 CONCENTRIC SEMICIRCLES -->
-  <script>
-    const houseRows = [
-      { seats:12, radius:120 },
-      { seats:10, radius:100 },
-      { seats:8,  radius:80  }
-    ];
-
-    houseRows.forEach(row=>{
-      for(let i=0;i<row.seats;i++){
-        const angle = (180 + (180/(row.seats-1))*i) * Math.PI/180;
-        const x = 140 + row.radius * Math.cos(angle);
-        const y = centerY - radius * Math.sin(angle);
-        document.write(`<div class="dot" style="left:${x}px;top:${y}px;"></div>`);
-      }
-    });
-  </script>
-
-  <!-- CENTRAL PLACEHOLDER -->
-  <div class="capitol"></div>
-
-  <!-- SENATE: 2 CONCENTRIC SEMICIRCLES -->
-  <script>
-    const senateRows = [
-      { seats:5, radius:80 },
-      { seats:3, radius:62 }
-    ];
-
-    senateRows.forEach(row=>{
-      for(let i=0;i<row.seats;i++){
-        const angle = (20 + (140/(row.seats-1))*i) * Math.PI/180;
-        const x = 140 + row.radius * Math.cos(angle);
-        const y = 140 + row.radius * Math.sin(angle);
-        document.write(`<div class="dot" style="left:${x}px;top:${y}px;"></div>`);
-      }
-    });
-  </script>
-
-</div>
+<div class="capitol-wrap" id="capitol"></div>
 
 <div class="split">
   <div class="panel">
-    <h3>
-  HOUSE<br>
-  OF REPRESENTATIVES
-    </h3>
+    <h3>HOUSE<br>OF REPRESENTATIVES</h3>
   </div>
   <div class="panel">
     <h3>SENATE</h3>
@@ -165,5 +121,65 @@ h1{
 <div class="back">BACK</div>
 
 </div>
+
+<script>
+const wrap = document.getElementById("capitol");
+
+const CX = 140;
+const CY = 140;
+
+/* ---------------- HOUSE ---------------- */
+const houseRows = [
+  { seats:12, radius:86 },
+  { seats:10, radius:70 },
+  { seats:8,  radius:54 }
+];
+
+houseRows.forEach(row=>{
+  for(let i=0;i<row.seats;i++){
+    const angle =
+      Math.PI + (i/(row.seats-1||1)) * Math.PI;
+
+    const x = CX + row.radius * Math.cos(angle);
+    const y = CY - 46 - row.radius * Math.sin(angle);
+
+    const d = document.createElement("div");
+    d.className = "dot";
+    d.style.width = d.style.height = "8px";
+    d.style.left = `${x-4}px`;
+    d.style.top  = `${y-4}px`;
+    wrap.appendChild(d);
+  }
+});
+
+/* CENTRAL PLACEHOLDER */
+const cap = document.createElement("div");
+cap.className = "capitol";
+wrap.appendChild(cap);
+
+/* ---------------- SENATE ---------------- */
+const senateRows = [
+  { seats:5, radius:54 },
+  { seats:3, radius:38 }
+];
+
+senateRows.forEach(row=>{
+  for(let i=0;i<row.seats;i++){
+    const angle =
+      (i/(row.seats-1||1)) * Math.PI;
+
+    const x = CX + row.radius * Math.cos(angle);
+    const y = CY + 46 + row.radius * Math.sin(angle);
+
+    const d = document.createElement("div");
+    d.className = "dot";
+    d.style.width = d.style.height = "11px";
+    d.style.left = `${x-5.5}px`;
+    d.style.top  = `${y-5.5}px`;
+    wrap.appendChild(d);
+  }
+});
+</script>
+
 </body>
 </html>
