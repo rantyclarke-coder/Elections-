@@ -149,91 +149,85 @@ document.addEventListener("DOMContentLoaded", () => {
      COLOR HEMICYCLES
   ========================= */
 
-  function colorHemicycles() {
-  const houseDots  = document.querySelectorAll(".dot.house");
+      function colorHemicycles() {
+  /* ===== HOUSE DOTS ===== */
+  const allHouseDots = Array.from(document.querySelectorAll(".dot.house"));
+
+  // Split rows exactly as created
+  const rows = [
+    allHouseDots.slice(0, 12),   // INNER
+    allHouseDots.slice(12, 22),  // MIDDLE
+    allHouseDots.slice(22)       // OUTER
+  ];
+
+  /* -------- BUILD COLUMNS (INNER → OUTER) -------- */
+  const maxCols = Math.max(...rows.map(r => r.length));
+  const columns = [];
+
+  for (let c = 0; c < maxCols; c++) {
+    const col = [];
+    rows.forEach(r => {
+      if (r[c]) col.push(r[c]); // inner → middle → outer
+    });
+    columns.push(col);
+  }
+
+  /* -------- SEAT COUNTS -------- */
+  let d = houseSeats.D || 0;
+  let r = houseSeats.R || 0;
+  let n = houseSeats.N || 0;
+  let i = houseSeats.I || 0;
+  let v = houseSeats.V || 0;
+
+  /* ===== DEMOCRATS: LEFT → RIGHT ===== */
+  let left = 0;
+  while (d > 0 && left < columns.length) {
+    columns[left].forEach(dot => {
+      if (d > 0) {
+        dot.style.background = PARTIES.D.primary;
+        d--;
+      }
+    });
+    left++;
+  }
+
+  /* ===== REPUBLICANS: RIGHT → LEFT ===== */
+  let right = columns.length - 1;
+  while (r > 0 && right >= left) {
+    columns[right].forEach(dot => {
+      if (r > 0) {
+        dot.style.background = PARTIES.R.primary;
+        r--;
+      }
+    });
+    right--;
+  }
+
+  /* ===== REMAINING CENTER (GROUPED) ===== */
+  const remaining = [];
+  for (let k = 0; k < n; k++) remaining.push("N");
+  for (let k = 0; k < i; k++) remaining.push("I");
+  for (let k = 0; k < v; k++) remaining.push("V");
+
+  let idx = 0;
+  for (let c = left; c <= right; c++) {
+    columns[c].forEach(dot => {
+      if (idx < remaining.length) {
+        dot.style.background = PARTIES[remaining[idx]].primary;
+        idx++;
+      }
+    });
+  }
+
+  /* ===== SENATE (UNCHANGED SIMPLE FILL) ===== */
   const senateDots = document.querySelectorAll(".dot.senate");
-
-  const houseArr  = buildSeatArray(houseSeats);
   const senateArr = buildSeatArray(senateSeats);
-
-  /* ===== HOUSE COLUMN-WISE PARLIAMENT COLORING ===== */
-
-const rows = [
-  document.querySelectorAll(".house-group .dot.house:nth-child(n+1)")
-];
-
-// 🔴 Build columns manually (3 rows)
-const houseRows = [
-  Array.from(document.querySelectorAll(".house-group .dot.house")).slice(0,12),
-  Array.from(document.querySelectorAll(".house-group .dot.house")).slice(12,22),
-  Array.from(document.querySelectorAll(".house-group .dot.house")).slice(22)
-];
-
-const columns = [];
-const maxCols = Math.max(...houseRows.map(r => r.length));
-
-for (let c = 0; c < maxCols; c++) {
-  const col = [];
-  houseRows.forEach(r => {
-    if (r[c]) col.push(r[c]);
-  });
-  columns.push(col);
-}
-
-/* ---- COUNTS ---- */
-let d = houseSeats.D || 0;
-let r = houseSeats.R || 0;
-let n = houseSeats.N || 0;
-let i = houseSeats.I || 0;
-let v = houseSeats.V || 0;
-
-/* ---- LEFT → DEMOCRATS ---- */
-let left = 0;
-while (d > 0 && left < columns.length) {
-  columns[left].forEach(dot => {
-    if (d > 0) {
-      dot.style.background = PARTIES.D.primary;
-      d--;
-    }
-  });
-  left++;
-}
-
-/* ---- RIGHT → REPUBLICANS (MIRRORED) ---- */
-let right = 0;
-while (r > 0 && right < columns.length) {
-  columns[right].forEach(dot => {
-    if (r > 0) {
-      dot.style.background = PARTIES.R.primary;
-      r--;
-    }
-  });
-  right--;
-}
-
-/* ---- CENTER → OTHERS (AFTER BOTH SIDES LOCKED) ---- */
-const centerCols = columns.slice(left, right + 1);
-
-let centerFill = [];
-for (let k = 0; k < n; k++) centerFill.push("N");
-for (let k = 0; k < i; k++) centerFill.push("I");
-for (let k = 0; k < v; k++) centerFill.push("V");
-
-let idx = 0;
-centerCols.forEach(col => {
-  col.forEach(dot => {
-    if (idx < centerFill.length) {
-      dot.style.background = PARTIES[centerFill[idx]].primary;
-      idx++;
-    }
-  });
-});
 
   senateDots.forEach((dot, i) => {
     const party = senateArr[i] || "V";
     dot.style.background = PARTIES[party].primary;
   });
-  }
+      }
 
   /* =========================
      PARTY COMPOSITION PANELS
