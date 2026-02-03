@@ -1,266 +1,247 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  /* =========================
-     CONFIG
-  ========================= */
+/* =========================
+   CONFIG
+========================= */
 
-  const CSV_URL =
-    "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsbbXqdgfMGosYWjOVNR-2UUw6bZzjGNtnfuuWpbBuTutk6Jm1lffgHUis8GNjfQLFZLkaSpJNlck2/pub?output=csv";
+const CSV_URL =
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsbbXqdgfMGosYWjOVNR-2UUw6bZzjGNtnfuuWpbBuTutk6Jm1lffgHUis8GNjfQLFZLkaSpJNlck2/pub?output=csv";
 
-  /* =========================
-     PARTY DEFINITIONS (LOCKED)
-  ========================= */
+/* =========================
+   PARTY DEFINITIONS (LOCKED)
+========================= */
 
-  const PARTIES = {
-  D: {
-    name: "DEMOCRAT",
-    primary: "#1e3fd9",      // strong blue
-    secondary: "#b8c6ff"     // pastel blue
-  },
-  R: {
-    name: "REPUBLICAN",
-    primary: "#dc143c",      // strong red
-    secondary: "#ffc1cc"     // pastel red
-  },
-  N: {
-    name: "NPPA",
-    primary: "#2ecc71",      // strong green
-    secondary: "#b9f1cf"     // pastel green
-  },
-  I: {
-    name: "INDEPENDENT",
-    primary: "#bfa23a",      // muted gold
-    secondary: "#e6d79c"     // light gold
-  },
-  V: {
-    name: "VACANT",
-    primary: "#666666",      // dark gray
-    secondary: "#999999"     // light gray
-  }
+const PARTIES = {
+  D: { name:"DEMOCRAT",    primary:"#1e3fd9", secondary:"#b8c6ff" },
+  R: { name:"REPUBLICAN",  primary:"#dc143c", secondary:"#ffc1cc" },
+  N: { name:"NPPA",        primary:"#2ecc71", secondary:"#b9f1cf" },
+  I: { name:"INDEPENDENT", primary:"#bfa23a", secondary:"#e6d79c" },
+  V: { name:"VACANT",      primary:"#666666", secondary:"#999999" }
 };
 
-  /* =========================
-     STORAGE
-  ========================= */
+/* =========================
+   STORAGE
+========================= */
 
-  let electionYear = "";
-  const houseSeats = {};
-  const senateSeats = {};
+const houseSeats  = {};
+const senateSeats = {};
 
-  let HOUSE_WINNER = "V";
-  let SENATE_WINNER = "V";
+let HOUSE_WINNER = "V";
+let SENATE_WINNER = "V";
 
-  /* =========================
-     LOAD GOOGLE SHEET
-  ========================= */
+/* =========================
+   PARLIAMENTARY FILL ORDERS
+========================= */
 
-  fetch(CSV_URL)
-    .then(res => res.text())
-    .then(csv => {
-      const rows = csv.split("\n").map(r => r.split(","));
+/* HOUSE: inner → middle → outer, left → right */
+const HOUSE_FILL_ORDER = [];
+for (let c = 0; c < 12; c++) {
+  if (c < 8)  HOUSE_FILL_ORDER.push({ row:"inner",  col:c });
+  if (c < 10) HOUSE_FILL_ORDER.push({ row:"middle", col:c });
+  HOUSE_FILL_ORDER.push({ row:"outer", col:c });
+}
 
-      /* ---- ELECTION YEAR (U11) ---- */
-      electionYear = rows[10]?.[20]?.trim();
-      const yearSpan = document.getElementById("election-year");
-      if (yearSpan && electionYear) {
-        yearSpan.textContent = electionYear;
-      }
+/* SENATE: inner → outer */
+const SENATE_FILL_ORDER = [];
+for (let c = 0; c < 5; c++) {
+  if (c < 3) SENATE_FILL_ORDER.push({ row:"inner", col:c });
+  SENATE_FILL_ORDER.push({ row:"outer", col:c });
+}
 
-      /* ---- HOUSE COMPOSITION (U14–U18 / V) ---- */
-      for (let r = 13; r <= 17; r++) {
-        const party = rows[r]?.[20]?.trim();
-        const seats = Number(rows[r]?.[21]);
-        if (party && !isNaN(seats)) {
-          houseSeats[party] = seats;
-        }
-      }
+/* =========================
+   LOAD GOOGLE SHEET
+========================= */
 
-      /* ---- SENATE COMPOSITION (X14–X18 / Y) ---- */
-      for (let r = 13; r <= 17; r++) {
-        const party = rows[r]?.[23]?.trim();
-        const seats = Number(rows[r]?.[24]);
-        if (party && !isNaN(seats)) {
-          senateSeats[party] = seats;
-        }
-      }
+fetch(CSV_URL)
+  .then(r => r.text())
+  .then(csv => {
+    const rows = csv.split("\n").map(r => r.split(","));
 
-      determineWinners();
-      applyPlaceholderBorder();
-      colorHemicycles();
-      renderComposition("house-panel", houseSeats);
-      renderComposition("senate-panel", senateSeats);
-    })
-    .catch(err => console.error("Midterms CSV error:", err));
+    /* YEAR (U11) */
+    const year = rows[10]?.[20]?.trim();
+    if (year) {
+      const y = document.getElementById("election-year");
+      if (y) y.textContent = year;
+    }
 
-  /* =========================
-     DETERMINE WINNERS
-  ========================= */
+    /* HOUSE (U14–U18 / V) */
+    for (let r = 13; r <= 17; r++) {
+      const p = rows[r]?.[20]?.trim();
+      const s = Number(rows[r]?.[21]);
+      if (p && !isNaN(s)) houseSeats[p] = s;
+    }
 
-  function determineWinners() {
-    HOUSE_WINNER = getTopParty(houseSeats) || "V";
-    SENATE_WINNER = getTopParty(senateSeats) || "V";
-  }
+    /* SENATE (X14–X18 / Y) */
+    for (let r = 13; r <= 17; r++) {
+      const p = rows[r]?.[23]?.trim();
+      const s = Number(rows[r]?.[24]);
+      if (p && !isNaN(s)) senateSeats[p] = s;
+    }
 
-  function getTopParty(obj) {
-    let max = -1;
-    let winner = null;
-    Object.keys(obj).forEach(p => {
-      if (obj[p] > max) {
-        max = obj[p];
-        winner = p;
-      }
-    });
-    return winner;
-  }
-
-  /* =========================
-     PLACEHOLDER BORDER COLOR
-  ========================= */
-
-  function applyPlaceholderBorder() {
-    const root = document.documentElement;
-
-    root.style.setProperty(
-      "--house-border",
-      PARTIES[HOUSE_WINNER]?.secondary || PARTIES.V.secondary
-    );
-
-    root.style.setProperty(
-      "--senate-border",
-      PARTIES[SENATE_WINNER]?.secondary || PARTIES.V.secondary
-    );
-  }
-
-  /* =========================
-     BUILD ORDERED SEAT ARRAYS
-  ========================= */
-
-  function buildSeatArray(seatObj) {
-    const order = ["D","N","I","R","V"];
-    const arr = [];
-    order.forEach(p => {
-      const n = seatObj[p] || 0;
-      for (let i = 0; i < n; i++) arr.push(p);
-    });
-    return arr;
-  }
-
-  /* =========================
-     COLOR HEMICYCLES
-  ========================= */
-
-  function colorHemicycles() {
-  const dots = Array.from(document.querySelectorAll(".dot.house"));
-
-  /* ---- SPLIT ROWS BY Y POSITION ---- */
-  const rows = {};
-  dots.forEach(dot => {
-    const y = dot.offsetTop;
-    if (!rows[y]) rows[y] = [];
-    rows[y].push(dot);
+    determineWinners();
+    applyPlaceholderBorder();
+    colorHouse();
+    colorSenate();
+    renderComposition("house-panel", houseSeats);
+    renderComposition("senate-panel", senateSeats);
   });
 
-  /* ---- SORT ROWS INNER → OUTER ---- */
-  const sortedRows = Object.values(rows)
-    .sort((a, b) => a[0].offsetTop - b[0].offsetTop);
+/* =========================
+   HELPERS
+========================= */
 
-  /* ---- SORT EACH ROW LEFT → RIGHT ---- */
-  sortedRows.forEach(row =>
-    row.sort((a, b) => a.offsetLeft - b.offsetLeft)
-  );
+function determineWinners() {
+  HOUSE_WINNER  = getTopParty(houseSeats)  || "V";
+  SENATE_WINNER = getTopParty(senateSeats) || "V";
+}
 
-  /* ---- BUILD VISUAL COLUMNS ---- */
-  const maxCols = Math.max(...sortedRows.map(r => r.length));
-  const columns = [];
+function getTopParty(obj) {
+  let max = -1, win = null;
+  Object.keys(obj).forEach(p => {
+    if (obj[p] > max) { max = obj[p]; win = p; }
+  });
+  return win;
+}
 
-  for (let c = 0; c < maxCols; c++) {
-    const col = [];
-    sortedRows.forEach(r => {
-      if (r[c]) col.push(r[c]);
-    });
-    columns.push(col);
-  }
+function applyPlaceholderBorder() {
+  const root = document.documentElement;
+  root.style.setProperty("--house-border",  PARTIES[HOUSE_WINNER].secondary);
+  root.style.setProperty("--senate-border", PARTIES[SENATE_WINNER].secondary);
+}
 
-  /* ---- SEAT COUNTS ---- */
+/* =========================
+   DOT LOOKUPS
+========================= */
+
+function buildDotMap(selector) {
+  const map = {};
+  document.querySelectorAll(selector).forEach(dot => {
+    const key = `${dot.dataset.row}-${dot.dataset.col}`;
+    map[key] = dot;
+  });
+  return map;
+}
+
+/* =========================
+   HOUSE COLORING (FIXED)
+========================= */
+
+function colorHouse() {
+  const dots = buildDotMap(".dot.house");
+
   let d = houseSeats.D || 0;
   let r = houseSeats.R || 0;
   let n = houseSeats.N || 0;
   let i = houseSeats.I || 0;
   let v = houseSeats.V || 0;
 
-  /* ---- DEMOCRATS: LEFT → RIGHT ---- */
-  let L = 0;
-  while (d > 0 && L < columns.length) {
-    columns[L].forEach(dot => {
-      if (d > 0) {
-        dot.style.background = PARTIES.D.primary;
-        d--;
-      }
-    });
-    L++;
+  /* DEMOCRATS — LEFT */
+  let idx = 0;
+  while (d > 0 && idx < HOUSE_FILL_ORDER.length) {
+    const s = HOUSE_FILL_ORDER[idx++];
+    dots[`${s.row}-${s.col}`].style.background = PARTIES.D.primary;
+    d--;
   }
 
-  /* ---- REPUBLICANS: RIGHT → LEFT ---- */
-  let R = columns.length - 1;
-  while (r > 0 && R >= L) {
-    columns[R].forEach(dot => {
-      if (r > 0) {
-        dot.style.background = PARTIES.R.primary;
-        r--;
-      }
-    });
-    R--;
+  /* REPUBLICANS — RIGHT (MIRROR) */
+  const RIGHT = [...HOUSE_FILL_ORDER].reverse();
+  idx = 0;
+  while (r > 0 && idx < RIGHT.length) {
+    const s = RIGHT[idx++];
+    const dot = dots[`${s.row}-${s.col}`];
+    if (!dot.style.background) {
+      dot.style.background = PARTIES.R.primary;
+      r--;
+    }
   }
 
-  /* ---- CENTER PARTIES ---- */
-  const center = [];
-  for (let k = 0; k < n; k++) center.push("N");
-  for (let k = 0; k < i; k++) center.push("I");
-  for (let k = 0; k < v; k++) center.push("V");
+  /* CENTER PARTIES */
+  const center = [
+    ...Array(n).fill("N"),
+    ...Array(i).fill("I"),
+    ...Array(v).fill("V")
+  ];
+
+  idx = 0;
+  HOUSE_FILL_ORDER.forEach(s => {
+    const dot = dots[`${s.row}-${s.col}`];
+    if (!dot.style.background && idx < center.length) {
+      dot.style.background = PARTIES[center[idx++]].primary;
+    }
+  });
+}
+
+/* =========================
+   SENATE COLORING (SAME LOGIC)
+========================= */
+
+function colorSenate() {
+  const dots = buildDotMap(".dot.senate");
+
+  let d = senateSeats.D || 0;
+  let r = senateSeats.R || 0;
+  let n = senateSeats.N || 0;
+  let i = senateSeats.I || 0;
+  let v = senateSeats.V || 0;
 
   let idx = 0;
-  for (let c = L; c <= R; c++) {
-    columns[c].forEach(dot => {
-      if (idx < center.length) {
-        dot.style.background = PARTIES[center[idx]].primary;
-        idx++;
-      }
-    });
+  while (d > 0 && idx < SENATE_FILL_ORDER.length) {
+    const s = SENATE_FILL_ORDER[idx++];
+    dots[`${s.row}-${s.col}`].style.background = PARTIES.D.primary;
+    d--;
   }
 
-  /* ---- SENATE SIMPLE FILL ---- */
-  const senateDots = document.querySelectorAll(".dot.senate");
-  const senateArr = buildSeatArray(senateSeats);
+  const RIGHT = [...SENATE_FILL_ORDER].reverse();
+  idx = 0;
+  while (r > 0 && idx < RIGHT.length) {
+    const s = RIGHT[idx++];
+    const dot = dots[`${s.row}-${s.col}`];
+    if (!dot.style.background) {
+      dot.style.background = PARTIES.R.primary;
+      r--;
+    }
+  }
 
-  senateDots.forEach((dot, i) => {
-    dot.style.background = PARTIES[senateArr[i] || "V"].primary;
+  const center = [
+    ...Array(n).fill("N"),
+    ...Array(i).fill("I"),
+    ...Array(v).fill("V")
+  ];
+
+  idx = 0;
+  SENATE_FILL_ORDER.forEach(s => {
+    const dot = dots[`${s.row}-${s.col}`];
+    if (!dot.style.background && idx < center.length) {
+      dot.style.background = PARTIES[center[idx++]].primary;
+    }
   });
-  }
-  
-   /* =========================
-     PARTY COMPOSITION PANELS
-  ========================= */
+}
 
-  function renderComposition(id, seats) {
-    const box = document.getElementById(id);
-    if (!box) return;
+/* =========================
+   COMPOSITION PANELS
+========================= */
 
-    Object.keys(PARTIES).forEach(code => {
-      if (!seats[code]) return;
+function renderComposition(id, seats) {
+  const box = document.getElementById(id);
+  if (!box) return;
+  box.innerHTML = "";
 
-      const row = document.createElement("div");
-      row.style.display = "flex";
-      row.style.justifyContent = "space-between";
-      row.style.margin = "6px 0";
-      row.style.color = PARTIES[code].secondary;
+  Object.keys(PARTIES).forEach(code => {
+    if (!seats[code]) return;
 
-      row.innerHTML = `
-        <span>${PARTIES[code].name}</span>
-        <strong>${seats[code]}</strong>
-      `;
+    const row = document.createElement("div");
+    row.style.display = "flex";
+    row.style.justifyContent = "space-between";
+    row.style.margin = "6px 0";
+    row.style.color = PARTIES[code].secondary;
 
-      box.appendChild(row);
-    });
-  }
+    row.innerHTML = `
+      <span>${PARTIES[code].name}</span>
+      <strong>${seats[code]}</strong>
+    `;
+
+    box.appendChild(row);
+  });
+}
 
 });
