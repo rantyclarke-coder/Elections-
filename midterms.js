@@ -203,7 +203,7 @@ while (d > 0 && left < columns.length) {
 let right = columns.length - 1;
 while (r > 0 && right >= 0) {
   columns[right].forEach(dot => {
-    if (r > 0 && !dot.style.background) {
+    if (r > 0) {
       dot.style.background = PARTIES.R.primary;
       r--;
     }
