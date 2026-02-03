@@ -149,87 +149,95 @@ document.addEventListener("DOMContentLoaded", () => {
      COLOR HEMICYCLES
   ========================= */
 
-      function colorHemicycles() {
-  const allHouseDots = Array.from(document.querySelectorAll(".dot.house"));
+  function colorHemicycles() {
+  const dots = Array.from(document.querySelectorAll(".dot.house"));
 
-  /* ✅ CORRECT ROW ORDER: INNER → MIDDLE → OUTER */
-  const rows = [
-    allHouseDots.slice(22),      // INNER (radius 75)
-    allHouseDots.slice(12, 22),  // MIDDLE (radius 95)
-    allHouseDots.slice(0, 12)    // OUTER (radius 115)
-  ];
+  /* ---- SPLIT ROWS BY Y POSITION ---- */
+  const rows = {};
+  dots.forEach(dot => {
+    const y = dot.offsetTop;
+    if (!rows[y]) rows[y] = [];
+    rows[y].push(dot);
+  });
 
-  /* BUILD COLUMNS (INNER → OUTER) */
-  const maxCols = Math.max(...rows.map(r => r.length));
+  /* ---- SORT ROWS INNER → OUTER ---- */
+  const sortedRows = Object.values(rows)
+    .sort((a, b) => a[0].offsetTop - b[0].offsetTop);
+
+  /* ---- SORT EACH ROW LEFT → RIGHT ---- */
+  sortedRows.forEach(row =>
+    row.sort((a, b) => a.offsetLeft - b.offsetLeft)
+  );
+
+  /* ---- BUILD VISUAL COLUMNS ---- */
+  const maxCols = Math.max(...sortedRows.map(r => r.length));
   const columns = [];
 
   for (let c = 0; c < maxCols; c++) {
     const col = [];
-    rows.forEach(r => {
+    sortedRows.forEach(r => {
       if (r[c]) col.push(r[c]);
     });
     columns.push(col);
   }
 
-  /* SEAT COUNTS */
+  /* ---- SEAT COUNTS ---- */
   let d = houseSeats.D || 0;
   let r = houseSeats.R || 0;
   let n = houseSeats.N || 0;
   let i = houseSeats.I || 0;
   let v = houseSeats.V || 0;
 
-  /* DEMOCRATS — LEFT → RIGHT */
-  let left = 0;
-  while (d > 0 && left < columns.length) {
-    columns[left].forEach(dot => {
+  /* ---- DEMOCRATS: LEFT → RIGHT ---- */
+  let L = 0;
+  while (d > 0 && L < columns.length) {
+    columns[L].forEach(dot => {
       if (d > 0) {
         dot.style.background = PARTIES.D.primary;
         d--;
       }
     });
-    left++;
+    L++;
   }
 
-  /* REPUBLICANS — RIGHT → LEFT (MIRROR) */
-  let right = columns.length - 1;
-  while (r > 0 && right >= left) {
-    columns[right].forEach(dot => {
+  /* ---- REPUBLICANS: RIGHT → LEFT ---- */
+  let R = columns.length - 1;
+  while (r > 0 && R >= L) {
+    columns[R].forEach(dot => {
       if (r > 0) {
         dot.style.background = PARTIES.R.primary;
         r--;
       }
     });
-    right--;
+    R--;
   }
 
-  /* CENTER — OTHER PARTIES (GROUPED) */
-  const remaining = [];
-  for (let k = 0; k < n; k++) remaining.push("N");
-  for (let k = 0; k < i; k++) remaining.push("I");
-  for (let k = 0; k < v; k++) remaining.push("V");
+  /* ---- CENTER PARTIES ---- */
+  const center = [];
+  for (let k = 0; k < n; k++) center.push("N");
+  for (let k = 0; k < i; k++) center.push("I");
+  for (let k = 0; k < v; k++) center.push("V");
 
   let idx = 0;
-  for (let c = left; c <= right; c++) {
+  for (let c = L; c <= R; c++) {
     columns[c].forEach(dot => {
-      if (idx < remaining.length) {
-        dot.style.background = PARTIES[remaining[idx]].primary;
+      if (idx < center.length) {
+        dot.style.background = PARTIES[center[idx]].primary;
         idx++;
       }
     });
   }
 
-  /* SENATE (UNCHANGED SIMPLE FILL) */
+  /* ---- SENATE SIMPLE FILL ---- */
   const senateDots = document.querySelectorAll(".dot.senate");
   const senateArr = buildSeatArray(senateSeats);
 
   senateDots.forEach((dot, i) => {
-    const party = senateArr[i] || "V";
-    dot.style.background = PARTIES[party].primary;
+    dot.style.background = PARTIES[senateArr[i] || "V"].primary;
   });
-      }
-
-  /* =========================
-     PARTY COMPOSITION PANELS
+  }
+  
+      //     PARTY COMPOSITION PANELS
   ========================= */
 
   function renderComposition(id, seats) {
