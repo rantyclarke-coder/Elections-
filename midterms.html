@@ -231,10 +231,12 @@ const house = document.getElementById("house");
     const y = CENTER_Y + row.radius * Math.sin(angle);
 
     const d = document.createElement("div");
-    d.className = "dot house";
-    d.style.left = `${x}px`;
-    d.style.top  = `${y}px`;
-    house.appendChild(d);
+d.className = "dot house";
+d.dataset.row = rowIndex === 0 ? "outer" : rowIndex === 1 ? "middle" : "inner";
+d.dataset.col = i;
+d.style.left = `${x}px`;
+d.style.top  = `${y}px`;
+house.appendChild(d);
   }
 });
 
@@ -257,11 +259,12 @@ const senate = document.getElementById("senate");
     const y = CENTER_Y + row.radius * Math.sin(angle) + 34; // stays BELOW center
 
     const d = document.createElement("div");
-    d.className = "dot senate";
-    d.style.left = `${x}px`;
-    d.style.top  = `${y}px`;
-
-    senate.appendChild(d);
+d.className = "dot senate";
+d.dataset.row = rowIndex === 0 ? "outer" : "inner";
+d.dataset.col = i;
+d.style.left = `${x}px`;
+d.style.top  = `${y}px`;
+senate.appendChild(d);
   }
 });
 
