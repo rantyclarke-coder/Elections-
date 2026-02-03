@@ -12,7 +12,7 @@ body{
   color:#fff;
   font-family:Inter,system-ui;
 }
-  
+
 .page{
   max-width:420px;
   margin:0 auto;
@@ -40,59 +40,56 @@ h1{
   margin:24px 0 42px;
 }
 
-  .toggle{
+/* TOGGLE */
+.toggle{
   display:flex;
-  justify-content:center;   /* horizontal centering */
-  align-items:center;       /* vertical centering */
-  width:100%;               /* 🔑 forces true centering */
-  margin:24px 0 28px;       /* balanced spacing */
+  justify-content:center;
+  align-items:center;
+  width:100%;
+  margin:24px 0 28px;
   font-size:12px;
   letter-spacing:2px;
-    transform: translateX(5px);
-  }
+  transform:translateX(5px);
+}
 .toggle-btn{
   cursor:pointer;
   color:#888;
 }
-
 .toggle-btn.active{
   color:#fff;
   font-weight:700;
 }
-
 .toggle-sep{
   color:#666;
-  margin:0 14px;   /* 👈 THIS is the whole fix */
+  margin:0 14px;
 }
-  
-/* VISUAL WRAP */
+
+/* VISUAL */
 .capitol-wrap{
   position:relative;
   width:300px;
   height:300px;
   margin:0 auto 40px;
-  overflow: visible;
 }
 
-/* OUTER COLORED ELLIPSE */
+/* OUTER BORDER */
 .capitol-shell{
   position:absolute;
   left:50%;
   top:50%;
   transform:translate(-50%,-50%);
-  width:98px;     /* slightly bigger */
+  width:98px;
   height:100px;
   border-radius:50%;
-
   background:linear-gradient(
     to bottom,
     var(--house-border) 50%,
     var(--senate-border) 50%
   );
-
   display:flex;
   align-items:center;
   justify-content:center;
+  z-index:3;
 }
 
 /* INNER IMAGE */
@@ -103,64 +100,50 @@ h1{
   background:#111;
   overflow:hidden;
 }
-
 .capitol img{
   width:100%;
   height:100%;
   object-fit:cover;
-  display:block;
 }
 
-  
 /* GROUPS */
 .house-group,
 .senate-group{
   position:absolute;
-  left:0;
-  top:0;
-  width:100%;
-  height:100%;
+  inset:0;
 }
 
-/* 🔧 EASY ADJUSTMENTS */
-.house-group{
-  transform: translate(-6px, -4px);
-}
-
-.senate-group{
-  transform: translate(-4px, -23px);  /* move SENATE up/down */
-}
+/* POSITION TWEAKS */
+.house-group{ transform:translate(-6px,-4px); }
+.senate-group{ transform:translate(-4px,-23px); }
 
 /* DOTS */
 .dot{
   position:absolute;
   border-radius:50%;
-  background:#777;
 }
-
 .dot.house{
   width:11px;
   height:11px;
+  background:#444;
 }
-
 .dot.senate{
   width:13px;
   height:13px;
+  background:#444;
 }
 
-/* LOWER PANELS */
+/* PANELS */
 .split{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:16px;
 }
-
 .panel{
   border-top:1px solid #333;
   padding-top:12px;
   font-size:12px;
 }
-
 .panel h3{
   margin:0;
   font-size:13px;
@@ -168,15 +151,10 @@ h1{
   color:#ccc;
   text-align:center;
 }
-
-.back{
-  margin-top:28px;
-  text-align:center;
-  font-size:12px;
-  opacity:.6;
-}
 </style>
-  <script src="midterms.js" defer></script>
+
+<!-- 🔑 MIDTERMS LOGIC -->
+<script src="midterms.js" defer></script>
 </head>
 
 <body>
@@ -186,21 +164,25 @@ h1{
 <div class="sub">
   <span id="election-year">XXXX</span> ELECTION NIGHT
 </div>
+
 <div class="divider"></div>
+
 <div class="toggle">
   <span class="toggle-btn active" data-view="congress">CONGRESS</span>
   <span class="toggle-sep">|</span>
   <span class="toggle-btn" data-view="governor">GOVERNORS</span>
 </div>
-<div class="capitol-wrap" id="capitol">
+
+<div class="capitol-wrap">
 
   <div class="house-group" id="house"></div>
   <div class="senate-group" id="senate"></div>
- <div class="capitol-shell">
-  <div class="capitol">
-    <img src="images/capitol.png">
+
+  <div class="capitol-shell">
+    <div class="capitol">
+      <img src="images/capitol.png" alt="Capitol">
+    </div>
   </div>
- </div>
 </div>
 
 <div class="split">
@@ -220,66 +202,62 @@ const CENTER_Y = 150;
 
 /* ===== HOUSE (TOP OPENING DOWN) ===== */
 const house = document.getElementById("house");
+
 [
   { seats:12, radius:115 },
-  { seats:10, radius:95 },
-  { seats:8,  radius:75 }
-].forEach(row=>{
+  { seats:10, radius:95  },
+  { seats:8,  radius:75  }
+].forEach((row, rowIndex) => {
+
   for(let i=0;i<row.seats;i++){
     const angle = Math.PI + (i/(row.seats-1))*Math.PI;
     const x = CENTER_X + row.radius * Math.cos(angle);
     const y = CENTER_Y + row.radius * Math.sin(angle);
 
     const d = document.createElement("div");
-d.className = "dot house";
-d.dataset.row = rowIndex === 0 ? "outer" : rowIndex === 1 ? "middle" : "inner";
-d.dataset.col = i;
-d.style.left = `${x}px`;
-d.style.top  = `${y}px`;
-house.appendChild(d);
+    d.className = "dot house";
+    d.dataset.row = rowIndex === 0 ? "outer" : rowIndex === 1 ? "middle" : "inner";
+    d.dataset.col = i;
+    d.style.left = `${x}px`;
+    d.style.top  = `${y}px`;
+
+    house.appendChild(d);
   }
 });
 
-/* ===== SENATE (VISIBLE ARC BELOW) ===== */
 /* ===== SENATE (BOTTOM ARC) ===== */
 const senate = document.getElementById("senate");
 
 [
   { seats:5, radius:84 },
   { seats:3, radius:62 }
-].forEach(row=>{
-  for(let i=0;i<row.seats;i++){
+].forEach((row, rowIndex) => {
 
-    // 🔑 ARC instead of perfect semicircle
+  for(let i=0;i<row.seats;i++){
     const angle =
-      Math.PI * 0.15 +
-      (i / (row.seats - 1 || 1)) * Math.PI * 0.7;
+      Math.PI*0.15 +
+      (i/(row.seats-1 || 1))*Math.PI*0.7;
 
     const x = CENTER_X + row.radius * Math.cos(angle);
-    const y = CENTER_Y + row.radius * Math.sin(angle) + 34; // stays BELOW center
+    const y = CENTER_Y + row.radius * Math.sin(angle) + 34;
 
     const d = document.createElement("div");
-d.className = "dot senate";
-d.dataset.row = rowIndex === 0 ? "outer" : "inner";
-d.dataset.col = i;
-d.style.left = `${x}px`;
-d.style.top  = `${y}px`;
-senate.appendChild(d);
+    d.className = "dot senate";
+    d.dataset.row = rowIndex === 0 ? "outer" : "inner";
+    d.dataset.col = i;
+    d.style.left = `${x}px`;
+    d.style.top  = `${y}px`;
+
+    senate.appendChild(d);
   }
 });
 
-  document.querySelectorAll(".toggle-btn").forEach(btn=>{
+/* TOGGLE */
+document.querySelectorAll(".toggle-btn").forEach(btn=>{
   btn.addEventListener("click", ()=>{
     document.querySelectorAll(".toggle-btn").forEach(b=>b.classList.remove("active"));
     btn.classList.add("active");
-
-    const view = btn.dataset.view;
-
-    // FOR NOW: just log (nothing breaks)
-    console.log("Switched to:", view);
-
-    // Later:
-    // if(view==="governor") window.location.href="governor.html";
+    console.log("Switched to:", btn.dataset.view);
   });
 });
 </script>
