@@ -200,8 +200,8 @@ while (d > 0 && left < columns.length) {
 }
 
 /* ---- RIGHT → REPUBLICANS (MIRRORED) ---- */
-let right = columns.length - 1;
-while (r > 0 && right >= 0) {
+let right = 0;
+while (r > 0 && right < columns.length) {
   columns[right].forEach(dot => {
     if (r > 0) {
       dot.style.background = PARTIES.R.primary;
