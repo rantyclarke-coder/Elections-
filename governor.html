@@ -2,8 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>US GUBERNATORIAL ELECTIONS</title>
-
+  <title>REGIONAL GUBERNATORIAL ELECTION</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <!-- Governor JS -->
@@ -23,78 +22,185 @@
       padding:16px;
     }
 
-    h1{
-      text-align:center;
-      letter-spacing:2px;
-      font-size:26px;
+    /* ===== RESERVED MAP SPACE ===== */
+    .map-space{
+      height:280px; /* map will float here later */
     }
 
-    .sub{
+    /* ===== REGION HEADER ===== */
+    .region-title{
       text-align:center;
-      color:#aaa;
+      font-size:26px;
+      font-weight:800;
+      letter-spacing:2px;
+    }
+
+    .region-sub{
+      text-align:center;
       font-size:12px;
       letter-spacing:3px;
-      margin-bottom:54px; /* bigger gap before bar */
+      color:#aaa;
+      margin-top:4px;
     }
 
-    .bar{
+    .divider{
+      height:2px;
+      background:#fff;
+      margin:24px 0;
+    }
+
+    /* ===== CANDIDATE LIST ===== */
+    .candidates{
       display:flex;
-      height:20px;
-      width:75%;        /* 25% smaller */
-      margin:0 auto;    /* centered */
-      border-radius:12px;
-      overflow:hidden;
-      background:#222;
-      margin-top:40px;
-      margin-bottom:16px;
+      flex-direction:column;
+      gap:14px;
     }
 
-    .seg{
-      height:100%;
-    }
-
-    .map{
-      margin-top:44px;  /* clear gap after bar */
-      height:45vh;
+    .candidate{
+      display:flex;
+      align-items:center;
       background:#111;
-      border:1px solid #333;
-      border-radius:6px;
+      border-radius:10px;
+      padding:12px;
+      position:relative;
     }
 
-    .map object{
+    /* PHOTO PLACEHOLDER */
+    .photo{
+      width:56px;
+      height:56px;
+      border-radius:50%;
+      flex-shrink:0;
+      margin-right:12px;
+      background:var(--party-secondary,#555);
+      overflow:hidden;
+    }
+
+    .photo img{
       width:100%;
       height:100%;
-      transform:scale(1.12) translateX(-4%);
+      object-fit:cover;
+      display:block;
+    }
+
+    /* INFO */
+    .info{
+      flex:1;
+      min-width:0;
+    }
+
+    .name-line{
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
+
+    .name{
+      font-size:15px;
+      font-weight:700;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    /* GOLD TICK */
+    .leader-badge{
+      width:16px;
+      height:16px;
+      border-radius:50%;
+      background:gold;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-size:11px;
+      color:#000;
+      font-weight:900;
+    }
+
+    .party{
+      font-size:12px;
+      margin-top:2px;
+      color:var(--party-secondary,#aaa);
+    }
+
+    .votes{
+      font-size:12px;
+      margin-top:4px;
+      opacity:.85;
+    }
+
+    /* TRIANGLE */
+    .trend{
+      width:0;
+      height:0;
+      margin-left:10px;
+    }
+
+    .up{
+      border-left:7px solid transparent;
+      border-right:7px solid transparent;
+      border-bottom:12px solid #2ecc71;
+    }
+
+    .down{
+      border-left:7px solid transparent;
+      border-right:7px solid transparent;
+      border-top:12px solid #e74c3c;
+    }
+
+    .hidden{
+      display:none;
     }
 
     .back{
       display:block;
-      margin-top:18px;
+      margin-top:28px;
       text-align:center;
-      opacity:.7;
       font-size:12px;
-      text-decoration:none;
-      color:#fff;
       letter-spacing:1px;
+      opacity:.7;
+      color:#fff;
+      text-decoration:none;
     }
   </style>
 </head>
 
 <body>
   <div class="page">
-    <h1>US GUBERNATORIAL ELECTIONS</h1>
-    <div class="sub">XXXX ELECTION NIGHT</div>
 
-    <!-- Party bar (filled dynamically by governor.js) -->
-    <div class="bar" id="party-bar"></div>
+    <!-- Reserved floating map area -->
+    <div class="map-space"></div>
 
-    <!-- Map -->
-    <div class="map">
-      <object id="us-map" data="us.svg" type="image/svg+xml"></object>
+    <!-- Region Header -->
+    <div class="region-title" id="region-name">PACIFICA</div>
+    <div class="region-sub"><span id="region-year">2026</span> GUBERNATORIAL ELECTION</div>
+
+    <div class="divider"></div>
+
+    <!-- Candidates (JS will generate rows here) -->
+    <div class="candidates" id="candidate-list">
+      <!-- Example structure for JS reference only -->
+      <!--
+      <div class="candidate">
+        <div class="photo" style="--party-secondary:#b8c6ff">
+          <img src="candidate.jpg">
+        </div>
+
+        <div class="info">
+          <div class="name-line">
+            <div class="name">John Doe</div>
+            <div class="leader-badge">✓</div>
+          </div>
+          <div class="party">DEMOCRAT</div>
+          <div class="votes">52.3% | 6,245,000</div>
+        </div>
+
+        <div class="trend up"></div>
+      </div>
+      -->
     </div>
 
-    <!-- Back to President page -->
-    <a class="back" href="./index.html">BACK</a>
+    <a class="back" href="./governor.html">BACK</a>
   </div>
 </body>
 </html>
