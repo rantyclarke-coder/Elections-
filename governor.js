@@ -7,15 +7,15 @@ document.addEventListener("DOMContentLoaded", () => {
 const CSV_URL =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsbbXqdgfMGosYWjOVNR-2UUw6bZzjGNtnfuuWpbBuTutk6Jm1lffgHUis8GNjfQLFZLkaSpJNlck2/pub?output=csv";
 
-/* PARTY DEFINITIONS (CODE-ONLY) */
+/* PARTY DEFINITIONS */
 const PARTIES = {
-  D: { name:"DEMOCRAT",   color:"#1e3fd9" },
-  R: { name:"REPUBLICAN", color:"#dc143c" },
-  I: { name:"INDEPENDENT",color:"#888888" },
-  G: { name:"GREEN",      color:"#2ecc71" }
+  D: { name:"DEMOCRAT",    color:"#1e3fd9" },
+  R: { name:"REPUBLICAN",  color:"#dc143c" },
+  N: { name:"NPPA",        color:"#2ecc71" },
+  I: { name:"INDEPENDENT", color:"#bfa23a" }
 };
 
-/* HARD CODED STATES IN REGIONS */
+/* STATES BY REGION */
 const REGION_STATES = {
   NE: ["ME","NH","VT","MA","RI","CT","NY","NJ","PA","DE","MD","WV"],
   DX: ["VA","NC","SC","GA","FL","AL","TN","MS","LA","AR","OK","TX"],
@@ -25,44 +25,38 @@ const REGION_STATES = {
 
 const REGIONS = ["NE","DX","LN","PA"];
 
-/* STORAGE */
-const regionElection = {};   // NE → true/false
-const regionFixedParty = {}; // NE → "R"/"D" when FALSE
-const regionResults = {};    // NE → winning party when TRUE
+/* =========================
+   STORAGE
+========================= */
+
+const regionElection   = {}; // NE → true/false
+const regionFixedParty = {}; // NE → party if FALSE
+const regionResults    = {}; // NE → winning party if TRUE
 
 /* =========================
-   LOAD SHEET
+   LOAD GOOGLE SHEET
 ========================= */
+
 fetch(CSV_URL)
 .then(r => r.text())
 .then(csv => {
-  const rows = csv.split("\n").map(r=>r.split(","));
+  const rows = csv.split("\n").map(r => r.split(","));
 
-  /* ---- REGION FLAGS (ROW 60–63)
-     B = region
-     D = TRUE/FALSE
-     E = party if FALSE
-  */
+  /* ---- REGION FLAGS (ROWS 60–63) ---- */
   for(let i=60;i<=63;i++){
-    const region = rows[i][1]?.trim(); // B
-    const flag   = rows[i][3]?.trim(); // D
-    const party  = rows[i][4]?.trim(); // E
+    const region = rows[i]?.[1]?.trim(); // B
+    const flag   = rows[i]?.[3]?.trim(); // D
+    const party  = rows[i]?.[4]?.trim(); // E
 
     if(region){
       regionElection[region] = (flag === "TRUE");
       if(flag === "FALSE" && party){
-        regionFixedParty[region] = party; // R/D/etc
+        regionFixedParty[region] = party;
       }
     }
   }
 
-  /* ---- DYNAMIC RESULTS FOR TRUE REGIONS ----
-     5 candidates per region
-     start at row 65, then +6 each region block
-     E = party code
-     F = active TRUE/FALSE
-     G = points
-  */
+  /* ---- DYNAMIC RESULTS FOR TRUE REGIONS ---- */
   REGIONS.forEach((region, idx)=>{
     if(!regionElection[region]) return;
 
@@ -74,11 +68,11 @@ fetch(CSV_URL)
       if(!row) continue;
 
       const party  = row[4]?.trim();           // E
-      const active = row[5]?.trim()==="TRUE";  // F
-      const points = Number(row[6]);           // G
+      const active = row[5]?.trim() === "TRUE"; // F
+      const points = Number(row[6]);            // G
 
-      if(active && points>0 && PARTIES[party]){
-        candidates.push({party, points});
+      if(active && points > 0 && PARTIES[party]){
+        candidates.push({ party, points });
       }
     }
 
@@ -95,23 +89,25 @@ fetch(CSV_URL)
 /* =========================
    TOP PARTY BAR
 ========================= */
+
 function renderBar(){
   const bar = document.getElementById("party-bar");
-  bar.innerHTML = "";
+  if(!bar) return;
 
+  bar.innerHTML = "";
   const counts = {};
 
   REGIONS.forEach(region=>{
     let party = null;
 
     if(regionElection[region]){
-      party = regionResults[region];      // dynamic
+      party = regionResults[region];
     } else {
-      party = regionFixedParty[region];   // fixed
+      party = regionFixedParty[region];
     }
 
     if(party && PARTIES[party]){
-      counts[party] = (counts[party]||0)+1;
+      counts[party] = (counts[party] || 0) + 1;
     }
   });
 
@@ -128,10 +124,12 @@ function renderBar(){
 }
 
 /* =========================
-   MAP COLORING
+   MAP COLORING + INTERACTION
 ========================= */
+
 function colorMap(){
   const map = document.getElementById("us-map");
+  if(!map) return;
 
   const apply = ()=>{
     const svgDoc = map.contentDocument;
@@ -143,7 +141,6 @@ function colorMap(){
     REGIONS.forEach(region=>{
       const states = REGION_STATES[region];
 
-      // default grey if nothing known
       let color = "#8a8a8a";
       let dynamic = false;
 
@@ -151,7 +148,7 @@ function colorMap(){
         const p = regionResults[region];
         if(p && PARTIES[p]){
           color = PARTIES[p].color;
-          dynamic = true; // glow
+          dynamic = true;
         }
       } else {
         const p = regionFixedParty[region];
@@ -164,29 +161,28 @@ function colorMap(){
         const el = svg.querySelector(`#${code}`);
         if(!el) return;
 
-        // fill colour (party or grey)
         el.style.fill = color;
-
-        // dark thick borders for all regions
-        el.style.stroke = "#000000";
+        el.style.stroke = "#000";
         el.style.strokeWidth = "2";
 
-        // glow only if TRUE (dynamic election)
         if(dynamic){
           el.style.filter = "drop-shadow(0 0 6px white)";
+          el.style.cursor = "pointer";
+
+          el.addEventListener("click", ()=>{
+            window.location.href = `region.html?region=${region}`;
+          });
         } else {
           el.style.filter = "none";
+          el.style.cursor = "default";
         }
       });
     });
   };
 
-  // run immediately if already loaded
   if(map.contentDocument){
     apply();
   }
-
-  // also run when SVG finishes loading
   map.addEventListener("load", apply);
 }
 
