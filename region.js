@@ -1,9 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  /* =========================
-     CONFIG
-  ========================= */
-
   const CSV_URL =
     "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsbbXqdgfMGosYWjOVNR-2UUw6bZzjGNtnfuuWpbBuTutk6Jm1lffgHUis8GNjfQLFZLkaSpJNlck2/pub?output=csv";
 
@@ -28,95 +24,80 @@ document.addEventListener("DOMContentLoaded", () => {
     LN: "LINCOLN"
   };
 
-  /* =========================
-     READ REGION FROM URL
-  ========================= */
-
   const params = new URLSearchParams(window.location.search);
-  const REGION = params.get("region"); // PA / NE / DX / LN
+  const REGION = params.get("region");
   if (!REGION || !REGION_NAMES[REGION]) return;
-
-  /* =========================
-     LOAD DATA
-  ========================= */
 
   fetch(CSV_URL)
     .then(r => r.text())
     .then(csv => {
       const rows = csv.split("\n").map(r => r.split(","));
 
-      /* ---- YEAR (C58) ---- */
-      const year = rows[57]?.[2]?.trim();
+      const year = rows[10]?.[20]?.trim();
       if (year) document.getElementById("region-year").textContent = year;
 
-      /* ---- REGION NAME ---- */
       document.getElementById("region-name").textContent = REGION_NAMES[REGION];
 
-      /* ---- REGION BLOCK START ---- */
-      const regionIndex = { NE:0, LN:1, PA:2, DX:3 }[REGION];
-      const startRow = 65 + regionIndex * 6;
+      const regionBlocks = {
+        NE: { start: 66, end: 70 },
+        LN: { start: 72, end: 76 },
+        PA: { start: 78, end: 82 },
+        DX: { start: 84, end: 88 }
+      };
+
+      const block = regionBlocks[REGION];
+      if (!block) return;
 
       const candidates = [];
 
-      for (let r = startRow; r < startRow + 5; r++) {
+      for (let r = block.start; r <= block.end; r++) {
         const row = rows[r];
         if (!row) continue;
 
-        const name   = row[3]?.trim(); // D
-        const party  = row[4]?.trim(); // E
-        const img    = row[7]?.trim(); // H
-        const points = Number(row[8]); // I
-        const status = row[9]?.trim(); // J (A/I)
+        const name   = row[3]?.trim();
+        const party  = row[4]?.trim();
+        const img    = row[7]?.trim();
+        const points = Number(row[8]);
+        const status = row[9]?.trim();
 
-        if (
-          status !== "A" ||
-          !name ||
-          !points ||
-          !PARTIES[party]
-        ) continue;
+        if (status !== "A") continue;
+        if (!name || !PARTIES[party] || !points) continue;
 
         candidates.push({ name, party, img, points });
       }
 
       if (!candidates.length) return;
 
-      /* =========================
-         SORT + CALCULATE
-      ========================= */
+      candidates.sort((a, b) => b.points - a.points);
 
-      candidates.sort((a,b)=>b.points - a.points);
+      const totalPoints = candidates.reduce((s,c) => s + c.points, 0);
+      const pop = REGION_POPULATION[REGION];
 
-      const totalPoints = candidates.reduce((s,c)=>s+c.points,0);
-      const population = REGION_POPULATION[REGION];
-
-      candidates.forEach(c=>{
+      candidates.forEach(c => {
         c.percent = ((c.points / totalPoints) * 100).toFixed(1);
-        c.votes = Math.round((c.points / totalPoints) * population)
-          .toLocaleString("en-US");
+        c.votes = Math.round((c.points / totalPoints) * pop).toLocaleString("en-US");
       });
 
       renderCandidates(candidates);
-    });
 
-  /* =========================
-     RENDER
-  ========================= */
+    })
+    .catch(err => console.error("Region CSV error:", err));
 
-  function renderCandidates(list){
-    const wrap = document.getElementById("candidate-list");
-    wrap.innerHTML = "";
+  function renderCandidates(list) {
+    const container = document.getElementById("candidate-list");
+    container.innerHTML = "";
 
     const leaderPoints = list[0].points;
 
-    list.forEach((c, idx)=>{
+    list.forEach((c, idx) => {
       const isLeader = c.points === leaderPoints;
-      const showTrend = list.length > 1;
+      const hasTrend = list.length > 1;
 
-      const div = document.createElement("div");
-      div.className = "candidate";
-      div.style.setProperty("--party-secondary", PARTIES[c.party].secondary);
+      const row = document.createElement("div");
+      row.className = "candidate";
+      row.style.setProperty("--party-secondary", PARTIES[c.party].secondary);
 
-      div.innerHTML = `
+      row.innerHTML = `
         <div class="photo">
           ${c.img ? `<img src="${c.img}">` : ""}
         </div>
@@ -131,15 +112,14 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
 
         ${
-          showTrend
+          hasTrend
             ? isLeader
               ? `<div class="trend up"></div>`
               : `<div class="trend down"></div>`
             : ``
         }
       `;
-
-      wrap.appendChild(div);
+      container.appendChild(row);
     });
   }
 
