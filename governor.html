@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>REGIONAL GUBERNATORIAL ELECTION</title>
+  <title>US GUBERNATORIAL ELECTIONS</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <!-- Governor JS -->
@@ -22,25 +22,20 @@
       padding:16px;
     }
 
-    /* ===== RESERVED MAP SPACE ===== */
-    .map-space{
-      height:280px; /* map will float here later */
-    }
-
-    /* ===== REGION HEADER ===== */
-    .region-title{
+    h1{
       text-align:center;
       font-size:26px;
-      font-weight:800;
+      font-weight:900;
       letter-spacing:2px;
+      margin:0;
     }
 
-    .region-sub{
+    .sub{
       text-align:center;
       font-size:12px;
       letter-spacing:3px;
       color:#aaa;
-      margin-top:4px;
+      margin-top:6px;
     }
 
     .divider{
@@ -49,107 +44,22 @@
       margin:24px 0;
     }
 
-    /* ===== CANDIDATE LIST ===== */
-    .candidates{
-      display:flex;
-      flex-direction:column;
-      gap:14px;
+    /* ===== RESERVED SPACE ABOVE MAP ===== */
+    .spacer{
+      height:150px; /* intentional empty space */
     }
 
-    .candidate{
-      display:flex;
-      align-items:center;
-      background:#111;
-      border-radius:10px;
-      padding:12px;
+    /* ===== MAP (FLOATING, NO BOX) ===== */
+    .map{
+      height:45vh;
       position:relative;
     }
 
-    /* PHOTO PLACEHOLDER */
-    .photo{
-      width:56px;
-      height:56px;
-      border-radius:50%;
-      flex-shrink:0;
-      margin-right:12px;
-      background:var(--party-secondary,#555);
-      overflow:hidden;
-    }
-
-    .photo img{
+    .map object{
       width:100%;
       height:100%;
-      object-fit:cover;
-      display:block;
-    }
-
-    /* INFO */
-    .info{
-      flex:1;
-      min-width:0;
-    }
-
-    .name-line{
-      display:flex;
-      align-items:center;
-      gap:6px;
-    }
-
-    .name{
-      font-size:15px;
-      font-weight:700;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-
-    /* GOLD TICK */
-    .leader-badge{
-      width:16px;
-      height:16px;
-      border-radius:50%;
-      background:gold;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      font-size:11px;
-      color:#000;
-      font-weight:900;
-    }
-
-    .party{
-      font-size:12px;
-      margin-top:2px;
-      color:var(--party-secondary,#aaa);
-    }
-
-    .votes{
-      font-size:12px;
-      margin-top:4px;
-      opacity:.85;
-    }
-
-    /* TRIANGLE */
-    .trend{
-      width:0;
-      height:0;
-      margin-left:10px;
-    }
-
-    .up{
-      border-left:7px solid transparent;
-      border-right:7px solid transparent;
-      border-bottom:12px solid #2ecc71;
-    }
-
-    .down{
-      border-left:7px solid transparent;
-      border-right:7px solid transparent;
-      border-top:12px solid #e74c3c;
-    }
-
-    .hidden{
-      display:none;
+      transform:scale(1.15) translateX(-5%);
+      pointer-events:auto;
     }
 
     .back{
@@ -168,39 +78,23 @@
 <body>
   <div class="page">
 
-    <!-- Reserved floating map area -->
-    <div class="map-space"></div>
-
-    <!-- Region Header -->
-    <div class="region-title" id="region-name">PACIFICA</div>
-    <div class="region-sub"><span id="region-year">2026</span> GUBERNATORIAL ELECTION</div>
+    <h1>US GUBERNATORIAL ELECTIONS</h1>
+    <div class="sub">
+      <span id="election-year">XXXX</span> ELECTION NIGHT
+    </div>
 
     <div class="divider"></div>
 
-    <!-- Candidates (JS will generate rows here) -->
-    <div class="candidates" id="candidate-list">
-      <!-- Example structure for JS reference only -->
-      <!--
-      <div class="candidate">
-        <div class="photo" style="--party-secondary:#b8c6ff">
-          <img src="candidate.jpg">
-        </div>
+    <!-- intentional empty breathing space -->
+    <div class="spacer"></div>
 
-        <div class="info">
-          <div class="name-line">
-            <div class="name">John Doe</div>
-            <div class="leader-badge">✓</div>
-          </div>
-          <div class="party">DEMOCRAT</div>
-          <div class="votes">52.3% | 6,245,000</div>
-        </div>
-
-        <div class="trend up"></div>
-      </div>
-      -->
+    <!-- Floating US Map -->
+    <div class="map">
+      <object id="us-map" data="us.svg" type="image/svg+xml"></object>
     </div>
 
-    <a class="back" href="./governor.html">BACK</a>
+    <a class="back" href="./index.html">BACK</a>
+
   </div>
 </body>
 </html>
