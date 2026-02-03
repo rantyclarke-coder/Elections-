@@ -150,36 +150,35 @@ document.addEventListener("DOMContentLoaded", () => {
   ========================= */
 
       function colorHemicycles() {
-  /* ===== HOUSE DOTS ===== */
   const allHouseDots = Array.from(document.querySelectorAll(".dot.house"));
 
-  // Split rows exactly as created
+  /* ✅ CORRECT ROW ORDER: INNER → MIDDLE → OUTER */
   const rows = [
-    allHouseDots.slice(0, 12),   // INNER
-    allHouseDots.slice(12, 22),  // MIDDLE
-    allHouseDots.slice(22)       // OUTER
+    allHouseDots.slice(22),      // INNER (radius 75)
+    allHouseDots.slice(12, 22),  // MIDDLE (radius 95)
+    allHouseDots.slice(0, 12)    // OUTER (radius 115)
   ];
 
-  /* -------- BUILD COLUMNS (INNER → OUTER) -------- */
+  /* BUILD COLUMNS (INNER → OUTER) */
   const maxCols = Math.max(...rows.map(r => r.length));
   const columns = [];
 
   for (let c = 0; c < maxCols; c++) {
     const col = [];
     rows.forEach(r => {
-      if (r[c]) col.push(r[c]); // inner → middle → outer
+      if (r[c]) col.push(r[c]);
     });
     columns.push(col);
   }
 
-  /* -------- SEAT COUNTS -------- */
+  /* SEAT COUNTS */
   let d = houseSeats.D || 0;
   let r = houseSeats.R || 0;
   let n = houseSeats.N || 0;
   let i = houseSeats.I || 0;
   let v = houseSeats.V || 0;
 
-  /* ===== DEMOCRATS: LEFT → RIGHT ===== */
+  /* DEMOCRATS — LEFT → RIGHT */
   let left = 0;
   while (d > 0 && left < columns.length) {
     columns[left].forEach(dot => {
@@ -191,7 +190,7 @@ document.addEventListener("DOMContentLoaded", () => {
     left++;
   }
 
-  /* ===== REPUBLICANS: RIGHT → LEFT ===== */
+  /* REPUBLICANS — RIGHT → LEFT (MIRROR) */
   let right = columns.length - 1;
   while (r > 0 && right >= left) {
     columns[right].forEach(dot => {
@@ -203,7 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
     right--;
   }
 
-  /* ===== REMAINING CENTER (GROUPED) ===== */
+  /* CENTER — OTHER PARTIES (GROUPED) */
   const remaining = [];
   for (let k = 0; k < n; k++) remaining.push("N");
   for (let k = 0; k < i; k++) remaining.push("I");
@@ -219,7 +218,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /* ===== SENATE (UNCHANGED SIMPLE FILL) ===== */
+  /* SENATE (UNCHANGED SIMPLE FILL) */
   const senateDots = document.querySelectorAll(".dot.senate");
   const senateArr = buildSeatArray(senateSeats);
 
