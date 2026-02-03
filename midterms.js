@@ -237,7 +237,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   }
   
-      //     PARTY COMPOSITION PANELS
+   /* =========================
+     PARTY COMPOSITION PANELS
   ========================= */
 
   function renderComposition(id, seats) {
