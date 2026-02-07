@@ -154,13 +154,13 @@ function renderDistrictMap(candidateResults){
 function seededRandom(seed) {
   const x = Math.sin(seed) * 10000;
   return x - Math.floor(x);
-} */
+} 
 
 districts.sort((a,b)=>{
   const seedA = seededRandom(a.id.length + a.id.charCodeAt(0));
   const seedB = seededRandom(b.id.length + b.id.charCodeAt(0));
   return seedA - seedB;
-});
+}); */
     const total = districts.length;
 
     /* CALCULATE HOW MANY DISTRICTS EACH GETS */
