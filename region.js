@@ -144,8 +144,10 @@ function renderDistrictMap(candidateResults){
 
     if(!districts.length) return;
 
-    /* RANDOMIZE ORDER */
-    districts.sort(()=>Math.random()-0.5);
+    /* RANDOMIZE ORDER (don't change on refresh) */ 
+    districts.sort((a,b)=>{
+  return a.id.localeCompare(b.id);
+});
 
     const total = districts.length;
 
