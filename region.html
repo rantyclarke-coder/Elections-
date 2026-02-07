@@ -22,12 +22,23 @@
     }
 
     /* ===== FLOATING MAP SPACE ===== */
-    .map-space{
-      height:260px; /* reserved – no box, no border */
-    }
+    
+.map-space{
+  height:280px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
 
+.map-space object{
+  width:100%;
+  max-width:380px;
+  height:auto;
+  pointer-events:auto;
+}
     /* ===== REGION HEADER ===== */
-    .region-title{
+    
+  .region-title{
       text-align:center;
       font-size:28px;
       font-weight:900;
@@ -170,7 +181,9 @@
   <div class="page">
 
     <!-- Floating map space (no box) -->
-    <div class="map-space"></div>
+    <div class="map-space">
+  <object id="region-map" data="pacifica.svg" type="image/svg+xml"></object>
+    </div>
 
     <!-- Region Header -->
     <div class="region-title" id="region-name">REGION</div>
