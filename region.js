@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       renderCandidates(candidates);
-
+renderDistrictMap(candidates);
     })
     .catch(err => console.error("Region CSV error:", err));
 
