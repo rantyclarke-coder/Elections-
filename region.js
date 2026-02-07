@@ -122,5 +122,60 @@ document.addEventListener("DOMContentLoaded", () => {
       container.appendChild(row);
     });
   }
+/* =========================
+   PACIFICA DISTRICT MAP COLOR
+========================= */
 
+function renderDistrictMap(candidateResults){
+
+  const map = document.getElementById("region-map");
+  if(!map) return;
+
+  const apply = () => {
+
+    const svgDoc = map.contentDocument;
+    if(!svgDoc) return;
+
+    const svg = svgDoc.querySelector("svg");
+    if(!svg) return;
+
+    /* SELECT ALL DISTRICTS (auto-detect) */
+    const districts = Array.from(svg.querySelectorAll("path"));
+
+    if(!districts.length) return;
+
+    /* RANDOMIZE ORDER */
+    districts.sort(()=>Math.random()-0.5);
+
+    const total = districts.length;
+
+    /* CALCULATE HOW MANY DISTRICTS EACH GETS */
+    let pointer = 0;
+
+    candidateResults.forEach((c,index)=>{
+
+      const amount = Math.round((c.percent/100)*total);
+
+      for(let i=0;i<amount && pointer<districts.length;i++){
+
+        const d = districts[pointer];
+
+        d.style.fill = c.color;
+
+        /* opacity tier (Option A) */
+        if(index===0) d.style.opacity="0.9";
+        else if(index===1) d.style.opacity="0.6";
+        else d.style.opacity="0.4";
+
+        pointer++;
+      }
+
+    });
+
+  };
+
+  if(map.contentDocument) apply();
+  map.addEventListener("load",apply);
+
+}
 });
