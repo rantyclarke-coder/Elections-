@@ -145,15 +145,16 @@ function renderDistrictMap(candidateResults){
     if(!districts.length) return;
 
     /* RANDOMIZE ORDER (don't change on refresh) */ 
-    districts.sort((a,b)=>{
-  return a.id.localeCompare(b.id);
-});
-/* SEEDED RANDOM (stable scatter) */
+  //  districts.sort((a,b)=>{
+//  return a.id.localeCompare(b.id);
+// });
+    districts.sort(()=>Math.random()-0.5);
+/* SEEDED RANDOM (stable scatter) 
 
 function seededRandom(seed) {
   const x = Math.sin(seed) * 10000;
   return x - Math.floor(x);
-}
+} */
 
 districts.sort((a,b)=>{
   const seedA = seededRandom(a.id.length + a.id.charCodeAt(0));
