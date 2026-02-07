@@ -158,16 +158,16 @@ function renderDistrictMap(candidateResults){
 
       for(let i=0;i<amount && pointer<districts.length;i++){
 
-        const d = districts[pointer];
+  const d = districts[pointer];
 
-        d.style.fill = c.color;
+  d.style.fill = PARTIES[c.party].secondary;
 
-        /* opacity tier (Option A) */
-        if(index===0) d.style.opacity="0.9";
-        else if(index===1) d.style.opacity="0.6";
-        else d.style.opacity="0.4";
+  /* opacity tier (Option A) */
+  if(index===0) d.style.opacity="0.9";
+  else if(index===1) d.style.opacity="0.6";
+  else d.style.opacity="0.4";
 
-        pointer++;
+  pointer++;
       }
 
     });
