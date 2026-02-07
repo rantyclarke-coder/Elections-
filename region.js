@@ -148,7 +148,18 @@ function renderDistrictMap(candidateResults){
     districts.sort((a,b)=>{
   return a.id.localeCompare(b.id);
 });
+/* SEEDED RANDOM (stable scatter) */
 
+function seededRandom(seed) {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+}
+
+districts.sort((a,b)=>{
+  const seedA = seededRandom(a.id.length + a.id.charCodeAt(0));
+  const seedB = seededRandom(b.id.length + b.id.charCodeAt(0));
+  return seedA - seedB;
+});
     const total = districts.length;
 
     /* CALCULATE HOW MANY DISTRICTS EACH GETS */
@@ -166,8 +177,8 @@ function renderDistrictMap(candidateResults){
 
   /* opacity tier (Option A) */
   if(index===0) d.style.opacity="0.9";
-  else if(index===1) d.style.opacity="0.8";
-  else d.style.opacity="0.7";
+  else if(index===1) d.style.opacity="0.7";
+  else d.style.opacity="0.5";
 
   pointer++;
       }
