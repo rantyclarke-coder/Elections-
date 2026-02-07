@@ -162,12 +162,12 @@ function renderDistrictMap(candidateResults){
 
   const d = districts[pointer];
 
-  d.style.fill = PARTIES[c.party].primary;
+  d.style.fill = PARTIES[c.party].secondary;
 
   /* opacity tier (Option A) */
   if(index===0) d.style.opacity="0.9";
-  else if(index===1) d.style.opacity="0.6";
-  else d.style.opacity="0.4";
+  else if(index===1) d.style.opacity="0.8";
+  else d.style.opacity="0.7";
 
   pointer++;
       }
