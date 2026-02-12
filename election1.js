@@ -35,12 +35,12 @@ const STATE_NAMES = {
 ========================= */
 const CANDIDATES = {
   C1: {
-    name: "TIM WALZ",
-    short: "WALZ",
+    name: "KEITLYN MCKINLEY",
+    short: "MCKINLEY",
     party: "DEMOCRAT",
     primaryColor: "#1e3fd9",
     secondaryColor: "#b8c6ff",
-    photo: "images/walz.png"
+    photo: "images/mckinley.png"
   },
 
   C2: {
