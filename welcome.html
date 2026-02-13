@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Washington Post</title>
+
+<!-- OLD NEWSPAPER FONT -->
+<link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+
+<style>
+
+/* =====================
+   BASE
+===================== */
+
+body{
+  margin:0;
+  background:#000;
+  color:#fff;
+  font-family:Inter, system-ui;
+}
+
+/* =====================
+   TOP HEADER
+===================== */
+
+.topbar{
+  position:relative;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:8px 16px;
+}
+
+/* Washington Post Masthead */
+
+.logo{
+  font-family:"UnifrakturCook", serif;
+  font-size:26px;
+  letter-spacing:1px;
+  text-align:center;
+}
+
+/* Menu icon (3 bars) */
+
+.menu-btn{
+  position:absolute;
+  right:16px;
+  font-size:24px;
+  cursor:pointer;
+}
+
+/* Thin divider */
+
+.divider{
+  height:1px;
+  background:#aaa;
+  width:95%;
+  margin:8px auto 0;
+}
+
+/* =====================
+   MENU PANEL
+===================== */
+
+.menu-panel{
+  position:fixed;
+  top:0;
+  right:-260px;
+  width:260px;
+  height:100%;
+  background:#111;
+  transition:0.3s;
+  padding:20px;
+}
+
+.menu-panel.open{
+  right:0;
+}
+
+.menu-item{
+  margin:18px 0;
+  font-size:16px;
+  cursor:pointer;
+}
+
+/* =====================
+   DARK MODE BUTTON
+===================== */
+
+.theme-toggle{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  background:#111;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  font-size:18px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+
+  <div class="logo">The Washington Post</div>
+
+  <div class="menu-btn" id="menuBtn">☰</div>
+
+</div>
+
+<div class="divider"></div>
+
+<!-- SIDE MENU -->
+<div class="menu-panel" id="menuPanel">
+
+  <div class="menu-item">Governors</div>
+  <div class="menu-item">Senators</div>
+  <div class="menu-item">Representatives</div>
+  <div class="menu-item">President</div>
+  <div class="menu-item">Rules</div>
+
+</div>
+
+<!-- DARK/LIGHT MODE -->
+<div class="theme-toggle" id="themeToggle">🌙</div>
+
+<script src="welcome.js"></script>
+
+</body>
+</html>
