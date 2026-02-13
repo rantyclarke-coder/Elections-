@@ -43,7 +43,7 @@ const REGION_MAP_TRANSFORM = {
   PA: { scale:1.0, x:-10, y:5 },
   NE: { scale:1.05, x:0, y:-8 },
   DX: { scale:1.2, x:-5, y:0 },
-  LN: { scale:1.1, x:6, y:-4 }
+  LN: { scale:1.55, x:6, y:-4 }
 
 };
   
