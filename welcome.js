@@ -1,35 +1,27 @@
 document.addEventListener("DOMContentLoaded",()=>{
 
-/* =====================
-   MENU TOGGLE
-===================== */
+const menuOpen = document.getElementById("menu-open");
+const menuClose = document.getElementById("menu-close");
+const menuPanel = document.getElementById("menu-panel");
+const themeBtn = document.getElementById("theme-toggle");
 
-const menuBtn = document.getElementById("menuBtn");
-const panel = document.getElementById("menuPanel");
+/* MENU OPEN */
 
-menuBtn.addEventListener("click",()=>{
-  panel.classList.toggle("open");
+menuOpen.addEventListener("click",()=>{
+  menuPanel.classList.add("open");
 });
 
-/* =====================
-   DARK / LIGHT MODE
-===================== */
+/* MENU CLOSE */
 
-const themeBtn = document.getElementById("themeToggle");
+menuClose.addEventListener("click",()=>{
+  menuPanel.classList.remove("open");
+});
+
+/* THEME TOGGLE */
 
 themeBtn.addEventListener("click",()=>{
 
   document.body.classList.toggle("light");
-
-  if(document.body.classList.contains("light")){
-    document.body.style.background="#fff";
-    document.body.style.color="#000";
-    themeBtn.textContent="☀️";
-  } else {
-    document.body.style.background="#000";
-    document.body.style.color="#fff";
-    themeBtn.textContent="🌙";
-  }
 
 });
 
