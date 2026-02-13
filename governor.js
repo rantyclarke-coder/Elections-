@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
          D = TRUE/FALSE
       */
 
-      for (let i = 60; i <= 63; i++) {
+      for (let i = 59; i <= 63; i++) {
 
         const region = rows[i]?.[1]?.trim();
         const flag   = rows[i]?.[3]?.trim();
