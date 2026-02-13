@@ -40,8 +40,8 @@ const REGION_MAPS = {
 
 const REGION_MAP_TRANSFORM = {
 
-  PA: { scale:1.0, x:-10, y:5 },
-  NE: { scale:1.25, x:0, y:15 },
+  PA: { scale:1.16, x:0, y:-6 },
+  NE: { scale:1.25, x:0, y:0 },
   DX: { scale:1.37, x:-8, y:0 },
   LN: { scale:1.55, x:6, y:-4 }
 
