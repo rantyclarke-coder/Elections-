@@ -1,142 +1,194 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The Washington Post</title>
+<title>Welcome</title>
 
-<!-- OLD NEWSPAPER FONT -->
-<link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+<script src="welcome.js" defer></script>
 
 <style>
 
-/* =====================
+/* =========================
    BASE
-===================== */
+========================= */
 
 body{
   margin:0;
   background:#000;
   color:#fff;
-  font-family:Inter, system-ui;
+  font-family:Georgia,serif;
+  transition:0.3s;
 }
 
-/* =====================
-   TOP HEADER
-===================== */
+body.light{
+  background:#fff;
+  color:#000;
+}
 
-.topbar{
+.page{
+  max-width:420px;
+  margin:0 auto;
+  padding:12px 14px;
   position:relative;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  padding:8px 16px;
 }
 
-/* Washington Post Masthead */
+/* =========================
+   HEADER
+========================= */
 
-.logo{
-  font-family:"UnifrakturCook", serif;
-  font-size:26px;
-  letter-spacing:1px;
+.header{
+  position:relative;
   text-align:center;
 }
 
-/* Menu icon (3 bars) */
+/* OLD ENGLISH STYLE TITLE */
+
+.wp-title{
+  font-family:"Old English Text MT","Blackletter","Times New Roman",serif;
+  font-size:28px;
+  letter-spacing:1px;
+  margin:0;
+}
+
+/* HAMBURGER MENU */
 
 .menu-btn{
   position:absolute;
-  right:16px;
-  font-size:24px;
+  right:0;
+  top:2px;
   cursor:pointer;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
 }
 
-/* Thin divider */
+.menu-btn span{
+  width:20px;
+  height:2px;
+  background:currentColor;
+  display:block;
+}
+
+/* DIVIDER */
 
 .divider{
   height:1px;
-  background:#aaa;
-  width:95%;
-  margin:8px auto 0;
+  background:#888;
+  opacity:0.4;
+  margin-top:6px;
 }
 
-/* =====================
-   MENU PANEL
-===================== */
+/* =========================
+   SLIDE MENU PANEL
+========================= */
 
 .menu-panel{
   position:fixed;
   top:0;
-  right:-260px;
-  width:260px;
+  right:-75%;
+  width:75%;
   height:100%;
   background:#111;
   transition:0.3s;
-  padding:20px;
+  padding:18px;
+  box-shadow:-4px 0 10px rgba(0,0,0,0.5);
+}
+
+body.light .menu-panel{
+  background:#fff;
 }
 
 .menu-panel.open{
   right:0;
 }
 
-.menu-item{
-  margin:18px 0;
-  font-size:16px;
+.menu-back{
+  font-size:24px;
+  font-weight:bold;
   cursor:pointer;
 }
 
-/* =====================
-   DARK MODE BUTTON
-===================== */
+.menu-links{
+  margin-top:30px;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
 
-.theme-toggle{
+.menu-links a{
+  text-decoration:none;
+  color:inherit;
+  font-size:16px;
+}
+
+/* =========================
+   THEME BUTTON
+========================= */
+
+.theme-btn{
   position:fixed;
-  bottom:20px;
-  right:20px;
+  bottom:18px;
+  right:18px;
   width:42px;
   height:42px;
   border-radius:50%;
-  background:#111;
+  background:#000;
+  color:#fff;
   display:flex;
   align-items:center;
   justify-content:center;
   cursor:pointer;
-  font-size:18px;
+  border:1px solid #555;
+}
+
+body.light .theme-btn{
+  background:#fff;
+  color:#000;
 }
 
 </style>
-
 </head>
 
 <body>
 
-<!-- TOP BAR -->
-<div class="topbar">
+<div class="page">
 
-  <div class="logo">The Washington Post</div>
+  <div class="header">
 
-  <div class="menu-btn" id="menuBtn">☰</div>
+    <!-- OLD ENGLISH TITLE -->
+    <h1 class="wp-title">The Washington Post</h1>
 
-</div>
+    <!-- HAMBURGER MENU -->
+    <div class="menu-btn" id="menu-open">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
 
-<div class="divider"></div>
+  </div>
 
-<!-- SIDE MENU -->
-<div class="menu-panel" id="menuPanel">
-
-  <div class="menu-item">Governors</div>
-  <div class="menu-item">Senators</div>
-  <div class="menu-item">Representatives</div>
-  <div class="menu-item">President</div>
-  <div class="menu-item">Rules</div>
+  <div class="divider"></div>
 
 </div>
 
-<!-- DARK/LIGHT MODE -->
-<div class="theme-toggle" id="themeToggle">🌙</div>
+<!-- SLIDING MENU -->
+<div class="menu-panel" id="menu-panel">
 
-<script src="welcome.js"></script>
+  <div class="menu-back" id="menu-close">←</div>
+
+  <div class="menu-links">
+    <a href="#">Governors</a>
+    <a href="#">Senators</a>
+    <a href="#">Representatives</a>
+    <a href="#">President</a>
+    <a href="#">Rules</a>
+  </div>
+
+</div>
+
+<!-- THEME TOGGLE -->
+<div class="theme-btn" id="theme-toggle">☾</div>
 
 </body>
 </html>
