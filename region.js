@@ -24,6 +24,29 @@ document.addEventListener("DOMContentLoaded", () => {
     LN: "LINCOLN"
   };
 
+  /* =========================
+   REGION MAP FILES
+========================= */
+
+const REGION_MAPS = {
+  PA: "pacifica.svg",
+  NE: "newengland.svg",
+  DX: "dixie.svg",
+  LN: "lincoln.svg"
+};
+  /* =========================
+   REGION MAP POSITION SETTINGS
+========================= */
+
+const REGION_MAP_TRANSFORM = {
+
+  PA: { scale:1.15, x:-10, y:5 },
+  NE: { scale:1.05, x:0, y:-8 },
+  DX: { scale:1.2, x:-5, y:0 },
+  LN: { scale:1.1, x:6, y:-4 }
+
+};
+  
   const params = new URLSearchParams(window.location.search);
   const REGION = params.get("region");
   if (!REGION || !REGION_NAMES[REGION]) return;
@@ -37,7 +60,32 @@ document.addEventListener("DOMContentLoaded", () => {
       if (year) document.getElementById("region-year").textContent = year;
 
       document.getElementById("region-name").textContent = REGION_NAMES[REGION];
+/* LOAD REGION MAP */
 
+const mapObj = document.getElementById("region-map");
+
+if(mapObj && REGION_MAPS[REGION]){
+
+  mapObj.data = REGION_MAPS[REGION];
+
+  mapObj.addEventListener("load", ()=>{
+
+    const cfg = REGION_MAP_TRANSFORM[REGION];
+    if(!cfg) return;
+
+    const svgDoc = mapObj.contentDocument;
+    if(!svgDoc) return;
+
+    const svg = svgDoc.querySelector("svg");
+    if(!svg) return;
+
+    svg.style.transform =
+      `translate(${cfg.x}px, ${cfg.y}px) scale(${cfg.scale})`;
+
+    svg.style.transformOrigin = "center center";
+
+  });
+}
       const regionBlocks = {
         NE: { start: 66, end: 70 },
         LN: { start: 72, end: 76 },
