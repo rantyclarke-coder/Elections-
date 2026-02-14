@@ -178,6 +178,7 @@
 </head>
 
 <body>
+  <div id="layout"></div>
   <div class="page">
 
     <!-- Floating map space (no box) -->
@@ -200,5 +201,13 @@
 
     <a class="back" href="./governor.html">BACK</a>
   </div>
+  <script>
+fetch("layout.html")
+.then(res => res.text())
+.then(data => {
+  document.getElementById("layout").innerHTML = data;
+});
+  </script>
+  
 </body>
 </html>
