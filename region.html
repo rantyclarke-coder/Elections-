@@ -108,12 +108,13 @@ body.dark .menu span{
 }
 
 .menuTop{
- height:44px;
+ height:46px;
  background:#fff;
  display:flex;
  align-items:center;
  justify-content:space-between;
  padding:0 15px;
+ opacity: 0.95;
 }
 
 body.dark .menuTop{
@@ -121,12 +122,13 @@ body.dark .menuTop{
 }
 
 .menuBody{
- height:calc(100% - 44px);
+ height:calc(100% - 46px);
  background:rgba(255,255,255,.65);
  backdrop-filter:blur(10px);
  display:flex;
  flex-direction:column;
  padding:20px;
+ opacity: 0.75;
 }
 
 body.dark .menuBody{
@@ -150,7 +152,7 @@ body.dark .menuBody a{
 
 .page{
  max-width:420px;
- margin:70px auto 0;
+ margin:58px auto 0;
  padding:16px;
 }
 
@@ -267,11 +269,7 @@ body.dark .candidate{
 
 .party{
  font-size:13px;
- color:#666;
-}
-
-body.dark .party{
- color:#aaa;
+ color:var(--party-secondary,#666);
 }
 
 .back{
