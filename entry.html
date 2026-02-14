@@ -54,7 +54,49 @@ body {
   margin: 4px 0;
   border-radius: 2px;
 }
+/* Overlay background */
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.75);
+  display: none;
+  z-index: 5;
+}
 
+/* Side menu */
+#sideMenu {
+  position: fixed;
+  top: 0;
+  right: -75%; /* hidden initially */
+  width: 75%;
+  height: 100%;
+  background: white;
+  transition: right 0.3s ease;
+  z-index: 10;
+}
+
+/* Active state */
+#sideMenu.active {
+  right: 0;
+}
+
+#overlay.active {
+  display: block;
+}
+
+/* Header with arrow */
+.menuHeader {
+  padding: 12px;
+}
+
+#closeMenu {
+  font-size: 24px;
+  cursor: pointer;
+}
+  
 </style>
 </head>
 
@@ -72,6 +114,23 @@ body {
 </div>
 
 <div class="divider"></div>
+<!-- Overlay -->
+<div id="overlay"></div>
 
+<!-- Slide Menu -->
+<div id="sideMenu">
+
+  <div class="menuHeader">
+    <span id="closeMenu">←</span>
+  </div>
+
+  <div class="menuContent">
+    Menu content here
+  </div>
+
+</div>
+
+<script src="entry.js"></script>
+  
 </body>
 </html>
