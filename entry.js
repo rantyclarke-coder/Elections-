@@ -18,9 +18,16 @@ overlay.addEventListener("click", hideMenu);
 closeMenu.addEventListener("click", hideMenu);
 
 const themeToggle = document.getElementById("themeToggle");
+const logo = document.getElementById("logo");
 
 themeToggle.addEventListener("click", function() {
 
   document.body.classList.toggle("dark");
+
+  if(document.body.classList.contains("dark")) {
+    logo.src = "images/wpdark.png";
+  } else {
+    logo.src = "images/wplight.png";
+  }
 
 });
