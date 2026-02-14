@@ -1,213 +1,275 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>REGIONAL GUBERNATORIAL ELECTION</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Region JS (later) -->
-  <script src="region.js" defer></script>
-  <style>
-    body{
-      margin:0;
-      background:#000;
-      color:#fff;
-      font-family:Inter,system-ui;
-    }
+<title>REGIONAL GUBERNATORIAL ELECTION</title>
 
-    .page{
-      max-width:420px;
-      margin:0 auto;
-      padding:16px;
-    }
+<script src="region.js" defer></script>
 
-    /* ===== FLOATING MAP SPACE ===== */
-    
+<style>
+
+/* ======================
+   ENTRY HEADER STYLES
+====================== */
+
+*{
+ margin:0;
+ padding:0;
+ box-sizing:border-box;
+}
+
+body{
+ font-family:Inter,system-ui;
+ background:#000;
+ color:#fff;
+}
+
+.logo{
+ position:absolute;
+ top:22px;
+ left:50%;
+ transform:translate(-50%,-50%);
+ width:230px;
+ height:46px;
+}
+
+.logo2{
+ position:absolute;
+ top:10px;
+ left:13px;
+ width:20px;
+ height:28px;
+}
+
+.menu{
+ position:absolute;
+ top:12px;
+ right:12px;
+ width:24px;
+ cursor:pointer;
+}
+
+.menu span{
+ display:block;
+ height:3px;
+ background-color:#fff;
+ margin:4px 0;
+ border-radius:2px;
+}
+
+body.dark .menu span{
+ background:white;
+}
+
+.dividerHeader{
+ position:absolute;
+ top:44px;
+ width:100%;
+ height:1px;
+ background:#ccc;
+}
+
+/* ======================
+   REGION PAGE STYLES
+====================== */
+
+.page{
+ max-width:420px;
+ margin:70px auto 0;
+ padding:16px;
+}
+
+/* ===== FLOATING MAP SPACE ===== */
+
 .map-space{
-  height:280px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+ height:280px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
 }
 
 .map-space object{
-  width:100%;
-  max-width:380px;
-  height:270px;
-  pointer-events:auto;
+ width:100%;
+ max-width:380px;
+ height:270px;
+ pointer-events:auto;
 }
-    /* ===== REGION HEADER ===== */
-    
-  .region-title{
-      text-align:center;
-      font-size:28px;
-      font-weight:900;
-      letter-spacing:2px;
-    }
 
-    .region-sub{
-      text-align:center;
-      font-size:14px;
-      letter-spacing:3px;
-      color:#aaa;
-      margin-top:4px;
-    }
+/* REGION HEADER */
 
-    .divider{
-      height:3px;
-      background:#fff;
-      margin:15px 0 18px;
-    }
+.region-title{
+ text-align:center;
+ font-size:28px;
+ font-weight:900;
+ letter-spacing:2px;
+}
 
-    /* ===== CANDIDATE LIST ===== */
-    .candidates{
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-    }
+.region-sub{
+ text-align:center;
+ font-size:14px;
+ letter-spacing:3px;
+ color:#aaa;
+ margin-top:4px;
+}
 
-    .candidate{
-      display:flex;
-      align-items:center;
-      background:#111;
-      border-radius:12px;
-      padding:12px;
-      position:relative;
-    }
+.divider{
+ height:3px;
+ background:#fff;
+ margin:15px 0 18px;
+}
 
-    /* PHOTO PLACEHOLDER */
-    .photo{
-      width:62px;
-      height:62px;
-      border-radius:50%;
-      background:var(--party-secondary,#666);
-      margin-right:14px;
-      flex-shrink:0;
-      overflow:hidden;
-    }
+/* CANDIDATE LIST */
 
-    .photo img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      display:block;
-    }
+.candidates{
+ display:flex;
+ flex-direction:column;
+ gap:12px;
+}
 
-    /* INFO */
-    .info{
-      flex:1;
-      min-width:0;
-    }
+.candidate{
+ display:flex;
+ align-items:center;
+ background:#111;
+ border-radius:12px;
+ padding:12px;
+ position:relative;
+}
 
-    .name-line{
-      display:flex;
-      align-items:center;
-      gap:8px;
-    }
+.photo{
+ width:62px;
+ height:62px;
+ border-radius:50%;
+ background:var(--party-secondary,#666);
+ margin-right:14px;
+ flex-shrink:0;
+ overflow:hidden;
+}
 
-    .name{
-      font-size:16px;
-      font-weight:800;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
+.photo img{
+ width:100%;
+ height:100%;
+ object-fit:cover;
+}
 
-    /* GOLD TICK */
-    .leader-badge{
-      width:16px;
-      height:16px;
-      border-radius:50%;
-      background:gold;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      font-size:11px;
-      color:#000;
-      font-weight:900;
-      flex-shrink:0;
-    }
+.info{
+ flex:1;
+ min-width:0;
+}
 
-    .party{
-      font-size:13px;
-      margin-top:-1px;
-      color:var(--party-secondary,#aaa);
-    }
+.name-line{
+ display:flex;
+ align-items:center;
+ gap:8px;
+}
 
-    .votes{
-      font-size:14px;
-      margin-top:2px;
-      opacity:1;
-    }
+.name{
+ font-size:16px;
+ font-weight:800;
+ white-space:nowrap;
+ overflow:hidden;
+ text-overflow:ellipsis;
+}
 
-    /* TRIANGLES */
-    .trend{
-      width:0;
-      height:0;
-      margin-left:12px;
-      flex-shrink:0;
-    }
+.leader-badge{
+ width:16px;
+ height:16px;
+ border-radius:50%;
+ background:gold;
+ display:inline-flex;
+ align-items:center;
+ justify-content:center;
+ font-size:11px;
+ color:#000;
+ font-weight:900;
+}
 
-    .trend.up{
-      border-left:7px solid transparent;
-      border-right:7px solid transparent;
-      border-bottom:12px solid #2ecc71;
-    }
+.party{
+ font-size:13px;
+ margin-top:-1px;
+ color:var(--party-secondary,#aaa);
+}
 
-    .trend.down{
-      border-left:7px solid transparent;
-      border-right:7px solid transparent;
-      border-top:12px solid #e74c3c;
-    }
+.votes{
+ font-size:14px;
+ margin-top:2px;
+}
 
-    .hidden{
-      display:none;
-    }
+.trend{
+ width:0;
+ height:0;
+ margin-left:12px;
+}
 
-    .back{
-      display:block;
-      margin-top:30px;
-      text-align:center;
-      font-size:12px;
-      letter-spacing:1px;
-      opacity:.7;
-      color:#fff;
-      text-decoration:none;
-    }
-  </style>
+.trend.up{
+ border-left:7px solid transparent;
+ border-right:7px solid transparent;
+ border-bottom:12px solid #2ecc71;
+}
+
+.trend.down{
+ border-left:7px solid transparent;
+ border-right:7px solid transparent;
+ border-top:12px solid #e74c3c;
+}
+
+.back{
+ display:block;
+ margin-top:30px;
+ text-align:center;
+ font-size:12px;
+ letter-spacing:1px;
+ opacity:.7;
+ color:#fff;
+ text-decoration:none;
+}
+
+</style>
 </head>
 
 <body>
-  <div id="layout"></div>
-  <div class="page">
 
-    <!-- Floating map space (no box) -->
-    <div class="map-space">
-  <object id="region-map" type="image/svg+xml"></object>
-    </div>
+<!-- HEADER FROM ENTRY.HTML -->
 
-    <!-- Region Header -->
-    <div class="region-title" id="region-name">REGION</div>
-    <div class="region-sub">
-      <span id="region-year">XXXX</span> GUBERNATORIAL ELECTION
-    </div>
+<img src="images/wplight.png" class="logo" id="logo">
+<img src="images/election_default.svg" class="logo2">
 
-    <div class="divider"></div>
+<div class="menu">
+<span></span>
+<span></span>
+<span></span>
+</div>
 
-    <!-- Candidate rows generated by region.js -->
-    <div class="candidates" id="candidate-list">
-      <!-- JS injects rows here -->
-    </div>
+<div class="dividerHeader"></div>
 
-    <a class="back" href="./governor.html">BACK</a>
-  </div>
-  <script>
-fetch("layout.html")
-.then(res => res.text())
-.then(data => {
-  document.getElementById("layout").innerHTML = data;
-});
-  </script>
-  
+<div id="overlay"></div>
+<div id="sideMenu">
+<!-- COPY your menuTop + menuBody EXACTLY from entry.html here -->
+</div>
+
+<!-- REGION CONTENT -->
+
+<div class="page">
+
+<div class="map-space">
+<object id="region-map" type="image/svg+xml"></object>
+</div>
+
+<div class="region-title" id="region-name">REGION</div>
+<div class="region-sub">
+<span id="region-year">XXXX</span> GUBERNATORIAL ELECTION
+</div>
+
+<div class="divider"></div>
+
+<div class="candidates" id="candidate-list"></div>
+
+<a class="back" href="./governor.html">BACK</a>
+
+</div>
+
+<script src="entry.js"></script>
+
 </body>
 </html>
