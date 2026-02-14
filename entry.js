@@ -16,3 +16,11 @@ function hideMenu() {
 menuBtn.addEventListener("click", openMenu);
 overlay.addEventListener("click", hideMenu);
 closeMenu.addEventListener("click", hideMenu);
+
+const themeToggle = document.getElementById("themeToggle");
+
+themeToggle.addEventListener("click", function() {
+
+  document.body.classList.toggle("dark");
+
+});
