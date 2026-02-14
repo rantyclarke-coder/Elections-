@@ -120,7 +120,21 @@ body.dark .menu span{
 body.dark .menuTop{
  background:#111;
 }
+/* Arrow */
+#closeMenu {
+  font-size: 38px;
+  font-weight: 700;
+  cursor: pointer;
+}
 
+/* Simple sun symbol */
+#themeToggle {
+  font-size: 36px;
+  font-weight: 600;
+  cursor: pointer;
+  position: relative;
+  top: -5px;   
+}
 .menuBody{
  height:calc(100% - 46px);
  background:rgba(255,255,255,.65);
@@ -269,9 +283,11 @@ body.dark .candidate{
 
 .party{
  font-size:13px;
- color:var(--party-secondary,#666);
+ color:var(--party-primary,#666);
 }
-
+body.dark .party{
+ color:var(--party-secondary,#aaa);
+}
 .back{
  display:block;
  margin-top:30px;
