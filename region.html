@@ -76,7 +76,7 @@ body.dark .menu span{
  background:#ccc;
 }
 .live-bar{
- margin-top:60px;   /* exactly 4px after divider */
+ margin-top:56px;   /* exactly 4px after divider */
  width:44px;
  height:20px;
  background:#e00000;
@@ -95,7 +95,7 @@ body.dark .live-bar{
 }
  .live-dot{
  position:absolute;
- right:-15px;
+ right:-5px;
  width:12px;
  height:12px;
  border-radius:50%;
@@ -218,11 +218,13 @@ body.dark .menuBody a{
 }
 
 .map-space{
- height:280px;
- display:flex;
- align-items:center;
- justify-content:center;
+  height:280px;
+  display:flex;
+  align-items:flex-start; /* moves content upward */
+  justify-content:center;
+  padding-top:20px; /* fine adjustment */
 }
+ 
 
 .map-space object{
  width:100%;
