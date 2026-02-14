@@ -95,13 +95,31 @@ body {
 
 /* Header with arrow */
 .menuHeader {
-  padding: 5px;
+  padding: 3px, 3px;
 }
 
 #closeMenu {
   font-size: 30px;
+  font-weight: 600;
   cursor: pointer;
 }
+  .menuContent {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.menuContent a {
+  text-decoration: none;
+  color: #000;
+  font-size: 20px;
+  padding: 14px 0;
+  border-bottom: 1px solid #ccc;   /* line between options */
+  font-weight: 500;
+}
+  .menuContent a:last-child {
+  border-bottom: none;
+  }
   
 </style>
 </head>
@@ -134,7 +152,13 @@ body {
   </div>
 
   <div class="menuContent">
-    Menu content here
+
+  <a href="#">President</a>
+  <a href="#">Governors</a>
+  <a href="#">House</a>
+  <a href="#">Senate</a>
+  <a href="#">Rules</a>
+
   </div>
 
 </div>
