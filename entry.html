@@ -109,17 +109,17 @@ body {
 /* Arrow */
 #closeMenu {
   font-size: 38px;
-  font-weight: 800;
+  font-weight: 700;
   cursor: pointer;
 }
 
 /* Simple sun symbol */
 #themeToggle {
   font-size: 36px;
-  font-weight: bold;
+  font-weight: 600;
   cursor: pointer;
   position: relative;
-  top: -3px;   
+  top: -4px;   
 }
 
 /* MENU BODY (semi transparent) */
@@ -146,7 +146,28 @@ body {
 .menuBody a:last-child {
   border-bottom: none;
 }
+/* DARK MODE */
 
+body.dark {
+  background-color: #111;
+  color: white;
+}
+
+/* menu top dark */
+body.dark .menuTop {
+  background: #111;
+}
+
+/* menu body dark */
+body.dark .menuBody {
+  background: rgba(20,20,20,0.65);
+}
+
+/* menu links dark */
+body.dark .menuBody a {
+  color: white;
+  }
+  
 </style>
 </head>
 
