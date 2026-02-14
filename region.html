@@ -285,9 +285,43 @@ body.dark .candidate{
  font-size:13px;
  color:var(--party-primary,#666);
 }
+ 
 body.dark .party{
  color:var(--party-secondary,#aaa);
 }
+ .trend{
+ width:24px;
+ height:100%;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ margin-left:12px;
+ flex-shrink:0;
+}
+
+/* UP TRIANGLE */
+
+.trend.up::before{
+ content:"";
+ width:0;
+ height:0;
+ border-left:7px solid transparent;
+ border-right:7px solid transparent;
+ border-bottom:12px solid #2ecc71;
+}
+
+/* DOWN TRIANGLE */
+
+.trend.down::before{
+ content:"";
+ width:0;
+ height:0;
+ border-left:7px solid transparent;
+ border-right:7px solid transparent;
+ border-top:12px solid #e74c3c;
+}
+ 
+ 
 .back{
  display:block;
  margin-top:30px;
