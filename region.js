@@ -143,6 +143,7 @@ renderDistrictMap(candidates);
 
       const row = document.createElement("div");
       row.className = "candidate";
+      row.style.setPropertt("--party-primary", PARTIES[c.party].primary);
       row.style.setProperty("--party-secondary", PARTIES[c.party].secondary);
 
       row.innerHTML = `
