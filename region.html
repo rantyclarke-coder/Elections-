@@ -10,9 +10,7 @@
 
 <style>
 
-/* ======================
-   ENTRY HEADER STYLES
-====================== */
+/* ================= RESET ================= */
 
 *{
  margin:0;
@@ -22,16 +20,16 @@
 
 body{
  font-family:Inter,system-ui;
-  background:#fff;
-  color:#000;
+ background:#fff;
+ color:#000;
 }
 
-/* dark mode */
 body.dark{
-  background:#000;
-  color:#fff;
+ background:#000;
+ color:#fff;
 }
-   
+
+/* ================= HEADER ================= */
 
 .logo{
  position:absolute;
@@ -61,13 +59,13 @@ body.dark{
 .menu span{
  display:block;
  height:3px;
- background-color:#fff;
+ background:#333;
  margin:4px 0;
  border-radius:2px;
 }
 
 body.dark .menu span{
- background:white;
+ background:#fff;
 }
 
 .dividerHeader{
@@ -78,17 +76,83 @@ body.dark .menu span{
  background:#ccc;
 }
 
-/* ======================
-   REGION PAGE STYLES
-====================== */
+/* ================= MENU ================= */
+
+#overlay{
+ position:fixed;
+ top:0;
+ left:0;
+ width:100%;
+ height:100%;
+ background:rgba(0,0,0,0.75);
+ display:none;
+ z-index:5;
+}
+
+#overlay.active{
+ display:block;
+}
+
+#sideMenu{
+ position:fixed;
+ top:0;
+ right:-65%;
+ width:65%;
+ height:100%;
+ transition:right .4s ease;
+ z-index:10;
+}
+
+#sideMenu.active{
+ right:0;
+}
+
+.menuTop{
+ height:44px;
+ background:#fff;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ padding:0 15px;
+}
+
+body.dark .menuTop{
+ background:#111;
+}
+
+.menuBody{
+ height:calc(100% - 44px);
+ background:rgba(255,255,255,.65);
+ backdrop-filter:blur(10px);
+ display:flex;
+ flex-direction:column;
+ padding:20px;
+}
+
+body.dark .menuBody{
+ background:rgba(20,20,20,.65);
+}
+
+.menuBody a{
+ text-decoration:none;
+ color:#000;
+ font-size:22px;
+ padding:14px 0;
+ border-bottom:1px solid #ccc;
+ font-weight:600;
+}
+
+body.dark .menuBody a{
+ color:#fff;
+}
+
+/* ================= PAGE ================= */
 
 .page{
  max-width:420px;
  margin:70px auto 0;
  padding:16px;
 }
-
-/* ===== FLOATING MAP SPACE ===== */
 
 .map-space{
  height:280px;
@@ -104,7 +168,17 @@ body.dark .menu span{
  pointer-events:auto;
 }
 
-/* REGION HEADER */
+/* SVG outline */
+
+:root{
+ --map-border:#000;
+}
+
+body.dark{
+ --map-border:#fff;
+}
+
+/* ================= REGION CONTENT ================= */
 
 .region-title{
  text-align:center;
@@ -117,17 +191,19 @@ body.dark .menu span{
  text-align:center;
  font-size:14px;
  letter-spacing:3px;
- color:#aaa;
+ color:#888;
  margin-top:4px;
 }
 
 .divider{
  height:3px;
- background:#fff;
+ background:#111;
  margin:15px 0 18px;
 }
 
-/* CANDIDATE LIST */
+body.dark .divider{
+ background:#fff;
+}
 
 .candidates{
  display:flex;
@@ -138,10 +214,13 @@ body.dark .menu span{
 .candidate{
  display:flex;
  align-items:center;
- background:#111;
+ background:#f5f5f5;
  border-radius:12px;
  padding:12px;
- position:relative;
+}
+
+body.dark .candidate{
+ background:#111;
 }
 
 .photo{
@@ -150,7 +229,6 @@ body.dark .menu span{
  border-radius:50%;
  background:var(--party-secondary,#666);
  margin-right:14px;
- flex-shrink:0;
  overflow:hidden;
 }
 
@@ -162,7 +240,6 @@ body.dark .menu span{
 
 .info{
  flex:1;
- min-width:0;
 }
 
 .name-line{
@@ -174,9 +251,6 @@ body.dark .menu span{
 .name{
  font-size:16px;
  font-weight:800;
- white-space:nowrap;
- overflow:hidden;
- text-overflow:ellipsis;
 }
 
 .leader-badge{
@@ -184,41 +258,20 @@ body.dark .menu span{
  height:16px;
  border-radius:50%;
  background:gold;
- display:inline-flex;
+ display:flex;
  align-items:center;
  justify-content:center;
  font-size:11px;
  color:#000;
- font-weight:900;
 }
 
 .party{
  font-size:13px;
- margin-top:-1px;
- color:var(--party-secondary,#aaa);
+ color:#666;
 }
 
-.votes{
- font-size:14px;
- margin-top:2px;
-}
-
-.trend{
- width:0;
- height:0;
- margin-left:12px;
-}
-
-.trend.up{
- border-left:7px solid transparent;
- border-right:7px solid transparent;
- border-bottom:12px solid #2ecc71;
-}
-
-.trend.down{
- border-left:7px solid transparent;
- border-right:7px solid transparent;
- border-top:12px solid #e74c3c;
+body.dark .party{
+ color:#aaa;
 }
 
 .back{
@@ -226,18 +279,19 @@ body.dark .menu span{
  margin-top:30px;
  text-align:center;
  font-size:12px;
- letter-spacing:1px;
  opacity:.7;
- color:#fff;
+ color:#000;
  text-decoration:none;
+}
+
+body.dark .back{
+ color:#fff;
 }
 
 </style>
 </head>
 
 <body>
-
-<!-- HEADER FROM ENTRY.HTML -->
 
 <img src="images/wplight.png" class="logo" id="logo">
 <img src="images/election_default.svg" class="logo2">
@@ -251,27 +305,21 @@ body.dark .menu span{
 <div class="dividerHeader"></div>
 
 <div id="overlay"></div>
-   <div id="sideMenu">
 
-  <div class="menuTop">
-    <span id="closeMenu">←</span>
-    <span id="themeToggle">☼</span>
-  </div>
+<div id="sideMenu">
+ <div class="menuTop">
+   <span id="closeMenu">←</span>
+   <span id="themeToggle">☼</span>
+ </div>
 
-  <div class="menuBody">
-    <a href="#">President</a>
-    <a href="#">Governors</a>
-    <a href="#">House</a>
-    <a href="#">Senate</a>
-    <a href="#">Rules</a>
-  </div>
-
-   </div>
-   
-<!-- COPY your menuTop + menuBody EXACTLY from entry.html here -->
+ <div class="menuBody">
+   <a href="#">President</a>
+   <a href="#">Governors</a>
+   <a href="#">House</a>
+   <a href="#">Senate</a>
+   <a href="#">Rules</a>
+ </div>
 </div>
-
-<!-- REGION CONTENT -->
 
 <div class="page">
 
@@ -280,6 +328,7 @@ body.dark .menu span{
 </div>
 
 <div class="region-title" id="region-name">REGION</div>
+
 <div class="region-sub">
 <span id="region-year">XXXX</span> GUBERNATORIAL ELECTION
 </div>
