@@ -59,7 +59,7 @@ const CANDIDATES = {
     party: "NPPA",
     primaryColor: "#2ecc71",
     secondaryColor: "#b9f1cf",
-    photo: "images/bill.png"
+    photo: "images/howard.png"
   },
 
    C4: {
