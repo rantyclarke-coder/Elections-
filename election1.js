@@ -10,6 +10,7 @@ const CONSTANTS = {
 };
 // Popup visibility control
 const SHOW_C3_IN_POPUP = true;
+const SHOW_C4_IN_POPUP = true;
 const TIE_COLOR = "#8a8a8a";
 
 /* =========================
@@ -53,22 +54,30 @@ const CANDIDATES = {
   },
 
   C3: {
-    name: "JUSTIN MOORE",
-    short: "MOORE",
+    name: "HOWARD KENNEDY",
+    short: "KENNEDY",
     party: "NPPA",
     primaryColor: "#2ecc71",
     secondaryColor: "#b9f1cf",
     photo: "images/bill.png"
-  }
+  },
+
+   C4: {
+  name: "CLIVE BRIXTON",
+  short: "BRIXTON",
+  party: "INDEPENDENT",
+  primaryColor: "#xxxxxx",
+  secondaryColor: "#xxxxxx",
+  photo: "images/brixton.png"
+   }
 };
 
 /* =========================
    3. STORAGE
 ========================= */
 const STATE_RESULTS = {};
-const nationalEV = { C1:0, C2:0, C3:0 };
-const nationalVotes = { C1:1, C2:1, C3:1 };
-
+const nationalEV = { C1:0, C2:0, C3:0, C4:0 };
+const nationalVotes = { C1:1, C2:1, C3:1, C4:1 };
 /* =========================
    4. LOAD GOOGLE SHEET
 ========================= */
@@ -83,18 +92,20 @@ fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vSsbbXqdgfMGosYWjOVNR-2UU
     const c1 = Number(rows[i][11]);
     const c2 = Number(rows[i][12]);
     const c3 = Number(rows[i][13]);
+    const c4 = Number(rows[i][14]);
     if (!code || !ev) continue;
 
-    if (c1 + c2 + c3 === 0) {
-      STATE_RESULTS[code] = { ev, votes:{C1:0,C2:0,C3:0}, winner:null, isTie:false };
+    if (c1 + c2 + c3 + c4 === 0) {
+      STATE_RESULTS[code] = { ev, votes:{C1:0,C2:0,C3:0,C4:0}, winner:null, isTie:false };
       continue;
     }
 
-    const total = c1 + c2 + c3;
+    const total = c1 + c2 + c3 + c4;
     const votes = {
       C1: Math.round(ev * CONSTANTS.VOTES_PER_EV * c1 / total),
       C2: Math.round(ev * CONSTANTS.VOTES_PER_EV * c2 / total),
-      C3: Math.round(ev * CONSTANTS.VOTES_PER_EV * c3 / total)
+      C3: Math.round(ev * CONSTANTS.VOTES_PER_EV * c3 / total),
+      C4: Math.round(ev * CONSTANTS.VOTES_PER_EV * c4 / total)
     };
 
     const sorted = Object.entries(votes).sort((a,b)=>b[1]-a[1]);
