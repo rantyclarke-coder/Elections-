@@ -89,10 +89,10 @@ fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vSsbbXqdgfMGosYWjOVNR-2UU
   for (let i = 2; i < rows.length; i++) {
     const code = rows[i][0]?.trim();
     const ev = Number(rows[i][1]);
-    const c1 = Number(rows[i][11]);
-    const c2 = Number(rows[i][12]);
-    const c3 = Number(rows[i][13]);
-    const c4 = Number(rows[i][14]);
+    const c1 = Number(rows[i][14]);
+    const c2 = Number(rows[i][15]);
+    const c3 = Number(rows[i][16]);
+    const c4 = Number(rows[i][17]);
     if (!code || !ev) continue;
 
     if (c1 + c2 + c3 + c4 === 0) {
