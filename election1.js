@@ -67,7 +67,7 @@ const CANDIDATES = {
   short: "BRIXTON",
   party: "INDEPENDENT",
   primaryColor: "#bfa23a",
-  secondaryColor: "#e6879c",
+  secondaryColor: "#e6d79c",
   photo: "images/brixton.png"
    }
 };
