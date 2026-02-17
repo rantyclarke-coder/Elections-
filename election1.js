@@ -38,7 +38,7 @@ const CANDIDATES = {
   C1: {
     name: "KEITLYN MCKINLEY",
     short: "MCKINLEY",
-    party: "DEMOCRAT",
+    party: "INDEPENDENT",
     primaryColor: "#1e3fd9",
     secondaryColor: "#b8c6ff",
     photo: "images/mckinley.png"
@@ -47,7 +47,7 @@ const CANDIDATES = {
   C2: {
     name: "STELLA COUCH",
     short: "COUCH",
-    party: "REPUBLICAN",
+    party: "DEMOCRAT",
     primaryColor: "#dc143c",
     secondaryColor: "#ffc1cc",
     photo: "images/couch.png"
@@ -66,8 +66,8 @@ const CANDIDATES = {
   name: "CLIVE BRIXTON",
   short: "BRIXTON",
   party: "INDEPENDENT",
-  primaryColor: "#xxxxxx",
-  secondaryColor: "#xxxxxx",
+  primaryColor: "#bfa23a",
+  secondaryColor: "#e6879c",
   photo: "images/brixton.png"
    }
 };
@@ -157,7 +157,7 @@ fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vSsbbXqdgfMGosYWjOVNR-2UU
     CANDIDATES[right].primaryColor;
 
   // ---- STATS ----
-  const totalVotes = nationalVotes.C1 + nationalVotes.C2 + nationalVotes.C3;
+  const totalVotes = nationalVotes.C1 + nationalVotes.C2 + nationalVotes.C3 + nationalVotes.C4;
 
   document.getElementById("left-stats").textContent =
     `${((nationalVotes[left] / totalVotes) * 100).toFixed(1)}% |\n${nationalVotes[left].toLocaleString()}`;
@@ -257,11 +257,13 @@ function showPopup(code, x, y) {
   if (!s) return;
 
   const rows = Object.entries(s.votes)
-  .filter(([cid]) => {
-    if (cid === "C3" && !SHOW_C3_IN_POPUP) return false;
-    return true;
-  })
-  .sort((a,b)=>b[1]-a[1]);
+     .filter(([cid]) => {
+  if (cid === "C3" && !SHOW_C3_IN_POPUP) return false;
+  if (cid === "C4" && !SHOW_C4_IN_POPUP) return false;
+  return true;
+})
+ 
+.sort((a,b)=>b[1]-a[1]);
   const top = rows[0][0];
   const status = s.isTie ? "TIED" : "WON";
   const statusColor = s.isTie ? TIE_COLOR : CANDIDATES[top].secondaryColor;
@@ -279,7 +281,7 @@ function showPopup(code, x, y) {
     </div>
     ${rows.map((r,i)=>{
       const c = CANDIDATES[r[0]];
-      const total = s.votes.C1+s.votes.C2+s.votes.C3;
+      const total = s.votes.C1+s.votes.C2+s.votes.C3+s.votes.C4;
       const pct = total ? ((r[1]/total)*100).toFixed(1) : "0.0";
       const ind = s.isTie ? "—" : (i===0?"▲":"▼");
       const indColor = s.isTie ? TIE_COLOR : (i===0?"#2ecc71":"#dc143c");
