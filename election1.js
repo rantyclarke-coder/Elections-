@@ -86,12 +86,20 @@ fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vSsbbXqdgfMGosYWjOVNR-2UU
 .then(csv => {
   const rows = csv.trim().split("\n").map(r => r.split(","));
 
-   // ===== ELECTION YEAR FROM SHEET =====
-const electionYear = rows[57]?.[2]?.trim();
+   /* ===== GET ELECTION YEAR FROM SHEET ===== */
+
+const electionYear = rows[57]?.[2]?.trim(); // C58
 
 if (electionYear) {
-  const yearEl = document.getElementById("election-year");
-  if (yearEl) yearEl.textContent = electionYear;
+
+  // Update browser tab title
+  document.title = `US ${electionYear} ELECTIONS`;
+
+  // Update heading text
+  const titleEl = document.querySelector(".title");
+  if (titleEl) {
+    titleEl.textContent = `US ${electionYear} ELECTIONS`;
+  }
 }
 
   for (let i = 2; i < rows.length; i++) {
