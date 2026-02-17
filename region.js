@@ -56,7 +56,7 @@ const REGION_MAP_TRANSFORM = {
     .then(csv => {
       const rows = csv.split("\n").map(r => r.split(","));
 
-      const year = rows[10]?.[20]?.trim();
+      const year = rows[57]?.[2]?.trim();
       if (year) document.getElementById("region-year").textContent = year;
 
       document.getElementById("region-name").textContent = REGION_NAMES[REGION];
