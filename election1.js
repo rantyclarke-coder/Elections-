@@ -86,6 +86,14 @@ fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vSsbbXqdgfMGosYWjOVNR-2UU
 .then(csv => {
   const rows = csv.trim().split("\n").map(r => r.split(","));
 
+   // ===== ELECTION YEAR FROM SHEET =====
+const electionYear = rows[57]?.[2]?.trim();
+
+if (electionYear) {
+  const yearEl = document.getElementById("election-year");
+  if (yearEl) yearEl.textContent = electionYear;
+}
+
   for (let i = 2; i < rows.length; i++) {
     const code = rows[i][0]?.trim();
     const ev = Number(rows[i][1]);
