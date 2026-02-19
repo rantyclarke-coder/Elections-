@@ -148,8 +148,8 @@ renderDistrictMap(candidates);
 
 row.innerHTML = `
   <div class="photo">
-    <img src="${c.img || '/images/default.png'}"
-         onerror="this.onerror=null; this.src='/images/default.png';">
+    <img src="${c.img || "/images/default.png"}"
+         onerror="this.onerror=null; this.src="/images/default.png";">
   </div>
 
         <div class="info">
