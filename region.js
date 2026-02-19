@@ -146,10 +146,12 @@ renderDistrictMap(candidates);
       row.style.setProperty("--party-primary", PARTIES[c.party].primary);
       row.style.setProperty("--party-secondary", PARTIES[c.party].secondary);
 
-      row.innerHTML = `
-        <div class="photo">
-          ${c.img ? `<img src="${c.img}">` : ""}
-        </div>
+row.innerHTML = `
+  <div class="photo">
+    <img src="${c.img || '/images/default.png'}"
+         onerror="this.onerror=null; this.src='/images/default.png';">
+  </div>
+`;
 
         <div class="info">
           <div class="name-line">
