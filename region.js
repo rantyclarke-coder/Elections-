@@ -151,7 +151,6 @@ row.innerHTML = `
     <img src="${c.img || '/images/default.png'}"
          onerror="this.onerror=null; this.src='/images/default.png';">
   </div>
-`;
 
         <div class="info">
           <div class="name-line">
