@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 <!-- IMPORTANT for mobile scaling -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -37,7 +37,21 @@ body{
     height:1px;
     background:#000;
 }
+.election-heading{
+    font-family:'Playfair Display', serif;
+    text-align:center;
+    font-size:22px;
+    margin:20px 0;
+}
 
+.election-logo{
+    height:20px;
+    vertical-align:middle;
+    margin:0 6px;
+}
+    .dark .election-heading{
+    color:white;
+    }
 /* Hamburger menu */
 .menu{
     position:absolute;
@@ -106,7 +120,9 @@ body{
 </div>
 
 <div class="divider"></div>
-
+<h2 class="election-heading">
+ELECTIONS <img src="logo.png" class="election-logo"> <span id="electionYear"></span>
+</h2>
 <div class="moon-button" onclick="toggleDarkMode()">
     <div class="crescent"></div>
 </div>
