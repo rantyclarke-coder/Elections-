@@ -46,7 +46,21 @@ body {
   height: 1px;
   background-color: #ccc;
 }
+.election-heading{
+    font-family:'Playfair Display', serif;
+    text-align:center;
+    font-size:22px;
+    margin:20px 0;
+}
 
+.election-logo{
+    height:20px;
+    vertical-align:middle;
+    margin:0 6px;
+}
+  .dark .election-heading{
+    color:white;
+  }
 /* Menu icon */
 .menu {
   position: absolute;
@@ -187,7 +201,9 @@ body.dark .menuBody a {
 </div>
 
 <div class="divider"></div>
-
+<h2 class="election-heading">
+ELECTIONS <img src="images/icon.png" class="election-logo"> <span id="electionYear"></span>
+</h2>
 <!-- Overlay -->
 <div id="overlay"></div>
 
