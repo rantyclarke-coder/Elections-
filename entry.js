@@ -27,6 +27,29 @@ if(localStorage.getItem("theme") === "dark") {
   logo.src = "images/wpdark.png";
 }
 
+/* LOAD. YEAR. */
+async function loadYear(){
+
+    const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsbbXqdgfMGosYWjOVNR-2UUw6bZzjGNtnfuuWpbBuTutk6Jm1lffgHUis8GNjfQLFZLkaSpJNlck2/pub?gid=0&single=true&output=csv";
+
+    try {
+        const res = await fetch(url);
+        const text = await res.text();
+
+        const rows = text.split("\n");   // all rows
+        const row58 = rows[57];          // row 58 (index starts from 0)
+
+        const cols = row58.split(",");   // split columns
+        const year = cols[2];            // column C (A=0, B=1, C=2)
+
+        document.getElementById("electionYear").textContent = year;
+
+    } catch(err){
+        console.log("Sheet load failed:", err);
+    }
+}
+
+loadYear();
 /* TOGGLE THEME */
 
 themeToggle.addEventListener("click", function() {
