@@ -201,6 +201,33 @@ body.dark .menuBody {
 body.dark .menuBody a {
   color: white;
   }
+  .home-section{
+    padding: 24px 0;
+}
+
+.section-title{
+    text-align:center;
+    font-family:'Playfair Display', serif;
+    font-size:18px;
+    letter-spacing:1px;
+    margin-bottom:12px;
+}
+
+.section-divider{
+    height:1px;
+    background:#000;
+    width:85%;        /* creates left & right space */
+    margin:12px auto; /* centers it */
+}
+
+.dark .section-divider{
+    background:#fff;
+}
+
+.section-content{
+    min-height:60px;  /* temporary space */
+    padding:10px 20px;
+}
   
 </style>
 </head>
@@ -242,7 +269,29 @@ ELECTIONS<img src="images/icon.png" class="election-logo"><span id="electionYear
     <a href="#">Rules</a>
 
   </div>
+<section class="home-section" id="president">
+  <h3 class="section-title">PRESIDENT</h3>
+  <div class="section-divider"></div>
 
+  <div class="section-content">
+    <!-- President preview content goes here -->
+  </div>
+
+  <div class="section-divider"></div>
+</section>
+
+
+<section class="home-section" id="house">
+  <h3 class="section-title">HOUSE</h3>
+  <div class="section-divider"></div>
+
+  <div class="section-content">
+    <!-- House preview content -->
+  </div>
+
+  <div class="section-divider"></div>
+</section>
+  
 </div>
 
 <script src="entry.js"></script>
