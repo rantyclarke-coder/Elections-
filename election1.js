@@ -229,46 +229,41 @@ function colorMap() {
     const svg = map.contentDocument;
     if (!svg) return;
 
-    Object.keys(STATE_RESULTS).forEach(code => {
-  const els = svg.querySelectorAll("[region]");
+    const els = svg.querySelectorAll("[region]");
 
-  els.forEach(el => {
+    els.forEach(el => {
+      const region = el.getAttribute("region");
+      if (!region) return;
 
-    const region = el.getAttribute("region"); // ex: ne-al
+      const state = region.split("-")[0].toUpperCase();
+      const r = STATE_RESULTS[state];
+      if (!r) return;
 
-    const state = region.split("-")[0].toUpperCase(); // NE
+      // ---- COLOR ----
+      if (r.isTie) {
+        el.style.fill = TIE_COLOR;
+      } else if (r.winner) {
+        el.style.fill = CANDIDATES[r.winner].primaryColor;
+      }
 
-    if (state !== code.toUpperCase()) return;
+      // ---- POPUP ----
+      el.onclick = null;
 
-    const r = STATE_RESULTS[code];
+      if (r.isTie || r.winner) {
+        el.style.cursor = "pointer";
+        el.onclick = e => {
+          e.stopPropagation();
+          showPopup(state, e.clientX, e.clientY);
+        };
+      } else {
+        el.style.cursor = "default";
+      }
+    });
+  };
 
-    if (r.isTie) {
-      el.style.fill = TIE_COLOR;
-    } else if (r.winner) {
-      el.style.fill = CANDIDATES[r.winner].primaryColor;
-    }
-
-    // ---- POPUP ----
-    // This section needs to be inside the forEach loop
-    el.onclick = null;
-    if (r.isTie || r.winner) {
-      el.style.cursor = "pointer";
-      el.onclick = e => {
-        e.stopPropagation();
-        showPopup(code, e.clientX, e.clientY);
-      };
-    } else {
-      el.style.cursor = "default";
-    }
-  }); // This closing brace for forEach was misplaced before
-
-  // The rest of the code remains the same
-  // 🔥 THIS IS THE MISSING PART
-  if (map.contentDocument) {
-    apply();           // <-- RUN IMMEDIATELY
-  }
-
+  if (map.contentDocument) apply();
   map.addEventListener("load", apply);
+}
 
 /* =========================
    7. POPUP
