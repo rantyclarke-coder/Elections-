@@ -239,7 +239,7 @@ function colorMap() {
 
     const state = region.split("-")[0].toUpperCase(); // NE
 
-    if (state !== code) return;
+    if (state !== code.toUpperCase()) return;
 
     const r = STATE_RESULTS[code];
 
