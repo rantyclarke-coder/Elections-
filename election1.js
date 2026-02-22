@@ -151,7 +151,7 @@ if (electionYear) {
   document.getElementById("left-name").textContent = CANDIDATES[left].short;
   document.getElementById("right-name").textContent = CANDIDATES[right].short;
 
-  document.getElementById("left-name").style.color = CANDIDATES[left].secondaryColor;
+  document.getElementById("left-name").style.color = CANDIDATES[left].primaryColor;
   document.getElementById("right-name").style.color = CANDIDATES[right].secondaryColor;
 
   // ---- EVs ----
