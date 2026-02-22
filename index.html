@@ -126,6 +126,92 @@ body.dark .live-bar{
    box-shadow:0 0 0px #ff0000;
  }
 }
+    /* ================= MENU ================= */
+
+#overlay{
+ position:fixed;
+ top:0;
+ left:0;
+ width:100%;
+ height:100%;
+ background:rgba(0,0,0,0.75);
+ display:none;
+ z-index:5;
+}
+
+#overlay.active{
+ display:block;
+}
+
+#sideMenu{
+ position:fixed;
+ top:0;
+ right:-65%;
+ width:65%;
+ height:100%;
+ transition:right .4s ease;
+ z-index:10;
+}
+
+#sideMenu.active{
+ right:0;
+}
+
+.menuTop{
+ height:46px;
+ background:#fff;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ padding:0 15px;
+ opacity: 0.95;
+}
+
+body.dark .menuTop{
+ background:#111;
+}
+/* Arrow */
+#closeMenu {
+  font-size: 38px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Simple sun symbol */
+#themeToggle {
+  font-size: 36px;
+  font-weight: 600;
+  cursor: pointer;
+  position: relative;
+  top: -5px;   
+}
+.menuBody{
+ height:calc(100% - 46px);
+ background:rgba(255,255,255,.65);
+ backdrop-filter:blur(10px);
+ display:flex;
+ flex-direction:column;
+ padding:20px;
+ opacity: 0.75;
+}
+
+body.dark .menuBody{
+ background:rgba(20,20,20,.65);
+}
+
+.menuBody a{
+ text-decoration:none;
+ color:#000;
+ font-size:22px;
+ padding:14px 0;
+ border-bottom:1px solid #ccc;
+ font-weight:600;
+}
+
+body.dark .menuBody a{
+ color:#fff;
+}
+    /* PAGE */
     
     
     :root{
