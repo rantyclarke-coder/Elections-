@@ -37,7 +37,7 @@ const STATE_NAMES = {
 const CANDIDATES = {
   C1: {
     name: "KEITLYN MCKINLEY",
-    short: "MCKINLEY",
+    short: "KIT",
     party: "INDEPENDENT",
     primaryColor: "#1e3fd9",
     secondaryColor: "#b8c6ff",
@@ -46,11 +46,11 @@ const CANDIDATES = {
 
   C2: {
     name: "STELLA COUCH",
-    short: "COUCH",
+    short: "WALZ",
     party: "DEMOCRAT",
     primaryColor: "#dc143c",
     secondaryColor: "#ffc1cc",
-    photo: "images/couch.png"
+    photo: "images/walz.png"
   },
 
   C3: {
