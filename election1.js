@@ -230,17 +230,16 @@ function colorMap() {
     if (!svg) return;
 
     Object.keys(STATE_RESULTS).forEach(code => {
-      const el = svg.getElementById(code);
-      if (!el) return;
+      const els = svg.querySelectorAll(`[region^="${code.toLowerCase()}"]`);
+if (!els.length) return;
 
-      const r = STATE_RESULTS[code];
-
-      // ---- COLOR ----
-      if (r.isTie) {
-        el.style.fill = TIE_COLOR;
-      } else if (r.winner) {
-        el.style.fill = CANDIDATES[r.winner].primaryColor;
-      }
+els.forEach(el => {
+  if (r.isTie) {
+    el.style.fill = TIE_COLOR;
+  } else if (r.winner) {
+    el.style.fill = CANDIDATES[r.winner].primaryColor;
+  }
+});
 
       // ---- POPUP ----
       el.onclick = null;
