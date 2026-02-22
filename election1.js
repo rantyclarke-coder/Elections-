@@ -230,7 +230,6 @@ function colorMap() {
     if (!svg) return;
 
     Object.keys(STATE_RESULTS).forEach(code => {
-
   const els = svg.querySelectorAll("[region]");
 
   els.forEach(el => {
@@ -249,29 +248,27 @@ function colorMap() {
       el.style.fill = CANDIDATES[r.winner].primaryColor;
     }
 
-  });
+    // ---- POPUP ----
+    // This section needs to be inside the forEach loop
+    el.onclick = null;
+    if (r.isTie || r.winner) {
+      el.style.cursor = "pointer";
+      el.onclick = e => {
+        e.stopPropagation();
+        showPopup(code, e.clientX, e.clientY);
+      };
+    } else {
+      el.style.cursor = "default";
+    }
+  }); // This closing brace for forEach was misplaced before
 
-      // ---- POPUP ----
-      el.onclick = null;
-      if (r.isTie || r.winner) {
-        el.style.cursor = "pointer";
-        el.onclick = e => {
-          e.stopPropagation();
-          showPopup(code, e.clientX, e.clientY);
-        };
-      } else {
-        el.style.cursor = "default";
-      }
-    });
-  };
-
+  // The rest of the code remains the same
   // 🔥 THIS IS THE MISSING PART
   if (map.contentDocument) {
     apply();           // <-- RUN IMMEDIATELY
   }
 
   map.addEventListener("load", apply);
-}
 
 /* =========================
    7. POPUP
