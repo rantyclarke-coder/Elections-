@@ -13,19 +13,126 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Playfair+Display:wght@700;900&family=League+Spartan:wght@600;700;800&display=swap" rel="stylesheet">
 
   <style>
+
+    /* ================= RESET ================= */
+
+*{
+ margin:0;
+ padding:0;
+ box-sizing:border-box;
+}
+
+body{
+ font-family:Inter,system-ui;
+ background:#fff;
+ color:#000;
+}
+
+body.dark{
+ background:#000;
+ color:#fff;
+}
+
+/* ================= HEADER ================= */
+
+.logo{
+ position:absolute;
+ top:22px;
+ left:50%;
+ transform:translate(-50%,-50%);
+ width:230px;
+ height:46px;
+}
+
+.logo2{
+ position:absolute;
+ top:11px;
+ left:13px;
+ width:20px;
+ height:28px;
+}
+
+.menu{
+ position:absolute;
+ top:13px;
+ right:12px;
+ width:24px;
+ cursor:pointer;
+}
+
+.menu span{
+ display:block;
+ height:3px;
+ background:#333;
+ margin:4px 0;
+ border-radius:2px;
+}
+
+body.dark .menu span{
+ background:#fff;
+}
+
+.dividerHeader{
+ position:absolute;
+ top:46px;
+ width:100%;
+ height:1px;
+ background:#ccc;
+}
+.live-bar{
+ top:54px;   /* exactly 4px after divider */
+ width:42px;
+ height:20px;
+ background:#e00000;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-size:14px;
+ font-weight:700;
+ letter-spacing:.5px;
+ position:relative;
+ color:#000;
+}
+
+body.dark .live-bar{
+ color:#fff;
+}
+ .live-dot{
+ position:absolute;
+ right:-15px;
+ width:10px;
+ height:10px;
+ border-radius:50%;
+ background:#ff0000;
+ animation:livePulse 1.4s infinite ease-in-out;
+}
+
+/* glowing animation */
+
+@keyframes livePulse{
+
+ 0%{
+   opacity:.3;
+   box-shadow:0 0 0px #ff0000;
+ }
+
+ 50%{
+   opacity:1;
+   box-shadow:0 0 6px #ff0000;
+ }
+
+ 100%{
+   opacity:.3;
+   box-shadow:0 0 0px #ff0000;
+ }
+}
+    
+    
     :root{
-      --bg:#000;
       --muted:#bfbfbf;
       --divider:#fff;
       --pill:#4a4a4a;
       --max-width:420px;
-    }
-
-    html,body{
-      margin:0;
-      background:#000;
-      color:#fff;
-      font-family:Inter,system-ui;
     }
 
     .page{
