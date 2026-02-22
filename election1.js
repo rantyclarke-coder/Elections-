@@ -230,15 +230,27 @@ function colorMap() {
     if (!svg) return;
 
     Object.keys(STATE_RESULTS).forEach(code => {
-      const els = svg.querySelectorAll(`[region^="${code.toLowerCase()}"]`);
-if (!els.length) return;
 
-els.forEach(el => {
-  if (r.isTie) {
-    el.style.fill = TIE_COLOR;
-  } else if (r.winner) {
-    el.style.fill = CANDIDATES[r.winner].primaryColor;
-  }
+  const els = svg.querySelectorAll("[region]");
+
+  els.forEach(el => {
+
+    const region = el.getAttribute("region"); // ex: ne-al
+
+    const state = region.split("-")[0].toUpperCase(); // NE
+
+    if (state !== code) return;
+
+    const r = STATE_RESULTS[code];
+
+    if (r.isTie) {
+      el.style.fill = TIE_COLOR;
+    } else if (r.winner) {
+      el.style.fill = CANDIDATES[r.winner].primaryColor;
+    }
+
+  });
+
 });
 
       // ---- POPUP ----
