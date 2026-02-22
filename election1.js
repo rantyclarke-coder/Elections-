@@ -251,8 +251,6 @@ function colorMap() {
 
   });
 
-});
-
       // ---- POPUP ----
       el.onclick = null;
       if (r.isTie || r.winner) {
