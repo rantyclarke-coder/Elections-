@@ -46,7 +46,7 @@ const CANDIDATES = {
 
   C2: {
     name: "STELLA COUCH",
-    short: "WALZ",
+    short: "WALZERIA",
     party: "DEMOCRAT",
     primaryColor: "#dc143c",
     secondaryColor: "#ffc1cc",
