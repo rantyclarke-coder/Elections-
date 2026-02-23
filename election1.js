@@ -37,7 +37,7 @@ const STATE_NAMES = {
 const CANDIDATES = {
   C1: {
     name: "KEITLYN MCKINLEY",
-    short: "KIT",
+    short: "KEITLYN",
     party: "INDEPENDENT",
     primaryColor: "#1e3fd9",
     secondaryColor: "#b8c6ff",
@@ -152,7 +152,7 @@ if (electionYear) {
   document.getElementById("right-name").textContent = CANDIDATES[right].short;
 
   document.getElementById("left-name").style.color = CANDIDATES[left].primaryColor;
-  document.getElementById("right-name").style.color = CANDIDATES[right].secondaryColor;
+  document.getElementById("right-name").style.color = CANDIDATES[right].primaryColor;
 
   // ---- EVs ----
   document.getElementById("left-ev").textContent = nationalEV[left];
