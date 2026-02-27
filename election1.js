@@ -41,7 +41,7 @@ const CANDIDATES = {
     party: "INDEPENDENT",
     primaryColor: "#1e3fd9",
     secondaryColor: "#b8c6ff",
-     colorGroup: "DEM"
+     colorGroup: "DEM",
     photo: "images/mckinley.png"
   },
 
@@ -51,7 +51,7 @@ const CANDIDATES = {
     party: "DEMOCRAT",
     primaryColor: "#dc143c",
     secondaryColor: "#ffc1cc",
-    colorGroup: "REP"
+    colorGroup: "REP",
     photo: "images/walz.png"
   },
 
@@ -61,7 +61,7 @@ const CANDIDATES = {
     party: "NPPA",
     primaryColor: "#2ecc71",
     secondaryColor: "#b9f1cf",
-    colorGroup: "C3"
+    colorGroup: "C3",
     photo: "images/howard.png"
   },
 
@@ -71,7 +71,7 @@ const CANDIDATES = {
   party: "INDEPENDENT",
   primaryColor: "#bfa23a",
   secondaryColor: "#e6d79c",
-  colorGroup: "C4"
+  colorGroup: "C4",
   photo: "images/brixton.png"
    }
 };
