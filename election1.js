@@ -41,15 +41,17 @@ const CANDIDATES = {
     party: "INDEPENDENT",
     primaryColor: "#1e3fd9",
     secondaryColor: "#b8c6ff",
+     colorGroup: "DEM"
     photo: "images/mckinley.png"
   },
 
   C2: {
-    name: "STELLA COUCH",
-    short: "WALZERIA",
+    name: "MARK KELLY",
+    short: "KELLY",
     party: "DEMOCRAT",
     primaryColor: "#dc143c",
     secondaryColor: "#ffc1cc",
+    colorGroup: "REP"
     photo: "images/walz.png"
   },
 
@@ -59,6 +61,7 @@ const CANDIDATES = {
     party: "NPPA",
     primaryColor: "#2ecc71",
     secondaryColor: "#b9f1cf",
+    colorGroup: "C3"
     photo: "images/howard.png"
   },
 
@@ -68,8 +71,40 @@ const CANDIDATES = {
   party: "INDEPENDENT",
   primaryColor: "#bfa23a",
   secondaryColor: "#e6d79c",
+  colorGroup: "C4"
   photo: "images/brixton.png"
    }
+};
+
+/* COLOR GROUPS */
+
+const PARTY_SHADES = {
+  DEM: {
+    safe:  "#2B4C93",
+    lean:  "#5F7FC1",
+    swing: "#7FA2E0",
+    solid: "#2B4C93"
+  },
+  REP: {
+    safe:  "#C91F2E",
+    lean:  "#FF5A66",
+    swing: "#EE7C85",
+    solid: "#C91F2E"
+  },
+
+  C3: {
+    safe:  "#1E9E52",
+    lean:  "#2ECC71",
+    swing: "#8FE5B5",
+    solid: "#27AE60"
+  },
+
+  C4: {
+    safe:  "#8C7A21",
+    lean:  "#BFA23A",
+    swing: "#E6D79C",
+    solid: "#A8892C"
+  }
 };
 
 /* =========================
