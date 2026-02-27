@@ -290,10 +290,15 @@ function colorMap() {
 
       // ---- COLOR ----
       if (r.isTie) {
-        el.style.fill = TIE_COLOR;
-      } else if (r.winner) {
-        el.style.fill = CANDIDATES[r.winner].primaryColor;
-      }
+  el.style.fill = TIE_COLOR;
+}
+else if (r.winner) {
+
+  const group = CANDIDATES[r.winner].colorGroup;
+  const shades = PARTY_SHADES[group];
+
+  el.style.fill = shades[r.tier] || shades.safe;
+}
 
       // ---- POPUP ----
       el.onclick = null;
