@@ -159,11 +159,25 @@ if (electionYear) {
       C4: Math.round(ev * CONSTANTS.VOTES_PER_EV * c4 / total)
     };
 
-    const sorted = Object.entries(votes).sort((a,b)=>b[1]-a[1]);
-    const isTie = sorted[0][1] === sorted[1][1];
-    const winner = isTie ? null : sorted[0][0];
+    // Determine winner using RAW sheet points
+     
+const raw = { C1:c1, C2:c2, C3:c3, C4:c4 };
+const sortedRaw = Object.entries(raw).sort((a,b)=>b[1]-a[1]);
 
-    STATE_RESULTS[code] = { ev, votes, winner, isTie };
+const isTie = sortedRaw[0][1] === sortedRaw[1][1];
+const winner = isTie ? null : sortedRaw[0][0];
+
+let tier = null;
+
+if (!isTie && winner) {
+  const margin = sortedRaw[0][1] - sortedRaw[1][1];
+
+  if (margin >= 5) tier = "safe";
+  else if (margin >= 3) tier = "lean";
+  else if (margin >= 1) tier = "swing";
+}
+
+    STATE_RESULTS[code] = { ev, votes, winner, isTie, tier };
 
     if (winner) nationalEV[winner] += ev;
     Object.keys(votes).forEach(k => nationalVotes[k] += votes[k]);
