@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 // ================== CONFIG ==================
 
 // 🔗 Google Sheet CSV
-const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsbbXqdgfMGosYWjOVNR-2UUw6bZzjGNtnfuuWpbBuTutk6Jm1lffgHUis8GNjfQLFZLkaSpJNlck2/pubhtml?gid=616046635&single=true";
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsbbXqdgfMGosYWjOVNR-2UUw6bZzjGNtnfuuWpbBuTutk6Jm1lffgHUis8GNjfQLFZLkaSpJNlck2/pub?output=csv&gid=616046635";
 
 // 🎨 PARTY COLORS
 const PARTIES = {
