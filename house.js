@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", () => {
 
 // ================== CONFIG ==================
 
@@ -7,9 +7,9 @@ const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsbbXqdgfMGo
 
 // 🎨 PARTY COLORS
 const PARTIES = {
-  DEM: { primary: "#2B4C93" },
-  REP: { primary: "#C91F2E" },
-  IND: { primary: "#7f8c8d" }
+  D: { primary: "#2B4C93" },
+  R: { primary: "#C91F2E" },
+  I: { primary: "#7f8c8d" }
 };
 
 // 🗺️ SVG REGION → DISTRICT
@@ -25,59 +25,131 @@ const REGION_TO_DISTRICT = {
 const mapObject = document.getElementById("house-map");
 const yearEl = document.getElementById("election-year");
 
+if (!mapObject || !yearEl) {
+  console.error("House page missing required #house-map or #election-year.");
+  return;
+}
+
+// ================== CSV HELPERS ==================
+
+function parseCSV(text) {
+  const rows = [];
+  let row = [];
+  let cell = "";
+  let inQuotes = false;
+
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+
+    if (ch === '"') {
+      if (inQuotes && text[i + 1] === '"') {
+        cell += '"';
+        i++;
+      } else {
+        inQuotes = !inQuotes;
+      }
+      continue;
+    }
+
+    if (ch === "," && !inQuotes) {
+      row.push(cell.trim());
+      cell = "";
+      continue;
+    }
+
+    if ((ch === "\n" || ch === "\r") && !inQuotes) {
+      if (ch === "\r" && text[i + 1] === "\n") i++;
+      row.push(cell.trim());
+      rows.push(row);
+      row = [];
+      cell = "";
+      continue;
+    }
+
+    cell += ch;
+  }
+
+  if (cell.length || row.length) {
+    row.push(cell.trim());
+    rows.push(row);
+  }
+
+  return rows;
+}
+
+function normalizeDistrict(code) {
+  if (!code) return "";
+  const clean = String(code).trim().toUpperCase();
+
+  // Unique code format: NE-13 => district NE-1 and candidate #3
+  const match = clean.match(/^([A-Z]{2})-(\d)(\d+)$/);
+  if (!match) return "";
+
+  return `${match[1]}-${match[2]}`;
+}
+
+function isWithdrawn(status) {
+  const s = String(status || "").trim().toUpperCase();
+  return s === "WITHDRAWN" || s === "W";
+}
+
 // ================== LOAD SHEET ==================
 
 async function loadSheet() {
   const res = await fetch(SHEET_URL);
+  if (!res.ok) {
+    throw new Error(`Sheet request failed (${res.status})`);
+  }
+
   const text = await res.text();
+  const rows = parseCSV(text);
 
-  const rows = text.trim().split("\n");
+  // Keep old behavior: year from first row, second column
+  const year = rows[0]?.[1]?.trim() || "XXXX";
 
-  // 🟡 B1 → Year
-  const firstRow = rows[0].split(",");
-  const year = firstRow[1]?.trim() || "XXXX";
-
-  // Skip first 5 rows (data starts from row 6)
-  const dataRows = rows.slice(5);
-
-  const data = dataRows.map(row => {
-    const cols = row.split(",");
+  // No predefined rows: auto-read any row that has unique code in col C
+  const data = rows.map(cols => {
+    const code = cols[2]?.trim();   // C
+    const party = cols[4]?.trim();  // E (R/D/I)
+    const points = Number(cols[8]); // I
+    const status = cols[11]?.trim(); // L
 
     return {
-      code: cols[2]?.trim(),     // C
-      party: cols[4]?.trim(),    // E
-      points: parseFloat(cols[8]) || 0, // I
-      status: cols[11]?.trim()   // L
+      code,
+      district: normalizeDistrict(code),
+      party: party ? party.trim().toUpperCase().charAt(0) : "",
+      points: Number.isFinite(points) ? points : 0,
+      status
     };
-  }).filter(c => c.code && c.status !== "Withdrawn");
+  }).filter(c => c.district && !isWithdrawn(c.status));
 
   return { data, year };
 }
 
-// ================== LOGIC ==================
+function getDistrictLeaders(data) {
+  const sorted = [...data].sort((a, b) => {
+    const districtOrder = a.district.localeCompare(b.district);
+    if (districtOrder !== 0) return districtOrder;
+    return b.points - a.points;
+  });
 
-function getDistrict(code) {
-  const [region, rest] = code.split("-");
-  return region + "-" + rest[0];
+  const leaders = {};
+
+  sorted.forEach(candidate => {
+    if (!leaders[candidate.district]) {
+      leaders[candidate.district] = candidate;
+    }
+  });
+
+  return leaders;
 }
 
-function getLeader(data, district) {
-  return data
-    .filter(c => getDistrict(c.code) === district)
-    .sort((a, b) => b.points - a.points)[0];
-}
-
-// ================== INIT ==================
-
-const { data: allData, year } = await loadSheet();
-
-// Set year
-yearEl.textContent = year;
-
-// Wait for SVG
-mapObject.addEventListener("load", () => {
+function applyMapColors(allData) {
   const svgDoc = mapObject.contentDocument;
+  if (!svgDoc) return;
+
   const paths = svgDoc.querySelectorAll("path[region]");
+  const districtLeaders = getDistrictLeaders(allData);
 
   paths.forEach(p => {
     const regionCode = p.getAttribute("region");
@@ -85,15 +157,27 @@ mapObject.addEventListener("load", () => {
 
     if (!district) return;
 
-    const leader = getLeader(allData, district);
-
-    if (leader) {
-      const color = PARTIES[leader.party]?.primary || "#ccc";
-      p.style.fill = color;
-    } else {
-      p.style.fill = "#ccc";
-    }
+    const leader = districtLeaders[district];
+    const color = leader ? (PARTIES[leader.party]?.primary || "#ccc") : "#ccc";
+    p.style.fill = color;
   });
-});
+}
+
+// ================== INIT ==================
+
+loadSheet()
+  .then(({ data: allData, year }) => {
+    yearEl.textContent = year;
+
+    if (mapObject.contentDocument) {
+      applyMapColors(allData);
+    }
+
+    mapObject.addEventListener("load", () => applyMapColors(allData));
+  })
+  .catch(err => {
+    console.error("House CSV error:", err);
+    yearEl.textContent = "XXXX";
+  });
 
 });
