@@ -265,6 +265,103 @@ body.dark{
  margin:15px 0 18px;
 }
 
+.chart-wrapper {
+  position: relative;
+  width: 420px;
+  height: 320px;
+  margin: 0 auto;
+}
+
+/* SVG */
+#donut-chart {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg); /* start from top */
+}
+
+/* Donut styling */
+circle {
+  fill: none;
+  stroke-width: 32;
+}
+
+.bg {
+  stroke: #eee;
+}
+
+.dem {
+  stroke: #2B4C93;
+}
+
+.rep {
+  stroke: #C91F2E;
+}
+
+/* Center image */
+.center-image {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 160px;
+  height: 160px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  overflow: hidden;
+  background: white;
+}
+
+.center-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Labels */
+.label {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 140px;
+}
+
+.label.left {
+  left: -120px;
+  text-align: right;
+}
+
+.label.right {
+  right: -120px;
+  text-align: left;
+}
+
+.party {
+  font-size: 18px;
+  font-weight: 600;
+  color: #555; /* neutral */
+}
+
+.count {
+  font-size: 40px;
+  font-weight: bold;
+  margin-top: 6px;
+}
+
+/* Lines */
+.line {
+  stroke-width: 2;
+  fill: none;
+}
+
+.dem-line {
+  stroke: #2B4C93;
+}
+
+.rep-line {
+  stroke: #C91F2E;
+}
+
+
+ 
 body.dark .divider{
  background:#fff;
 }
@@ -434,7 +531,43 @@ body.dark .back{
   </div>
 
   <div class="divider"></div>
+<div class="chart-wrapper">
 
+  <!-- DONUT -->
+  <svg id="donut-chart" viewBox="0 0 300 300">
+
+    <circle cx="150" cy="150" r="100" class="bg"/>
+    <circle cx="150" cy="150" r="100" class="dem"/>
+    <circle cx="150" cy="150" r="100" class="rep"/>
+
+    <!-- connector lines -->
+    <line id="dem-line-1" class="line dem-line"/>
+    <line id="dem-line-2" class="line dem-line"/>
+
+    <line id="rep-line-1" class="line rep-line"/>
+    <line id="rep-line-2" class="line rep-line"/>
+
+  </svg>
+
+  <!-- CENTER IMAGE -->
+  <div class="center-image">
+    <img src="/mnt/data/1000043005.png" alt="Capitol">
+  </div>
+
+  <!-- LEFT -->
+  <div class="label left">
+    <div class="party">Democrat</div>
+    <div class="count" id="dem-count">0</div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="label right">
+    <div class="party">Republican</div>
+    <div class="count" id="rep-count">0</div>
+  </div>
+
+</div>
+ 
   <div class="candidates" id="candidate-list"></div>
 
   <a class="back" href="./house.html">BACK</a>
