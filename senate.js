@@ -1,265 +1,216 @@
-/**
- * Senate region visualization from sheet data
- */
+document.addEventListener("DOMContentLoaded", () => {
 
-const SHEET_URL =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsbbXqdgfMGosYWjOVNR-2UUw6bZzjGNtnfuuWpbBuTutk6Jm1lffgHUis8GNjfQLFZLkaSpJNlck2/pub?gid=277732088&single=true&output=csv";
+// ================== CONFIG ==================
 
-const PARTY_COLORS = {
-  D: "#0015BC",
-  R: "#FF0000",
-  I: "#00A86B"
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsbbXqdgfMGosYWjOVNR-2UUw6bZzjGNtnfuuWpbBuTutk6Jm1lffgHUis8GNjfQLFZLkaSpJNlck2/pub?output=csv&gid=277732088";
+const YEAR_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsbbXqdgfMGosYWjOVNR-2UUw6bZzjGNtnfuuWpbBuTutk6Jm1lffgHUis8GNjfQLFZLkaSpJNlck2/pub?output=csv&gid=0";
+
+const PARTIES = {
+  D: { primary: "#0015BC" },
+  R: { primary: "#FF0000" },
+  I: { primary: "#00A86B" }
 };
 
-const DEFAULT_FILL = "#888";
+const DEFAULT_COLOR = "#888";
 const SVG_NS = "http://www.w3.org/2000/svg";
-const MAP_OBJECT_ID = "senate-map";
-const ACTIVE_STATUS = "A";
 
-document.addEventListener("DOMContentLoaded", init);
+// ================== DOM ==================
 
-async function fetchElectionYear() {
-  const response = await fetch(YEAR_SHEET_URL);
-  if (!response.ok) return null;
+const mapObject = document.getElementById("senate-map");
+const yearEl = document.getElementById("election-year");
 
-  const csv = await response.text();
-  const rows = parseCsv(csv);
-  const firstRow = rows[0] || [];
-  const raw = (firstRow[1] || "").trim();
-  const yearMatch = raw.match(/\b\d{4}\b/);
-  const year = yearMatch ? yearMatch[0] : raw;
-
-  return year || null;
+if (!mapObject || !yearEl) {
+  console.error("Senate page missing required #senate-map or #election-year.");
+  return;
 }
 
-function applyElectionYear(year) {
-  const yearElement = document.getElementById("election-year");
-  if (!yearElement) return;
+// ================== CSV HELPERS ==================
 
-  if (year) {
-    yearElement.textContent = year;
-    return;
-  }
-
-  yearElement.textContent = String(new Date().getUTCFullYear());
-}
-
-/**
- * Fetch and parse published CSV sheet.
- */
-async function fetchSheetRows() {
-  const response = await fetch(SHEET_URL);
-  if (!response.ok) throw new Error(`Sheet fetch failed (${response.status})`);
-
-  const csv = await response.text();
-  const rows = parseCsv(csv);
-
-  // Data starts from row 10 in the sheet.
-  return rows.slice(9);
-}
-
-/**
- * Small CSV parser with escaped quote handling.
- */
-function parseCsv(csv) {
+function parseCSV(text) {
   const rows = [];
   let row = [];
-  let value = "";
+  let cell = "";
   let inQuotes = false;
 
-  for (let i = 0; i < csv.length; i += 1) {
-    const ch = csv[i];
-    const next = csv[i + 1];
-
-    if (ch === '"' && inQuotes && next === '"') {
-      value += '"';
-      i += 1;
-      continue;
-    }
+  for (let i = 0; i < text.length; i += 1) {
+    const ch = text[i];
 
     if (ch === '"') {
-      inQuotes = !inQuotes;
+      if (inQuotes && text[i + 1] === '"') {
+        cell += '"';
+        i += 1;
+      } else {
+        inQuotes = !inQuotes;
+      }
       continue;
     }
 
     if (ch === "," && !inQuotes) {
-      row.push(value);
-      value = "";
+      row.push(cell.trim());
+      cell = "";
       continue;
     }
 
     if ((ch === "\n" || ch === "\r") && !inQuotes) {
-      if (ch === "\r" && next === "\n") i += 1;
-      row.push(value);
+      if (ch === "\r" && text[i + 1] === "\n") i += 1;
+      row.push(cell.trim());
       rows.push(row);
       row = [];
-      value = "";
+      cell = "";
       continue;
     }
 
-    value += ch;
+    cell += ch;
   }
 
-  if (value.length > 0 || row.length > 0) {
-    row.push(value);
+  if (cell.length || row.length) {
+    row.push(cell.trim());
     rows.push(row);
   }
 
   return rows;
 }
 
-/**
- * Resolve the embedded Senate.svg document loaded in <object id="senate-map">.
- */
-function getMapSvgDocument() {
-  return new Promise((resolve, reject) => {
-    const mapObject = document.getElementById(MAP_OBJECT_ID);
-    if (!mapObject) {
-      reject(new Error(`Missing map object element with id "${MAP_OBJECT_ID}"`));
-      return;
-    }
+function normalizeCode(code) {
+  if (!code) return null;
 
-    const finish = () => {
-      const svgDoc = mapObject.contentDocument;
-      if (!svgDoc) {
-        reject(new Error("Map SVG contentDocument is unavailable"));
-        return;
-      }
-      resolve(svgDoc);
-    };
+  const clean = String(code).trim().toUpperCase();
+  const match = clean.match(/^([A-Z]{2})-(\d+)$/);
+  if (!match) return null;
 
-    if (mapObject.contentDocument) {
-      finish();
-      return;
-    }
-
-    mapObject.addEventListener("load", finish, { once: true });
-
-    // Guard against silent object load failures.
-    setTimeout(() => {
-      if (!mapObject.contentDocument) {
-        reject(new Error("Timed out waiting for embedded Senate.svg to load"));
-      }
-    }, 10000);
-  });
+  // region: NE, classKey: 1 / 2 / 3 / etc
+  return { region: match[1], classKey: match[2] };
 }
 
-/**
- * Group candidates by region and senate class.
- * Source columns used:
- * - C (2): region-class code (e.g., NE-1)
- * - E (4): party code
- * - I (8): score/points
- * - L (11): active status
- */
-function groupRowsByRegionAndClass(rows) {
+function isActive(status) {
+  return String(status || "").trim().toUpperCase() === "A";
+}
+
+function parseYearFromB1(rows) {
+  const raw = rows?.[0]?.[1]?.trim() || "";
+  const match = raw.match(/\b\d{4}\b/);
+  return match ? match[0] : raw || "XXXX";
+}
+
+// ================== DATA LOAD ==================
+
+async function loadSenateData() {
+  const response = await fetch(SHEET_URL);
+  if (!response.ok) {
+    throw new Error(`Senate sheet request failed (${response.status})`);
+  }
+
+  const text = await response.text();
+  const rows = parseCSV(text).slice(9); // starts at row 10
+
+  const candidates = rows.map((cols) => {
+    const parsed = normalizeCode(cols[2]); // C
+    const partyRaw = cols[4]?.trim();      // E
+    const points = Number(cols[8]);        // I
+    const status = cols[11]?.trim();       // L
+
+    return {
+      parsed,
+      party: partyRaw ? partyRaw.toUpperCase().charAt(0) : "",
+      points: Number.isFinite(points) ? points : 0,
+      status
+    };
+  }).filter((candidate) => candidate.parsed && isActive(candidate.status));
+
+  return candidates;
+}
+
+async function loadElectionYear() {
+  const response = await fetch(YEAR_SHEET_URL);
+  if (!response.ok) return "XXXX";
+
+  const text = await response.text();
+  const rows = parseCSV(text);
+  return parseYearFromB1(rows);
+}
+
+// ================== WINNER / COLOR LOGIC ==================
+
+function getRegionClassWinners(candidates) {
   const grouped = {};
 
-  rows.forEach((row) => {
-    const code = (row[2] || "").trim();
-    const party = (row[4] || "").trim();
-    const points = Number(row[8]);
-    const status = (row[11] || "").trim();
-
-    if (!code || status !== ACTIVE_STATUS || Number.isNaN(points)) return;
-
-    const [region, classNum] = code.split("-");
-    if (!region || !classNum) return;
+  candidates.forEach((candidate) => {
+    const { region, classKey } = candidate.parsed;
 
     if (!grouped[region]) grouped[region] = {};
-    if (!grouped[region][classNum]) grouped[region][classNum] = [];
+    if (!grouped[region][classKey]) grouped[region][classKey] = [];
 
-    grouped[region][classNum].push({ party, points });
+    grouped[region][classKey].push(candidate);
   });
 
-  return grouped;
-}
+  const winnersByRegion = {};
 
-/**
- * Pick winning party in each class and collapse to region-level winner sets.
- */
-function computeRegionWinners(groupedByRegion) {
-  const result = {};
+  Object.entries(grouped).forEach(([region, classes]) => {
+    winnersByRegion[region] = [];
 
-  Object.entries(groupedByRegion).forEach(([region, classes]) => {
-    const classWinners = [];
-
-    Object.values(classes).forEach((candidates) => {
-      const winner = candidates.reduce((max, current) =>
+    Object.values(classes).forEach((classCandidates) => {
+      const winner = classCandidates.reduce((max, current) =>
         current.points > max.points ? current : max
       );
-      classWinners.push(winner.party);
+
+      winnersByRegion[region].push(winner.party);
     });
-
-    result[region] = classWinners;
   });
 
-  return result;
-}
-
-/**
- * Apply final fill color/pattern to each region element in the embedded SVG.
- */
-function applyRegionColors(regionWinners, svgDoc) {
-  Object.entries(regionWinners).forEach(([regionId, parties]) => {
-    const regionElement = svgDoc.getElementById(regionId);
-    if (!regionElement) return;
-
-    const uniqueParties = [...new Set(parties.filter(Boolean))].sort();
-    if (uniqueParties.length === 0) return;
-
-    if (uniqueParties.length === 1) {
-      regionElement.setAttribute("fill", getPartyColor(uniqueParties[0]));
-      return;
-    }
-
-    const patternId = createStripePattern(uniqueParties, svgDoc);
-    regionElement.setAttribute("fill", `url(#${patternId})`);
-  });
+  return winnersByRegion;
 }
 
 function getPartyColor(partyCode) {
-  return PARTY_COLORS[partyCode] || DEFAULT_FILL;
+  return PARTIES[partyCode]?.primary || DEFAULT_COLOR;
 }
 
-/**
- * Create an n-party diagonal stripe pattern.
- */
-function createStripePattern(parties, svgDoc) {
-  const defs = ensureDefs(svgDoc);
-  const id = `pattern-${parties.join("-")}`;
+function ensureDefs(svgDoc) {
+  const svgRoot = svgDoc.querySelector("svg");
+  if (!svgRoot) throw new Error("Senate SVG root not found.");
+
+  let defs = svgRoot.querySelector("defs");
+  if (!defs) {
+    defs = svgDoc.createElementNS(SVG_NS, "defs");
+    svgRoot.insertBefore(defs, svgRoot.firstChild);
+  }
+
+  return defs;
+}
+
+function createStripePattern(svgDoc, parties) {
+  const normalized = [...new Set(parties.filter(Boolean))].sort();
+  const id = `pattern-${normalized.join("-")}`;
 
   if (svgDoc.getElementById(id)) return id;
 
-  const width = 12;
-  const height = 12;
+  const defs = ensureDefs(svgDoc);
+  const size = 12;
+
   const pattern = svgDoc.createElementNS(SVG_NS, "pattern");
   pattern.setAttribute("id", id);
   pattern.setAttribute("patternUnits", "userSpaceOnUse");
-  pattern.setAttribute("width", String(width));
-  pattern.setAttribute("height", String(height));
+  pattern.setAttribute("width", String(size));
+  pattern.setAttribute("height", String(size));
 
-  // Base color
   const bg = svgDoc.createElementNS(SVG_NS, "rect");
   bg.setAttribute("x", "0");
   bg.setAttribute("y", "0");
-  bg.setAttribute("width", String(width));
-  bg.setAttribute("height", String(height));
-  bg.setAttribute("fill", getPartyColor(parties[0]));
+  bg.setAttribute("width", String(size));
+  bg.setAttribute("height", String(size));
+  bg.setAttribute("fill", getPartyColor(normalized[0]));
   pattern.appendChild(bg);
 
-  // Overlay additional colors as diagonal lines.
-  const overlays = parties.slice(1);
-  const strokeWidth = Math.max(2, Math.floor(height / (overlays.length + 2)));
+  const overlays = normalized.slice(1);
+  const strokeWidth = Math.max(2, Math.floor(size / (overlays.length + 2)));
 
   overlays.forEach((party, index) => {
     const line = svgDoc.createElementNS(SVG_NS, "line");
-    const offset = (index + 1) * (height / (overlays.length + 1));
+    const offset = (index + 1) * (size / (overlays.length + 1));
 
     line.setAttribute("x1", "0");
     line.setAttribute("y1", String(offset));
-    line.setAttribute("x2", String(width));
-    line.setAttribute("y2", String(offset - height));
+    line.setAttribute("x2", String(size));
+    line.setAttribute("y2", String(offset - size));
     line.setAttribute("stroke", getPartyColor(party));
     line.setAttribute("stroke-width", String(strokeWidth));
     line.setAttribute("stroke-linecap", "square");
@@ -271,20 +222,43 @@ function createStripePattern(parties, svgDoc) {
   return id;
 }
 
-/**
- * Ensure <defs> exists inside the map SVG root.
- */
-function ensureDefs(svgDoc) {
-  const svgRoot = svgDoc.querySelector("svg");
-  if (!svgRoot) {
-    throw new Error("Map SVG root not found in embedded object");
-  }
+function applyMapColors(candidates) {
+  const svgDoc = mapObject.contentDocument;
+  if (!svgDoc) return;
 
-  let defs = svgRoot.querySelector("defs");
-  if (!defs) {
-    defs = svgDoc.createElementNS(SVG_NS, "defs");
-    svgRoot.insertBefore(defs, svgRoot.firstChild);
-  }
+  const winnersByRegion = getRegionClassWinners(candidates);
 
-  return defs;
+  Object.entries(winnersByRegion).forEach(([region, parties]) => {
+    const el = svgDoc.getElementById(region);
+    if (!el) return;
+
+    const unique = [...new Set(parties.filter(Boolean))].sort();
+    if (unique.length === 0) return;
+
+    if (unique.length === 1) {
+      el.setAttribute("fill", getPartyColor(unique[0]));
+    } else {
+      const patternId = createStripePattern(svgDoc, unique);
+      el.setAttribute("fill", `url(#${patternId})`);
     }
+  });
+}
+
+// ================== INIT ==================
+
+Promise.all([loadSenateData(), loadElectionYear()])
+  .then(([candidates, year]) => {
+    yearEl.textContent = year;
+
+    if (mapObject.contentDocument) {
+      applyMapColors(candidates);
+    }
+
+    mapObject.addEventListener("load", () => applyMapColors(candidates), { once: true });
+  })
+  .catch((err) => {
+    console.error("Senate CSV error:", err);
+    yearEl.textContent = String(new Date().getUTCFullYear());
+  });
+
+});
