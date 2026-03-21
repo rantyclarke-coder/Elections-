@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // ================== CONFIG ==================
 
-const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsbbXqdgfMGosYWjOVNR-2UUw6bZzjGNtnfuuWpbBuTutk6Jm1lffgHUis8GNjfQLFZLkaSpJNlck2/pub?output=csv&gid=277732088";
+const SHEET_URL = "https://docs.https://docs.google.com/spreadsheets/d/e/2PACX-1vSsbbXqdgfMGosYWjOVNR-2UUw6bZzjGNtnfuuWpbBuTutk6Jm1lffgHUis8GNjfQLFZLkaSpJNlck2/pub?gid=277732088&single=true&output=csv";
 const YEAR_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsbbXqdgfMGosYWjOVNR-2UUw6bZzjGNtnfuuWpbBuTutk6Jm1lffgHUis8GNjfQLFZLkaSpJNlck2/pub?output=csv&gid=0";
 
 const PARTIES = {
@@ -121,7 +121,7 @@ async function loadSenateData() {
 }
 
 async function loadElectionYear() {
-  const response = await fetch(YEAR_SHEET_URL);
+  const response = await fetch(SHEET_URL);
   if (!response.ok) return "XXXX";
 
   const text = await response.text();
