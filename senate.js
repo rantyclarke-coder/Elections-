@@ -6,9 +6,9 @@ const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsbbXqdgfMGo
 const YEAR_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsbbXqdgfMGosYWjOVNR-2UUw6bZzjGNtnfuuWpbBuTutk6Jm1lffgHUis8GNjfQLFZLkaSpJNlck2/pub?gid=277732088&single=true&output=csv";
 
 const PARTIES = {
-  D: { primary: "#0015BC" },
-  R: { primary: "#FF0000" },
-  I: { primary: "#00A86B" }
+  D: { primary: "#2B4C93" },
+  R: { primary: "#C91F2E" },
+  I: { primary: "#7f8c8d" }
 };
 
 const DEFAULT_COLOR = "#888";
