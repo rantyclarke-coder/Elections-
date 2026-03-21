@@ -1,10 +1,5 @@
 /**
- * Senate region visualization from sheet data.
- *
- * Compatibility notes with senate.html:
- * - The sheet endpoint is published as CSV, so we parse CSV text.
- * - The map is embedded with <object id="senate-map">, so all region updates
- *   must be made inside that object's SVG document.
+ * Senate region visualization from sheet data
  */
 
 const SHEET_URL =
@@ -23,15 +18,30 @@ const ACTIVE_STATUS = "A";
 
 document.addEventListener("DOMContentLoaded", init);
 
-async function init() {
-  try {
-    const [rows, svgDoc] = await Promise.all([fetchSheetRows(), getMapSvgDocument()]);
-    const grouped = groupRowsByRegionAndClass(rows);
-    const regionWinners = computeRegionWinners(grouped);
-    applyRegionColors(regionWinners, svgDoc);
-  } catch (error) {
-    console.error("Senate map init failed:", error);
+async function fetchElectionYear() {
+  const response = await fetch(YEAR_SHEET_URL);
+  if (!response.ok) return null;
+
+  const csv = await response.text();
+  const rows = parseCsv(csv);
+  const firstRow = rows[0] || [];
+  const raw = (firstRow[1] || "").trim();
+  const yearMatch = raw.match(/\b\d{4}\b/);
+  const year = yearMatch ? yearMatch[0] : raw;
+
+  return year || null;
+}
+
+function applyElectionYear(year) {
+  const yearElement = document.getElementById("election-year");
+  if (!yearElement) return;
+
+  if (year) {
+    yearElement.textContent = year;
+    return;
   }
+
+  yearElement.textContent = String(new Date().getUTCFullYear());
 }
 
 /**
