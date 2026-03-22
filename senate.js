@@ -235,14 +235,17 @@ function applyMapColors(candidates) {
     const unique = [...new Set(parties.filter(Boolean))].sort();
     if (unique.length === 0) return;
 
-    if (unique.length === 1) {
+if (unique.length === 1) {
+      el.style.fill = getPartyColor(unique[0]);
       el.setAttribute("fill", getPartyColor(unique[0]));
     } else {
       const patternId = createStripePattern(svgDoc, unique);
+      el.style.fill = `url(#${patternId})`;
       el.setAttribute("fill", `url(#${patternId})`);
     }
   });
 }
+  
 
 // ================== INIT ==================
 
