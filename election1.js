@@ -10,7 +10,7 @@ const CONSTANTS = {
 };
 // Popup visibility control
 const SHOW_C3_IN_POPUP = true;
-const SHOW_C4_IN_POPUP = true;
+const SHOW_C4_IN_POPUP = false;
 const TIE_COLOR = "#8a8a8a";
 
 /* =========================
@@ -36,33 +36,33 @@ const STATE_NAMES = {
 ========================= */
 const CANDIDATES = {
   C1: {
-    name: "KEITLYN MCKINLEY",
-    short: "KEITLYN",
-    party: "INDEPENDENT",
+    name: "JOHN SHAKE",
+    short: "SHAKE",
+    party: "UNITY",
     primaryColor: "#1e3fd9",
     secondaryColor: "#b8c6ff",
      colorGroup: "DEM",
-    photo: "images/mckinley.png"
+    photo: "images/shake.jpg"
   },
 
   C2: {
-    name: "MARK KELLY",
-    short: "KELLY",
-    party: "DEMOCRAT",
+    name: "JOSEPH MCKINLEY",
+    short: "MCKINLEY",
+    party: "REPUBLICAN",
     primaryColor: "#dc143c",
     secondaryColor: "#ffc1cc",
     colorGroup: "REP",
-    photo: "images/walz.png"
+    photo: "images/mckinley2.jpg"
   },
 
   C3: {
-    name: "HOWARD KENNEDY",
-    short: "KENNEDY",
-    party: "NPPA",
+    name: "JUSTIN MOORE",
+    short: "MOORE",
+    party: "INDEPENDENT",
     primaryColor: "#2ecc71",
     secondaryColor: "#b9f1cf",
     colorGroup: "C3",
-    photo: "images/howard.png"
+    photo: "images/moore3.jpg"
   },
 
    C4: {
