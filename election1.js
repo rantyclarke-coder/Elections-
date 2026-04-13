@@ -35,17 +35,9 @@ const STATE_NAMES = {
    2. CANDIDATES
 ========================= */
 const CANDIDATES = {
-  C1: {
-    name: "JOHN SHAKE",
-    short: "SHAKE",
-    party: "UNITY",
-    primaryColor: "#1e3fd9",
-    secondaryColor: "#b8c6ff",
-     colorGroup: "DEM",
-    photo: "images/shake.jpg"
-  },
+  
 
-  C2: {
+  C1: {
     name: "JOSEPH MCKINLEY",
     short: "MCKINLEY",
     party: "REPUBLICAN",
@@ -55,13 +47,23 @@ const CANDIDATES = {
     photo: "images/mckinley2.jpg"
   },
 
+   C2: {
+    name: "JOHN SHAKE",
+    short: "SHAKE",
+    party: "UNITY",
+    primaryColor: "#1e3fd9",
+    secondaryColor: "#b8c6ff",
+     colorGroup: "DEM",
+    photo: "images/shake.jpg"
+  },
+   
   C3: {
     name: "JUSTIN MOORE",
     short: "MOORE",
     party: "INDEPENDENT",
     primaryColor: "#2ecc71",
     secondaryColor: "#b9f1cf",
-    colorGroup: "C3",
+    colorGroup: "C4",
     photo: "images/moore3.jpg"
   },
 
@@ -69,9 +71,9 @@ const CANDIDATES = {
   name: "CLIVE BRIXTON",
   short: "BRIXTON",
   party: "INDEPENDENT",
-  primaryColor: "#bfa23a",
-  secondaryColor: "#e6d79c",
-  colorGroup: "C4",
+  primaryColor: "#2ecc71",
+  secondaryColor: "#b9f1cf",
+  colorGroup: "C3",
   photo: "images/brixton.png"
    }
 };
