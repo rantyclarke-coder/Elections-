@@ -49,7 +49,10 @@ const REGION_MAP_TRANSFORM = {
   
   const params = new URLSearchParams(window.location.search);
   const REGION = params.get("region");
-  if (!REGION || !REGION_NAMES[REGION]) return;
+  if (!REGION || !REGION_NAMES[REGION]) {
+    console.error("Invalid or missing region parameter");
+    return;
+  }
 
   fetch(CSV_URL)
     .then(r => r.text())
@@ -57,9 +60,12 @@ const REGION_MAP_TRANSFORM = {
       const rows = csv.split("\n").map(r => r.split(","));
 
       const year = rows[57]?.[2]?.trim();
-      if (year) document.getElementById("region-year").textContent = year;
+      const yearElement = document.getElementById("region-year");
+      if (year && yearElement) yearElement.textContent = year;
 
-      document.getElementById("region-name").textContent = REGION_NAMES[REGION];
+      const regionElement = document.getElementById("region-name");
+      if (regionElement) regionElement.textContent = REGION_NAMES[REGION];
+
 /* LOAD REGION MAP */
 
 const mapObj = document.getElementById("region-map");
@@ -85,7 +91,10 @@ if(mapObj && REGION_MAPS[REGION]){
     svg.style.transformOrigin = "center center";
 
   });
+} else {
+  console.warn("Region map element not found or map file missing for region:", REGION);
 }
+
       const regionBlocks = {
         NE: { start: 66, end: 70 },
         LN: { start: 72, end: 76 },
@@ -94,7 +103,10 @@ if(mapObj && REGION_MAPS[REGION]){
       };
 
       const block = regionBlocks[REGION];
-      if (!block) return;
+      if (!block) {
+        console.error("No data block found for region:", REGION);
+        return;
+      }
 
       const candidates = [];
 
@@ -114,7 +126,10 @@ if(mapObj && REGION_MAPS[REGION]){
         candidates.push({ name, party, img, points });
       }
 
-      if (!candidates.length) return;
+      if (!candidates.length) {
+        console.warn("No active candidates found for region:", REGION);
+        return;
+      }
 
       candidates.sort((a, b) => b.points - a.points);
 
@@ -127,12 +142,23 @@ if(mapObj && REGION_MAPS[REGION]){
       });
 
       renderCandidates(candidates);
-renderDistrictMap(candidates);
+      renderDistrictMap(candidates);
     })
-    .catch(err => console.error("Region CSV error:", err));
+    .catch(err => {
+      console.error("Region CSV error:", err);
+      const container = document.getElementById("candidate-list");
+      if (container) {
+        container.innerHTML = `<div style="color:red; padding:20px;">Error loading data. Please check console.</div>`;
+      }
+    });
 
   function renderCandidates(list) {
     const container = document.getElementById("candidate-list");
+    if (!container) {
+      console.error("Element #candidate-list not found in HTML");
+      return;
+    }
+    
     container.innerHTML = "";
 
     const leaderPoints = list[0].points;
@@ -146,7 +172,7 @@ renderDistrictMap(candidates);
       row.style.setProperty("--party-primary", PARTIES[c.party].primary);
       row.style.setProperty("--party-secondary", PARTIES[c.party].secondary);
 
-row.innerHTML = `
+      row.innerHTML = `
   <div class="photo">
     <img src="${c.img || 'images/default.png'}"
          onerror="this.onerror=null; this.src='images/default.png';">
@@ -172,6 +198,7 @@ row.innerHTML = `
       container.appendChild(row);
     });
   }
+
 /* =========================
    PACIFICA DISTRICT MAP COLOR
 ========================= */
@@ -179,38 +206,36 @@ row.innerHTML = `
 function renderDistrictMap(candidateResults){
 
   const map = document.getElementById("region-map");
-  if(!map) return;
+  if(!map) {
+    console.warn("Element #region-map not found in HTML");
+    return;
+  }
 
   const apply = () => {
 
     const svgDoc = map.contentDocument;
-    if(!svgDoc) return;
+    if(!svgDoc) {
+      console.warn("SVG document not accessible");
+      return;
+    }
 
     const svg = svgDoc.querySelector("svg");
-    if(!svg) return;
+    if(!svg) {
+      console.warn("SVG element not found in document");
+      return;
+    }
 
     /* SELECT ALL DISTRICTS (auto-detect) */
     const districts = Array.from(svg.querySelectorAll("path"));
 
-    if(!districts.length) return;
+    if(!districts.length) {
+      console.warn("No district paths found in SVG");
+      return;
+    }
 
     /* RANDOMIZE ORDER (don't change on refresh) */ 
-  //  districts.sort((a,b)=>{
-//  return a.id.localeCompare(b.id);
-// });
     districts.sort(()=>Math.random()-0.5);
-/* SEEDED RANDOM (stable scatter) 
 
-function seededRandom(seed) {
-  const x = Math.sin(seed) * 10000;
-  return x - Math.floor(x);
-} 
-
-districts.sort((a,b)=>{
-  const seedA = seededRandom(a.id.length + a.id.charCodeAt(0));
-  const seedB = seededRandom(b.id.length + b.id.charCodeAt(0));
-  return seedA - seedB;
-}); */
     const total = districts.length;
 
     /* CALCULATE HOW MANY DISTRICTS EACH GETS */
@@ -222,16 +247,16 @@ districts.sort((a,b)=>{
 
       for(let i=0;i<amount && pointer<districts.length;i++){
 
-  const d = districts[pointer];
+        const d = districts[pointer];
 
-  d.style.fill = PARTIES[c.party].secondary;
+        d.style.fill = PARTIES[c.party].secondary;
 
-  /* opacity tier (Option A) */
-  if(index===0) d.style.opacity="0.9";
-  else if(index===1) d.style.opacity="0.7";
-  else d.style.opacity="0.5";
+        /* opacity tier (Option A) */
+        if(index===0) d.style.opacity="0.9";
+        else if(index===1) d.style.opacity="0.7";
+        else d.style.opacity="0.5";
 
-  pointer++;
+        pointer++;
       }
 
     });
@@ -242,4 +267,5 @@ districts.sort((a,b)=>{
   map.addEventListener("load",apply);
 
 }
+
 });
